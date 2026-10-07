@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-v1-separate-app";
+const CACHE="kbr-manager-v2-managerspage-url";
 const ASSETS=[
   "./",
   "./app-links.js",
