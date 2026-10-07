@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-v9-employee-status";
+const CACHE="kbr-manager-v10-full-employee-editor";
 const ASSETS=[
   "./",
   "./app-links.js",
