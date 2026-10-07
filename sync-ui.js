@@ -1,0 +1,13 @@
+'use strict';
+window.KBRSyncUI={
+ screen(title,message,buttons=[]){this.close();const cover=document.createElement('div');cover.id='cloudScreen';cover.className='cloud-screen';const box=document.createElement('section');box.className='cloud-box';const h=document.createElement('h2'),p=document.createElement('p');h.textContent=title;p.textContent=message;box.append(h,p);for(const [label,action] of buttons){const b=document.createElement('button');b.textContent=label;b.onclick=action;box.append(b);}cover.append(box);document.body.append(cover);},
+ close(){document.getElementById('cloudScreen')?.remove();},
+ backup(){const raw=localStorage.getItem('kbr_before_cloud_v1');if(!raw){alert('No pre-sync backup found on this device.');return;}const url=URL.createObjectURL(new Blob([raw],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='Kape-Bar-Rio-before-sync-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);},
+ rememberBackup(){if(localStorage.getItem('kbr_before_cloud_v1'))return;const data={savedAt:new Date().toISOString(),pending:KBRCloud.read('kbr_pending_orders',[]),servedUnpaid:KBRCloud.read('kbr_served_unpaid_orders',[]),unservedPaid:KBRCloud.read('kbr_unserved_paid_orders',[]),history:KBRCloud.read('kbr_history',[]),menu:KBRCloud.read('kbr_menu_v1',[])};localStorage.setItem('kbr_before_cloud_v1',JSON.stringify(data));},
+ applyMenu(row){const items=MenuStore.validate(row.items);localStorage.setItem(MenuStore.key,JSON.stringify(items));['kbr_icecream_prices_20261005','kbr_icecream_photos_20261005','kbr_budget_matcha_caramel_20261005'].forEach(k=>localStorage.setItem(k,'1'));},
+ async menuReady(role){const rows=await KBRCloud.request('/rest/v1/kbr_menu?id=eq.1&select=*');if(rows.length)return rows[0];
+  return new Promise(resolve=>{const publish=async()=>{try{this.screen('Publishing menu…','Keep this page open.');const row=await KBRCloud.rpc('kbr_save_menu',{p_items:MenuStore.load(),p_expected_revision:0,p_operation:KBRCloud.uuid()});if(row.conflict){resolve(await this.menuReady(role));return;}resolve(row);}catch(e){this.screen('Could not publish menu',e.message,[['Retry',publish],['Sign in',()=>location.href='sync-login.html']]);}};
+   this.screen('Set up the shared menu',role==='owner'?'On the main ordering tablet, publish its current menu once. Do not publish from another device until this finishes. Complete old unpaid orders in the previous app before switching to shared orders.':'The owner must publish the menu from the main tablet first.',role==='owner'?[['Publish this device’s menu',publish],['Download pre-sync backup',()=>this.backup()]]:[['Check again',async()=>resolve(await this.menuReady(role))]]);
+  });
+ }
+};

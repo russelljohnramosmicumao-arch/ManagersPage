@@ -1,0 +1,18 @@
+{
+  "name": "Kape' Bar-Rio Manager",
+  "short_name": "KBR Manager",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f2eb",
+  "theme_color": "#185b36",
+  "icons": [
+    {
+      "src": "manager-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
