@@ -1,12 +1,16 @@
-const CACHE="kbr-manager-v2-managerspage-url";
+const CACHE="kbr-manager-v3-tabs";
 const ASSETS=[
   "./",
   "./app-links.js",
   "./app-update.js",
   "./comp-payments.js",
+  "./employee-information.js",
   "./index.html",
+  "./manager-backup.js",
   "./manager-icon.svg",
   "./manager-inventory.js",
+  "./manager-tabs.css",
+  "./manager-tabs.js",
   "./manager.html",
   "./manager.js",
   "./manifest.json",

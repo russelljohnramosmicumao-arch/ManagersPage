@@ -18,6 +18,7 @@ const MenuStore = {
   const raw=localStorage.getItem(this.key);
   const stored=this.validate(raw?JSON.parse(raw):DEFAULT_PRODUCTS);
   stored.forEach(item=>{if(['Nom Chompoo','Cha Yen'].includes(item.name)&&item.category==='Thai Drinks')item.category='Specials';});
+  if(localStorage.getItem('kbr_menu_cloud_authoritative_v1'))return stored;
   const items=this.upgrade(stored);
   const revision='kbr_icecream_prices_20261005';
   if(!localStorage.getItem(revision)){
