@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-v3-tabs";
+const CACHE="kbr-manager-v5-grouped-inventory";
 const ASSETS=[
   "./",
   "./app-links.js",
