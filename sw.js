@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-v7-live-inventory-display";
+const CACHE="kbr-manager-v8-employee-tiles";
 const ASSETS=[
   "./",
   "./app-links.js",
