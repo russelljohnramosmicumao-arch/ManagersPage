@@ -11,7 +11,7 @@ const MenuStore = {
    check(p.sizes,p.prices); if(p.premium)check(p.premiumSizes,p.premium);
    const image=p.image||'';
    if(typeof image!=='string'||(image && !/^(images\/|https?:\/\/|data:image\/(png|jpeg|webp);base64,)/i.test(image)))throw new Error('Use an images/ path, an HTTP photo URL, or an uploaded photo.');
-   return {name:p.name.trim(),category:p.category.trim(),sizes:p.sizes.map(x=>x.trim()),prices:p.prices,premium:p.premium||null,premiumSizes:p.premium?p.premiumSizes.map(x=>x.trim()):null,availability:['available','not-available','out-of-stock'].includes(p.availability)?p.availability:'available',food:!!p.food,pricePending:!!p.pricePending,image};
+   return {productId:typeof p.productId==='string'&&p.productId?p.productId:crypto.randomUUID(),name:p.name.trim(),category:p.category.trim(),sizes:p.sizes.map(x=>x.trim()),prices:p.prices,premium:p.premium||null,premiumSizes:p.premium?p.premiumSizes.map(x=>x.trim()):null,availability:['available','not-available','out-of-stock'].includes(p.availability)?p.availability:'available',food:!!p.food,pricePending:!!p.pricePending,image};
   });
  },
  load(){try{
