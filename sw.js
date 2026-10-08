@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-v11-menu-product-ids";
+const CACHE="kbr-manager-v12-stable-product-ids";
 const ASSETS=[
   "./",
   "./app-links.js",
