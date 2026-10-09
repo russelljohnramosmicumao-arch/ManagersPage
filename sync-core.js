@@ -20,6 +20,6 @@ window.KBRCloud=(()=>{
  function uuid(){return crypto.randomUUID();}
  function bindStatus(){if(document.getElementById('cloudStatus'))return;const el=document.createElement('div');el.id='cloudStatus';el.className='cloud-status';el.setAttribute('role','status');el.textContent='Connecting…';document.body.append(el);}
  function status(text,problem=false){bindStatus();const el=document.getElementById('cloudStatus');el.textContent=text;el.classList.toggle('problem',problem);}
- async function logout(){try{await rpc('kbr_barista_duty',{p_on:false});}catch(e){}storeSession(null);location.href='sync-login.html';}
+ function logout(){storeSession(null);location.href='sync-login.html';}
  return {read,session,request,rpc,rows,role,login,requireLogin,strip,uuid,status,logout,config:cfg};
 })();
