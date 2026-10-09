@@ -6,8 +6,8 @@ function comparison(id,events,movements,cancellations){
  const history=events.filter(e=>e.kind==='complete'&&(e.payload||[]).some(v=>v.id===id)).sort((a,b)=>Date.parse(b.recorded_at)-Date.parse(a.recorded_at));
  const record=e=>{const change=e.payload.find(v=>v.id===id),item=e.result?.items?.find(v=>v.id===id);return {...change,item,time:item?.completedAt||e.recorded_at};};
  const day=v=>new Date(v).toLocaleDateString('en-CA',{timeZone:'Asia/Manila'});
- const latest=history[0]?record(history[0]):null;const earlier=latest?history.find(e=>day(record(e).time)!==day(latest.time)):null;const previous=earlier?record(earlier):null;
- if(!previous||!latest)return {latest,previous:previous||{gross:0,net:0},used:null,expected:null,difference:null};
+ const today=day(new Date());const latestEvent=history.find(e=>day(record(e).time)===today);const latest=latestEvent?record(latestEvent):null;const earlier=history.find(e=>day(record(e).time)<today);const previous=earlier?record(earlier):null;
+ if(!previous||!latest)return {latest,previous,used:null,expected:null,difference:null};
  const start=Date.parse(previous.time),end=Date.parse(latest.time);let used=0;
  for(const m of movements)if(m.item_id===id&&Date.parse(m.created_at)>start&&Date.parse(m.created_at)<=end)used+=Number(m.quantity);
  for(const c of cancellations)if(Date.parse(c.cancelled_at)>start&&Date.parse(c.cancelled_at)<=end)for(const r of c.restored_items||[])if(r.itemId===id)used-=Number(r.quantity);

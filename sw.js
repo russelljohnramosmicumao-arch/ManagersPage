@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-v14-home-separated-pages";
+const CACHE="kbr-manager-v15-inventory-restored";
 const ASSETS=[
   "./",
   "./app-links.js",
