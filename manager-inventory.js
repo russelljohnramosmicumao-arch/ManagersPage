@@ -24,7 +24,7 @@ function renderComparison(){if(!comparisonData)return;const {counts,live,events,
  content.querySelectorAll('[data-inventory-category]').forEach(el=>el.addEventListener('toggle',()=>{if(!el.isConnected)return;const id=el.dataset.inventoryCategory;if(el.open)openCategories.add(id);else openCategories.delete(id);}));
 
 }
-async function refresh(){if(busy||document.hidden||document.getElementById('panel-inventory')?.hidden)return;busy=true;try{if(await KBRCloud.role()!=='owner')return;
+async function refresh(){if(busy||document.hidden||document.getElementById('panel-inventory')?.hidden)return;busy=true;try{if(!await KBRCloud.rpc('kbr_management_access',{}))return;
  const [counts,live,events,movements,cancellations]=await Promise.all([
  KBRCloud.request('/rest/v1/kbr_inventory_counts?id=eq.1&select=*'),KBRCloud.request('/rest/v1/kbr_inventory_state?id=eq.1&select=*'),
  KBRCloud.rows('/rest/v1/kbr_inventory_count_events?kind=eq.complete&select=payload,result,recorded_at,kind&order=recorded_at.desc,operation.desc'),
