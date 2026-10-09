@@ -6,7 +6,7 @@ function comparison(id,events,movements,cancellations){
  const history=events.filter(e=>e.kind==='complete'&&(e.payload||[]).some(v=>v.id===id)).sort((a,b)=>Date.parse(b.recorded_at)-Date.parse(a.recorded_at));
  const record=e=>{const change=e.payload.find(v=>v.id===id),item=e.result?.items?.find(v=>v.id===id);return {...change,item,time:item?.completedAt||e.recorded_at};};
  const day=v=>new Date(v).toLocaleDateString('en-CA',{timeZone:'Asia/Manila'});
- const today=day(new Date());const latestEvent=history.find(e=>day(record(e).time)===today);const latest=latestEvent?record(latestEvent):null;const earlier=history.find(e=>day(record(e).time)<today);const previous=earlier?record(earlier):null;
+ const cutoff=Date.parse(comparisonData?.period?.previous_closed_at||'');const latestEvent=Number.isFinite(cutoff)?history.find(e=>Date.parse(record(e).time)>cutoff):history[0];const latest=latestEvent?record(latestEvent):null;const earlier=Number.isFinite(cutoff)?history.find(e=>Date.parse(record(e).time)<=cutoff):history[1];const previous=earlier?record(earlier):null;
  if(!previous||!latest)return {latest,previous,used:null,expected:null,difference:null};
  const start=Date.parse(previous.time),end=Date.parse(latest.time);let used=0;
  for(const m of movements)if(m.item_id===id&&Date.parse(m.created_at)>start&&Date.parse(m.created_at)<=end)used+=Number(m.quantity);
@@ -25,13 +25,13 @@ function renderComparison(){if(!comparisonData)return;const {counts,live,events,
 
 }
 async function refresh(){if(busy||document.hidden||document.getElementById('panel-inventory')?.hidden)return;busy=true;try{if(!await KBRCloud.rpc('kbr_management_access',{}))return;
- const [counts,live,events,movements,cancellations]=await Promise.all([
+ const [counts,live,events,movements,cancellations,period]=await Promise.all([
  KBRCloud.request('/rest/v1/kbr_inventory_counts?id=eq.1&select=*'),KBRCloud.request('/rest/v1/kbr_inventory_state?id=eq.1&select=*'),
  KBRCloud.rows('/rest/v1/kbr_inventory_count_events?kind=eq.complete&select=payload,result,recorded_at,kind&order=recorded_at.desc,operation.desc'),
  KBRCloud.rows('/rest/v1/kbr_stock_movements?select=item_id,quantity,created_at&order=created_at.asc,order_id.asc,item_id.asc'),
- KBRCloud.rows('/rest/v1/kbr_transaction_cancellations?select=cancelled_at,restored_items&order=cancelled_at.asc,order_id.asc')]);
+ KBRCloud.rows('/rest/v1/kbr_transaction_cancellations?select=cancelled_at,restored_items&order=cancelled_at.asc,order_id.asc'),KBRCloud.rpc('kbr_inventory_day_status',{})]);
  if(!counts[0]||!live[0]){content.textContent='Run the inventory counts SQL first.';return;}
- comparisonData={counts:counts[0].items,live:live[0].items,events,movements,cancellations};renderComparison();await activity();
+ comparisonData={counts:counts[0].items,live:live[0].items,events,movements,cancellations,period};renderComparison();await activity();
  }catch(e){content.textContent='Could not refresh inventory comparison: '+e.message;}finally{busy=false;}}
 async function activity(){const host=document.getElementById('inventoryActivity');try{const uses=await KBRCloud.request('/rest/v1/kbr_stock_usage?select=*&order=created_at.desc&limit=30');if(!uses.length){host.textContent='No ingredient deduction records yet.';return;}const ids=uses.map(u=>u.order_id).join(',');const [moves,orders]=await Promise.all([KBRCloud.rows('/rest/v1/kbr_stock_movements?order_id=in.('+ids+')&select=*&order=created_at.desc'),KBRCloud.rows('/rest/v1/kbr_orders?id=in.('+ids+')&select=id,data,status,receipt,created_at')]);const map=new Map(orders.map(o=>[o.id,o]));const live=await KBRCloud.request('/rest/v1/kbr_inventory_state?id=eq.1&select=items'),items=new Map((live[0]?.items||[]).map(i=>[i.id,i]));host.innerHTML=uses.map(u=>{const o=map.get(u.order_id),list=moves.filter(m=>m.order_id===u.order_id),names=(o?.data?.items||o?.receipt?.items||[]).map(i=>(i.qty||1)+' × '+i.name+' '+(i.size||'')).join(', ');return '<details class="activity-card"><summary>'+esc(new Date(u.created_at).toLocaleString('en-PH',{timeZone:'Asia/Manila'}))+' · '+esc(names||u.order_id.slice(0,8))+' · '+esc(o?.status==='cancelled'?'Cancelled / recorded deductions restored':u.status)+'</summary><p>Order '+esc(u.order_id)+'</p>'+list.map(v=>'<p>'+esc(items.get(v.item_id)?.name||v.item_id)+' · −'+esc(v.quantity)+' '+esc(items.get(v.item_id)?.unit||'')+' · '+esc(v.stock_before)+' → '+esc(v.stock_after)+'</p>').join('')+(u.issues?.length?'<p>Needs attention: '+esc(u.issues.map(x=>typeof x==='string'?x:JSON.stringify(x)).join('; '))+'</p>':'')+'</details>';}).join('');}catch(e){host.textContent='Stock activity unavailable: '+e.message;}}
 for(const [id,key,kind] of [['showPreviousInventory','kbr_inventory_previous_column','previous'],['showUsedInventory','kbr_inventory_used_column','used']]){const el=document.getElementById(id);el.checked=kind==='previous'?showPrevious:showUsed;el.onchange=()=>{if(kind==='previous')showPrevious=el.checked;else showUsed=el.checked;localStorage.setItem(key,String(el.checked));renderComparison();};}

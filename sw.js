@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-v15-inventory-restored";
+const CACHE="kbr-manager-v16-end-shift-inventory";
 const ASSETS=[
   "./",
   "./app-links.js",
