@@ -1,5 +1,5 @@
-const CACHE="kbr-manager-v16-end-shift-inventory";
-const ASSETS=[
+const CACHE="kbr-manager-v16-end-shift-inventory-ui6";
+const ASSETS=["./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
   "./app-update.js",
