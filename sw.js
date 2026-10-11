@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-v16-end-shift-inventory-ui6";
+const CACHE="kbr-manager-v16-end-shift-inventory-ui6-units-live-stock-v1";
 const ASSETS=["./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
