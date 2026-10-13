@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-v16-end-shift-inventory-ui6-units-live-stock-v1-sales-top5-manager-pin-pad-v2-symbol-only-approval-clock-v3-owner-recovery-pin-home-cancel-v1-workforce-v1";
+const CACHE="kbr-manager-v16-end-shift-inventory-ui6-units-live-stock-v1-sales-top5-manager-pin-pad-v2-symbol-only-approval-clock-v3-owner-recovery-pin-home-cancel-v1-workforce-v2-final-schedule";
 const ASSETS=["./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
@@ -13,6 +13,7 @@ const ASSETS=["./page-tools.js","./page-tools.css",
   "./manager-tabs.js",
   "./workforce-model.js",
   "./workforce.js",
+  "./schedule-view.js",
   "./manager.html",
   "./manager.js",
   "./manifest.json",
