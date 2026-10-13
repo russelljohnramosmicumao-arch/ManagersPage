@@ -1,16 +1,19 @@
 function mountManagerPinKeypad(form){
- const input=form.elements.pin;input.readOnly=true;input.inputMode='none';input.setAttribute('aria-label','Manager PIN entered using keypad');
- const layout=document.createElement('div');layout.className='manager-pin-layout';
- const left=document.createElement('div');left.className='manager-pin-fields';
- while(form.firstChild)left.append(form.firstChild);layout.append(left);
- const right=document.createElement('div');right.className='manager-pin-pad';right.setAttribute('aria-label','PIN keypad');
- for(const key of ['1','2','3','4','5','6','7','8','9','Clear','0','⌫']){
-  const button=document.createElement('button');button.type='button';button.textContent=key;button.setAttribute('aria-label',key==='⌫'?'Delete last PIN digit':key==='Clear'?'Clear PIN':key);
-  button.onclick=()=>{if(form.querySelector('button[type="submit"]').disabled)return;input.value=key==='Clear'?'':key==='⌫'?input.value.slice(0,-1):input.value.length<6?input.value+key:input.value;form.querySelector('[data-error]').textContent='';};right.append(button);
+ const input=form.elements.pin;input.type='hidden';input.readOnly=true;input.inputMode='none';
+ const error=form.querySelector('[data-error]');error.className='manager-pin-error';
+ const screen=document.createElement('div');screen.className='manager-pin-screen';
+ const display=document.createElement('output');display.className='manager-pin-display';display.setAttribute('aria-label','Passcode');display.setAttribute('aria-live','polite');
+ const cancel=document.createElement('button');cancel.type='button';cancel.textContent='×';cancel.setAttribute('aria-label','Cancel');cancel.onclick=()=>KBRSyncUI.close();screen.append(display,cancel);
+ const pad=document.createElement('div');pad.className='manager-pin-pad';pad.setAttribute('aria-label','PIN keypad');
+ function update(){display.textContent='*'.repeat(input.value.length);display.setAttribute('aria-label',input.value.length+' PIN digits entered');}
+ for(const key of ['1','2','3','4','5','6','7','8','9','⌫','0','✓']){
+  const button=document.createElement('button');button.type=key==='✓'?'submit':'button';button.textContent=key;button.setAttribute('aria-label',key==='⌫'?'Delete last PIN digit':key==='✓'?'Submit PIN':key);
+  if(key!=='✓')button.onclick=()=>{if(form.querySelector('button[type="submit"]').disabled)return;input.value=key==='⌫'?input.value.slice(0,-1):input.value.length<6?input.value+key:input.value;error.textContent='';screen.classList.remove('invalid');update();};pad.append(button);
  }
- layout.append(right);form.append(layout);
- if(!document.getElementById('managerPinKeypadStyle')){const style=document.createElement('style');style.id='managerPinKeypadStyle';style.textContent='.manager-pin-layout{display:grid;grid-template-columns:minmax(0,1fr) 156px;gap:18px;align-items:start}.manager-pin-fields{min-width:0}.manager-pin-fields input{width:100%;min-width:0}.manager-pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}.manager-pin-pad button{min-height:44px;min-width:0;padding:5px;border:1px solid #80644b;border-radius:9px;background:#6b4328;color:#fff;font:700 17px system-ui;cursor:pointer}.manager-pin-pad button:nth-child(10){font-size:11px}.manager-pin-pad button:focus-visible{outline:3px solid #d9a441;outline-offset:2px}@media(max-width:420px){.manager-pin-layout{grid-template-columns:minmax(0,1fr) 138px;gap:10px}}';document.head.append(style);}
- form.addEventListener('submit',event=>{if(!/^\d{4,6}$/.test(input.value)){event.preventDefault();event.stopImmediatePropagation();form.querySelector('[data-error]').textContent='Enter your 4–6 digit PIN using the keypad.';}},true);
+ form.className='manager-pin-form';form.replaceChildren(input,screen,pad,error);const box=document.querySelector('#cloudScreen .cloud-box');box.classList.add('manager-pin-box');box.replaceChildren(form);
+ if(!document.getElementById('managerPinKeypadStyle')){const style=document.createElement('style');style.id='managerPinKeypadStyle';style.textContent='.cloud-box.manager-pin-box{width:min(300px,calc(100vw - 24px));padding:18px;border-radius:20px}.manager-pin-form{display:block}.manager-pin-screen{display:flex;align-items:center;background:#f4ece3;border:2px solid #cbb59d;border-radius:12px;margin-bottom:14px;min-height:62px}.manager-pin-display{display:block;flex:1;min-width:0;text-align:center;font:700 30px monospace;letter-spacing:7px;color:#503827}.manager-pin-screen.invalid{border-color:#b83232}.cloud-box .manager-pin-screen button{background:transparent;color:#80644b;padding:8px;margin:0 6px 0 0;font-size:23px}.manager-pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.cloud-box .manager-pin-pad button{min-height:52px;padding:8px;margin:0;border:1px solid #80644b;border-radius:10px;background:#6b4328;color:white;font:700 23px system-ui}.cloud-box .manager-pin-pad button[type=submit]{background:#386944;border-color:#386944}.manager-pin-pad button:focus-visible{outline:3px solid #d9a441;outline-offset:2px}.manager-pin-pad button:disabled{opacity:.5}.manager-pin-error{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);margin:0!important}';document.head.append(style);}
+ new MutationObserver(()=>{screen.classList.toggle('invalid',!!error.textContent);update();}).observe(error,{childList:true,characterData:true,subtree:true});
+ form.addEventListener('submit',event=>{if(!/^\d{4,6}$/.test(input.value)){event.preventDefault();event.stopImmediatePropagation();error.textContent='Enter your 4–6 digit PIN.';screen.classList.add('invalid');}else queueMicrotask(update);},true);update();
 }
 (()=>{'use strict';const status=document.getElementById('status');
 document.getElementById('backup').onclick=()=>{if(!localStorage.getItem('kbr_before_cloud_v1')){document.getElementById('backupStatus').textContent='No pre-sync backup was saved on this device.';return;}KBRSyncUI.backup();};
