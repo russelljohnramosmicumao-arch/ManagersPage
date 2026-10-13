@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-v16-end-shift-inventory-ui6-units-live-stock-v1-sales-top5-manager-pin-pad-v2-symbol-only-approval-clock-v3-owner-recovery-pin-home-cancel-v1-workforce-v10-attendance-overlap-edit";
+const CACHE="kbr-manager-v16-end-shift-inventory-ui6-units-live-stock-v1-sales-top5-manager-pin-pad-v2-symbol-only-approval-clock-v3-owner-recovery-pin-home-cancel-v1-workforce-v11-profit-summary-sizes";
 const ASSETS=["./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
@@ -27,6 +27,8 @@ const ASSETS=["./page-tools.js","./page-tools.css",
   "./sales-data.js",
   "./sales.html",
   "./sales.js",
+  "./profit-model.js",
+  "./profit-summary.js",
   "./staff-manager.js",
   "./sync-config.js",
   "./sync-core.js",
