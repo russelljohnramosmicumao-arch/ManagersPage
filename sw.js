@@ -1,5 +1,5 @@
-const CACHE="kbr-manager-v16-end-shift-inventory-ui6-units-live-stock-v1-sales-top5-manager-pin-pad-v2-symbol-only-approval-clock-v3-owner-recovery-pin-home-cancel-v1-workforce-v16-pending-cash-review";
-const ASSETS=["./page-tools.js","./page-tools.css",
+const CACHE="kbr-manager-v16-end-shift-inventory-ui6-units-live-stock-v1-sales-top5-manager-pin-pad-v2-symbol-only-approval-clock-v3-owner-recovery-pin-home-cancel-v1-workforce-v17-net-analysis-predictions";
+const ASSETS=["./inventory-forecast-model.js","./inventory-forecast.js","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
   "./app-update.js",
