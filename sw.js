@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-v16-end-shift-inventory-ui6-units-live-stock-v1-sales-top5-manager-pin-pad-v2-symbol-only-approval-clock-v3-owner-recovery-pin-home-cancel-v1-workforce-v18-staff-colors";
+const CACHE="kbr-manager-v16-end-shift-inventory-ui6-units-live-stock-v1-sales-top5-manager-pin-pad-v2-symbol-only-approval-clock-v3-owner-recovery-pin-home-cancel-v1-workforce-v19-background-colors";
 const ASSETS=["./inventory-forecast-model.js","./inventory-forecast.js","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
@@ -12,8 +12,8 @@ const ASSETS=["./inventory-forecast-model.js","./inventory-forecast.js","./page-
   "./manager-tabs.css",
   "./manager-tabs.js","./cash-review.js",
   "./workforce-model.js",
-  "./workforce.js",
-  "./schedule-view.js",
+  "./workforce.js?v=staff-colors-2",
+  "./schedule-view.js?v=staff-colors-2",
   "./manager.html",
   "./manager.js",
   "./manifest.json",

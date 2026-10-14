@@ -2,7 +2,7 @@
 let employees=[],shifts=[],records=[],corrections=[],revision=0,week='',dirty=false,loading=false,saving=false,loaded=false,ready=false;
 const periods=['Morning','Afternoon / Evening'],periodLabel=p=>p==='Morning'?'1st Shift':'2nd Shift',days=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 const palettes=[['#95b9ed','#173d73'],['#ef9a91','#702721'],['#83cfa0','#174c2d'],['#c0a0e0','#51316f'],['#e8c078','#654509'],['#80c5bd','#174f48']];
-const color=id=>/^john(?:\s|$)/i.test(name(id))?['#ffffff','#503827']:/^mark(?:\s|$)/i.test(name(id))?['#83cfa0','#174c2d']:/^james(?:\s|$)/i.test(name(id))?['#ef9a91','#702721']:/^jv(?:\s|$)/i.test(name(id))?['#f2afd0','#702747']:palettes[Math.max(0,employees.findIndex(e=>e.id===id))%palettes.length];
+const color=id=>KBRScheduleView.staffColor(name(id),palettes[Math.max(0,employees.findIndex(e=>e.id===id))%palettes.length]);
 const employee=id=>employees.find(e=>e.id===id),name=id=>employee(id)?.name||'Former employee';
 const isJohn=e=>!!e&&/^john(?:\s|$)/i.test(e.name)&&String(e.position||'').toLowerCase()==='owner';
 function durationOptions(s,owner=false){const hours=M.shiftHours(s);return [4,8,12].map(h=>`<option value="${h}" ${h===hours?'selected':''}>${h} hours</option>`).join('')+(![4,8,12].includes(hours)?`<option value="${hours}" selected disabled>${hours} hours (saved)</option>`:'');}
