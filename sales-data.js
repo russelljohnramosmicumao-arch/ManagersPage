@@ -2,7 +2,7 @@
 window.KBRSales=(()=>{
 const dateFormat=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Manila',year:'numeric',month:'2-digit',day:'2-digit'});
 function day(value){const d=new Date(value);if(Number.isNaN(d.getTime()))return '';const parts=Object.fromEntries(dateFormat.formatToParts(d).map(x=>[x.type,x.value]));return `${parts.year}-${parts.month}-${parts.day}`;}
-function normalize(row){const r=row.receipt||row;const when=row.created_at||r.orderedAt;return {...r,_cloudId:row.id||r._cloudId,orderedAt:when||null,completedAt:row.updated_at||null,day:when?day(when):(r.dayKey||day(`${r.date||''} ${r.time||''}`))};}
+function normalize(row){const r=row.receipt||row;const when=row.created_at||r.orderedAt;return {...r,_units:Array.isArray(row.data?.units)?row.data.units.filter(i=>!i.cancelled):null,_cloudId:row.id||r._cloudId,orderedAt:when||null,completedAt:row.updated_at||null,day:when?day(when):(r.dayKey||day(`${r.date||''} ${r.time||''}`))};}
 function aggregate(rows,start,end){const selected=rows.filter(r=>!r.cancelled&&r.day&&r.day>=start&&r.day<=end),byDrink={},byProduct={},bySize={'12 oz':0,'16 oz':0,'22 oz':0},byDay={},byHour={},byCategory={},byService={},consumptionBySize={},freeByBarista={};let sales=0,drinks=0,food=0,consumptionDrinks=0,consumptionFood=0,freeDrinkValue=0,ownerChargeValue=0,freeDrinks=0;
 const add=(o,k,q)=>o[k||'Unspecified']=(o[k||'Unspecified']||0)+q;
 for(const r of selected){const nonSale=KBRPayments.isNonSale(r);sales+=KBRPayments.sales(r);add(byDay,r.day,1);add(byService,r.serviceType,1);

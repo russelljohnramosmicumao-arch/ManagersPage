@@ -7,3 +7,5 @@
 
 .supply-scroll .supply-received:disabled{opacity:1}
 .inventory-list-tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}.inventory-order-sheet{padding:24px;border:1px solid #d9c4ac;border-radius:12px;background:#fffaf3}.inventory-order-sheet h2{font-size:30px;margin-top:0}.inventory-order-sheet li{padding:12px 8px;border-bottom:1px solid #e7d6c3}.inventory-order-sheet small{display:block;margin-top:5px;color:#786351}
+
+.supply-category-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:20px 0}.supply-category-tile{background:#fffaf3;border:2px solid #cbb59d;border-radius:14px;padding:18px}.supply-category-tile h3{margin:0 0 12px;color:#503827}.supply-category-tile ul{padding-left:20px}.supply-category-tile li{padding:8px 0;border-bottom:1px solid #e5d5c2}.supply-category-tile p{font-size:13px;color:#75604f}

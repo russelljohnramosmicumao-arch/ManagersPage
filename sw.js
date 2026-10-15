@@ -1,5 +1,5 @@
-const CACHE="kbr-manager-v16-end-shift-inventory-ui6-units-live-stock-v1-sales-top5-manager-pin-pad-v2-symbol-only-approval-clock-v3-owner-recovery-pin-home-cancel-v1-workforce-v24-inventory-order-list";
-const ASSETS=["./inventory-order-list.js","./net-dashboard.js","./inventory-forecast-model.js","./inventory-forecast.js","./page-tools.js","./page-tools.css",
+const CACHE="kbr-manager-v16-end-shift-inventory-ui6-units-live-stock-v1-sales-top5-manager-pin-pad-v2-symbol-only-approval-clock-v3-owner-recovery-pin-home-cancel-v1-workforce-v24-inventory-order-list-ops-v25-stock-receipts-prices";
+const ASSETS=["./bag-rules.js","./receipt-lines.js","./stock-baseline-model.js","./inventory-order-list.js","./net-dashboard.js?v=ops-20261015","./inventory-forecast-model.js","./inventory-forecast.js","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
   "./app-update.js",
@@ -27,7 +27,7 @@ const ASSETS=["./inventory-order-list.js","./net-dashboard.js","./inventory-fore
   "./sales-data.js",
   "./sales.html",
   "./sales.js",
-  "./profit-model.js",
+  "./profit-model.js?v=ops-20261015",
   "./profit-summary.js",
   "./supply-orders.js",
   "./supply-orders.css",
