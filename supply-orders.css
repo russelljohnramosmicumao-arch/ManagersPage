@@ -6,3 +6,4 @@
 .supply-scroll .supply-received{background:#16804a;color:white;border-color:#16804a;opacity:1}.supply-payment-badge{display:inline-block;border-radius:20px;padding:7px 12px;font-weight:700}.supply-payment-badge.paid{background:#d9f3e3;color:#146d3c}.supply-payment-badge.cod{background:#fff0cc;color:#7f5200}.supply-scroll small{color:#735f50}.supply-scroll button:disabled{cursor:default;opacity:.55}.supply-paid-input{margin-top:14px}.supply-scroll tr[hidden]{display:none}.supply-scroll th:first-child{width:25%}
 
 .supply-scroll .supply-received:disabled{opacity:1}
+.inventory-list-tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}.inventory-order-sheet{padding:24px;border:1px solid #d9c4ac;border-radius:12px;background:#fffaf3}.inventory-order-sheet h2{font-size:30px;margin-top:0}.inventory-order-sheet li{padding:12px 8px;border-bottom:1px solid #e7d6c3}.inventory-order-sheet small{display:block;margin-top:5px;color:#786351}
