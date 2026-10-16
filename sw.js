@@ -37,7 +37,7 @@ const ASSETS=["./bag-rules.js","./receipt-lines.js","./stock-baseline-model.js",
   "./sync-login.html",
   "./sync-ui.js",
   "./sync.css"
-];
+  ,'cash-registry-audit.js','cash-registry-audit.css'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS))));
 self.addEventListener('message',e=>{if(e.data?.type==='SKIP_WAITING')self.skipWaiting();});
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith("kbr-manager-")&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
