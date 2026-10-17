@@ -137,12 +137,36 @@ window.KBRCashRegistryAudit = (() => {
     }finally{loading=false;}
   }
 
+  function activateCashRegistryPanel(){
+    const tab=document.querySelector('[data-manager-tab="cash-registry"]');
+    const panel=document.getElementById('panel-cash-registry');
+    if(!tab || !panel) return;
+
+    document.querySelectorAll('[data-manager-tab]').forEach(button=>{
+      button.setAttribute('aria-selected', button===tab ? 'true' : 'false');
+      button.classList.toggle('active', button===tab);
+    });
+
+    document.querySelectorAll('.manager-panel').forEach(section=>{
+      section.hidden = section!==panel;
+    });
+
+    panel.hidden=false;
+  }
+
   function init(){
     const btn=document.getElementById('cashAuditRefresh');
     if(btn) btn.addEventListener('click',refresh);
+
     const tab=document.querySelector('[data-manager-tab="cash-registry"]');
-    if(tab) tab.addEventListener('click',()=>setTimeout(refresh,0));
-    refresh();
+    if(tab){
+      tab.addEventListener('click',event=>{
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        activateCashRegistryPanel();
+        refresh();
+      }, true);
+    }
   }
 
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);

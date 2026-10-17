@@ -1,0 +1,20 @@
+Kape' Bar-Rio Manager — Cash Registry Audit FIX v2
+
+This fixes the Cash Registry tab not opening / appearing blank.
+
+Replace/add these files in the MANAGER app folder:
+- index.html
+- sw.js
+- cash-registry-audit.js
+- cash-registry-audit.css
+
+Fixes:
+- Cash Registry now activates its own manager panel directly.
+- It no longer depends on the existing manager-tabs.js knowing about the new tab.
+- Service-worker cache is bumped so the old broken page is not reused.
+
+After upload:
+1. Open the Manager page online.
+2. Hard refresh once.
+3. If installed as a PWA, close it fully and reopen it.
+4. Open Cash Registry and press Refresh.
