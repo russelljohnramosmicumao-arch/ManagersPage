@@ -1,20 +1,15 @@
-Kape' Bar-Rio Manager — Cash Registry Audit FIX v2
+Kape' Bar-Rio Manager — Cash Registry Day-Level Update v3
 
-This fixes the Cash Registry tab not opening / appearing blank.
-
-Replace/add these files in the MANAGER app folder:
+Replace/add:
 - index.html
 - sw.js
 - cash-registry-audit.js
 - cash-registry-audit.css
 
-Fixes:
-- Cash Registry now activates its own manager panel directly.
-- It no longer depends on the existing manager-tabs.js knowing about the new tab.
-- Service-worker cache is bumped so the old broken page is not reused.
+New behavior:
+- Cash Registry is grouped PER DAY first.
+- Each day shows opening cash, cash payments, Cash In, Cash Out, GCash, expected cash, counted cash, and the daily difference.
+- Expand a day to see each shift recorded that day.
+- Expand a shift to see the event-by-event registry ledger.
 
-After upload:
-1. Open the Manager page online.
-2. Hard refresh once.
-3. If installed as a PWA, close it fully and reopen it.
-4. Open Cash Registry and press Refresh.
+After deployment, hard refresh once or fully close/reopen the Manager PWA.

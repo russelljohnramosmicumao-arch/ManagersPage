@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-cash-registry-audit-v2";
+const CACHE="kbr-manager-cash-registry-day-level-v3";
 const ASSETS=["./bag-rules.js","./receipt-lines.js","./stock-baseline-model.js","./inventory-order-list.js","./net-dashboard.js?v=ops-20261015","./inventory-forecast-model.js","./inventory-forecast.js","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
@@ -37,7 +37,7 @@ const ASSETS=["./bag-rules.js","./receipt-lines.js","./stock-baseline-model.js",
   "./sync-login.html",
   "./sync-ui.js",
   "./sync.css"
-  ,"./cash-registry-audit.js?v=2","./cash-registry-audit.css?v=2"];
+  ,"./cash-registry-audit.js?v=3","./cash-registry-audit.css?v=3"];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS))));
 self.addEventListener('message',e=>{if(e.data?.type==='SKIP_WAITING')self.skipWaiting();});
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith("kbr-manager-")&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));

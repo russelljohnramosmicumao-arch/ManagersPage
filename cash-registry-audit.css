@@ -33,3 +33,7 @@
   .cash-shift>summary{grid-template-columns:1fr 1fr}
   .cash-breakdown{grid-template-columns:repeat(3,1fr)}
 }
+
+.cash-day{border:1px solid rgba(98,68,50,.2);border-radius:18px;background:#f8f4ef;margin:16px 0;overflow:hidden}
+.cash-day>summary{list-style:none;cursor:pointer;padding:16px;display:grid;grid-template-columns:minmax(220px,1.5fr) repeat(4,minmax(100px,.7fr));gap:12px;align-items:center}
+.cash-day>summary::-webkit-details-marker{display:none}.cash-day-title strong{display:block;font-size:17px;color:#4e3528}.cash-day-title span{display:block;font-size:11px;color:#7c6b60;margin-top:4px}.cash-day-metric span{display:block;font-size:10px;text-transform:uppercase;color:#7c6b60;font-weight:800}.cash-day-metric strong{display:block;font-size:16px;margin-top:3px}.cash-day-body{border-top:1px solid rgba(98,68,50,.12);padding:14px;background:#fff}.cash-day-body .cash-shift{margin:10px 0}.day-summary{grid-template-columns:repeat(4,minmax(120px,1fr))}@media(max-width:1050px){.cash-day>summary{grid-template-columns:1fr 1fr}.day-summary{grid-template-columns:repeat(2,1fr)}}

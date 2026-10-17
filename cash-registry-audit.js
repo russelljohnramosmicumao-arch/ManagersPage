@@ -98,26 +98,82 @@ window.KBRCashRegistryAudit = (() => {
     </details>`;
   }
 
+  function dayKey(value){
+    if(!value) return 'unknown';
+    const d=new Date(value);
+    return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Manila',year:'numeric',month:'2-digit',day:'2-digit'}).format(d);
+  }
+
+  function dayLabel(key){
+    if(key==='unknown') return 'Unknown date';
+    const d=new Date(key+'T12:00:00+08:00');
+    return d.toLocaleDateString('en-PH',{timeZone:'Asia/Manila',weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  }
+
+  function dayMetrics(dayShifts){
+    const list=dayShifts.map(metrics);
+    return {
+      shifts: dayShifts.length,
+      opening: list.reduce((n,m)=>n+m.opening,0),
+      payments: list.reduce((n,m)=>n+m.payments,0),
+      cashIn: list.reduce((n,m)=>n+m.cashIn,0),
+      cashOut: list.reduce((n,m)=>n+m.cashOut,0),
+      gcash: list.reduce((n,m)=>n+m.gcash,0),
+      expected: list.reduce((n,m)=>n+m.expected,0),
+      counted: list.filter(m=>m.counted!=null).reduce((n,m)=>n+m.counted,0),
+      variance: list.filter(m=>m.variance!=null).reduce((n,m)=>n+m.variance,0),
+      eventCount: list.reduce((n,m)=>n+m.rows.length,0)
+    };
+  }
+
+  function dayHtml(key,dayShifts,dayIndex){
+    const d=dayMetrics(dayShifts);
+    const cls=d.variance<0?'short':d.variance>0?'over':'';
+    return `<details class="cash-day" ${dayIndex===0?'open':''}>
+      <summary>
+        <div class="cash-day-title"><strong>${esc(dayLabel(key))}</strong><span>${d.shifts} shift${d.shifts===1?'':'s'} · ${d.eventCount} registry event${d.eventCount===1?'':'s'}</span></div>
+        <div class="cash-day-metric"><span>Cash payments</span><strong>${peso(d.payments)}</strong></div>
+        <div class="cash-day-metric"><span>Expected</span><strong>${peso(d.expected)}</strong></div>
+        <div class="cash-day-metric"><span>Counted</span><strong>${peso(d.counted)}</strong></div>
+        <div class="cash-day-metric"><span>Difference</span><strong class="cash-audit-variance ${cls}">${peso(d.variance)}</strong></div>
+      </summary>
+      <div class="cash-day-body">
+        <div class="cash-audit-summary day-summary">
+          <div class="cash-audit-stat"><span>Opening cash</span><strong>${peso(d.opening)}</strong></div>
+          <div class="cash-audit-stat"><span>Cash payments</span><strong>${peso(d.payments)}</strong></div>
+          <div class="cash-audit-stat"><span>Cash In</span><strong>${peso(d.cashIn)}</strong></div>
+          <div class="cash-audit-stat"><span>Cash Out</span><strong>${peso(d.cashOut)}</strong></div>
+          <div class="cash-audit-stat"><span>GCash</span><strong>${peso(d.gcash)}</strong></div>
+          <div class="cash-audit-stat"><span>Expected cash</span><strong>${peso(d.expected)}</strong></div>
+          <div class="cash-audit-stat"><span>Counted cash</span><strong>${peso(d.counted)}</strong></div>
+          <div class="cash-audit-stat ${cls}"><span>Daily difference</span><strong>${peso(d.variance)}</strong></div>
+        </div>
+        <h3>Shifts for this day</h3>
+        ${dayShifts.map((s,i)=>shiftHtml(s,i)).join('')}
+      </div>
+    </details>`;
+  }
+
   function render(){
     const summary=document.getElementById('cashAuditSummary');
     const host=document.getElementById('cashAuditShifts');
     if(!summary||!host) return;
-
     const closed=shifts.filter(s=>s.status!=='open');
     const shiftMetrics=closed.map(metrics).filter(m=>m.counted!=null);
     const totalShort=shiftMetrics.reduce((n,m)=>n+(m.variance<0?Math.abs(m.variance):0),0);
     const totalOver=shiftMetrics.reduce((n,m)=>n+(m.variance>0?m.variance:0),0);
-    const latest=closed[0] ? metrics(closed[0]) : null;
-
+    const groups={};
+    shifts.forEach(s=>{const key=dayKey(s.opened_at);(groups[key] ||= []).push(s);});
+    const dayEntries=Object.entries(groups).sort((a,b)=>b[0].localeCompare(a[0]));
+    const latestDay=dayEntries[0]?dayMetrics(dayEntries[0][1]):null;
     summary.innerHTML=`<div class="cash-audit-summary">
-      <div class="cash-audit-stat"><span>Loaded shifts</span><strong>${shifts.length}</strong></div>
+      <div class="cash-audit-stat"><span>Days loaded</span><strong>${dayEntries.length}</strong></div>
       <div class="cash-audit-stat short"><span>Total shortages</span><strong>${peso(totalShort)}</strong></div>
       <div class="cash-audit-stat over"><span>Total overages</span><strong>${peso(totalOver)}</strong></div>
-      <div class="cash-audit-stat ${latest?.variance<0?'short':latest?.variance>0?'over':''}"><span>Latest difference</span><strong>${latest?.variance==null?'—':peso(latest.variance)}</strong></div>
-      <div class="cash-audit-stat"><span>Latest events</span><strong>${latest?.rows.length||0}</strong></div>
+      <div class="cash-audit-stat ${latestDay?.variance<0?'short':latestDay?.variance>0?'over':''}"><span>Latest day difference</span><strong>${latestDay?peso(latestDay.variance):'—'}</strong></div>
+      <div class="cash-audit-stat"><span>Latest day events</span><strong>${latestDay?.eventCount||0}</strong></div>
     </div>`;
-
-    host.innerHTML=shifts.length?shifts.map(shiftHtml).join(''):'<div class="cash-empty">No cash registry shifts found.</div>';
+    host.innerHTML=dayEntries.length?dayEntries.map(([key,dayShifts],i)=>dayHtml(key,dayShifts,i)).join(''):'<div class="cash-empty">No cash registry shifts found.</div>';
   }
 
   async function refresh(){
