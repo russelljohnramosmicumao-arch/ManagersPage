@@ -1,6 +1,6 @@
 'use strict';
 (()=>{
- window.KBRServedSyncFix={version:'served-sync-v1'};
+ window.KBRServedSyncFix={version:'served-sync-v2'};
  const cloud=KBRCloud,ui=KBRSyncUI,queueKey='kbr_order_write_v1',draftKey='kbr_order_draft_v1';
  let role='',ready=false,busy=false,polling=false,menuRevision=0,lastFinalized=null;const remote=new Map();
  let rosterNames=[],claimDay='',claimedNames=null,claimRequest=null;
@@ -66,7 +66,20 @@
   try{localStorage.setItem(draftKey,JSON.stringify({p_id:id,p_data:data}));}catch(e){alert('Could not save the order for retry. Free some storage first.');return;}
   await retryDraft();
  };
- const handlers={markKitchenDone,savePendingOrderNote,toggleUnitServed,toggleItemGroupServed,toggleDisplayGroupServed,toggleSiomaiGroupServed,setOrderServiceType,cancelPendingTransaction,removeBaristaUnit,baristaAddon,baristaDiscount,completePendingPayment};
+ const originalToggleDisplayGroupServed=toggleDisplayGroupServed;
+ const originalToggleSiomaiGroupServed=toggleSiomaiGroupServed;
+ const originalToggleItemGroupServed=toggleItemGroupServed;
+ const originalToggleUnitServed=toggleUnitServed;
+ toggleDisplayGroupServed=(...args)=>mutate(originalToggleDisplayGroupServed,args);
+ toggleSiomaiGroupServed=(...args)=>mutate(originalToggleSiomaiGroupServed,args);
+ toggleItemGroupServed=(...args)=>mutate(originalToggleItemGroupServed,args);
+ toggleUnitServed=(...args)=>mutate(originalToggleUnitServed,args);
+ window.toggleDisplayGroupServed=toggleDisplayGroupServed;
+ window.toggleSiomaiGroupServed=toggleSiomaiGroupServed;
+ window.toggleItemGroupServed=toggleItemGroupServed;
+ window.toggleUnitServed=toggleUnitServed;
+
+ const handlers={markKitchenDone,savePendingOrderNote,setOrderServiceType,cancelPendingTransaction,removeBaristaUnit,baristaAddon,baristaDiscount,completePendingPayment};
  for(const [name,fn] of Object.entries(handlers))window[name]=(...args)=>mutate(fn,args);
  window.authorizeCompPayment=async(kind,person='',drinkCode='')=>{
   if(!ready||busy||polling||cloud.read(queueKey)||cloud.read(draftKey)){showActionToast('Connecting or saving… please try again.');return;}
