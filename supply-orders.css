@@ -9,3 +9,32 @@
 .inventory-list-tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}.inventory-order-sheet{padding:24px;border:1px solid #d9c4ac;border-radius:12px;background:#fffaf3}.inventory-order-sheet h2{font-size:30px;margin-top:0}.inventory-order-sheet li{padding:12px 8px;border-bottom:1px solid #e7d6c3}.inventory-order-sheet small{display:block;margin-top:5px;color:#786351}
 
 .supply-category-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:20px 0}.supply-category-tile{background:#fffaf3;border:2px solid #cbb59d;border-radius:14px;padding:18px}.supply-category-tile h3{margin:0 0 12px;color:#503827}.supply-category-tile ul{padding-left:20px}.supply-category-tile li{padding:8px 0;border-bottom:1px solid #e5d5c2}.supply-category-tile p{font-size:13px;color:#75604f}
+
+.supply-category-button{
+  width:100%;
+  text-align:left;
+  font:inherit;
+  color:inherit;
+  cursor:pointer;
+}
+.supply-category-button:hover,.supply-category-button:focus-visible{
+  outline:3px solid #9f7653;
+  outline-offset:2px;
+}
+.supply-category-button ul{margin-bottom:10px}
+.supply-tile-hint{
+  display:block;
+  margin-top:12px;
+  font-weight:700;
+  color:#6b4328;
+}
+.supply-tile-orders{display:grid;gap:14px;margin-top:18px}
+.supply-tile-order{
+  border:1px solid #d9c4ac;
+  border-radius:12px;
+  padding:16px;
+  background:#fffaf3;
+}
+.supply-tile-order ul{padding-left:20px}
+.supply-tile-order li{padding:5px 0}
+.supply-tile-order small{color:#735f50}

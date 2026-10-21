@@ -1,15 +1,21 @@
-Kape' Bar-Rio Manager — Cash Registry Day-Level Update v3
+Kape' Bar-Rio — Manager Supply Orders UI Update
 
-Replace/add:
+CHANGES
+1. Removed the Pending Review tab from Manager.
+2. Supply Orders now opens with Awaiting Delivery selected by default.
+3. Only awaiting-delivery rows are shown by default.
+4. Supply category tiles are clickable.
+5. Clicking a tile opens the awaiting deliveries in that category, with a direct
+   "Received · add to stock" button for each order. You no longer need to keep
+   opening the large Order payments/delivery dropdown just to receive supplies.
+6. Bumped the Manager PWA cache.
+
+UPLOAD TO THE Kape-Barrio-Manager REPOSITORY
 - index.html
+- supply-orders.js
+- supply-orders.css
 - sw.js
-- cash-registry-audit.js
-- cash-registry-audit.css
 
-New behavior:
-- Cash Registry is grouped PER DAY first.
-- Each day shows opening cash, cash payments, Cash In, Cash Out, GCash, expected cash, counted cash, and the daily difference.
-- Expand a day to see each shift recorded that day.
-- Expand a shift to see the event-by-event registry ledger.
-
-After deployment, hard refresh once or fully close/reopen the Manager PWA.
+After GitHub Pages deploys:
+- Hard-refresh Manager, or fully close and reopen the installed Manager PWA.
+- If an old page remains cached, reopen it online once and refresh again.
