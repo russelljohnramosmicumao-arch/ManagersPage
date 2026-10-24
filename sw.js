@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-v17-schedule-duplicate-next-week";
+const CACHE="kbr-manager-v18-tabs-reorganized";
 const ASSETS=["./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
