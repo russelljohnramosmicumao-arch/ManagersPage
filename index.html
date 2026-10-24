@@ -102,9 +102,18 @@
 </div><p><a class="back" href="sales.html" target="_blank" rel="noopener">Open reports full screen</a></p><iframe class="manager-frame" id="salesFrame" title="Sales analysis and transactions"></iframe></section><section class="manager-panel" id="panel-backup" role="tabpanel" aria-labelledby="tab-backup" hidden><h2>Back Up</h2><p>Download the latest shared data as JSON files.</p><div class="embed-tools"><button data-backup="all">Download all shared data</button><button data-backup="inventory">Inventory</button><button data-backup="recipes">Recipes</button><button data-backup="menu">Menu</button><button data-backup="sales">Transactions and shifts</button><button data-backup="employees">Employee information</button></div><p id="sharedBackupStatus" class="backup-status" role="status"></p><h3>Previous device backup</h3><button id="backup">Download pre-sync backup</button><p id="backupStatus" role="status"></p></section></div><p id="denied" hidden>Owner access required. <a href="sync-login.html?next=index.html">Sign in as owner</a></p></main><script src="app-links.js"></script><script src="sync-config.js"></script><script src="sync-core.js"></script><script src="sync-ui.js"></script><script src="staff-manager.js"></script><script src="employee-information.js"></script><script src="manager.js"></script><script src="inventory-forecast-model.js"></script><script src="inventory-forecast.js"></script><script src="inventory-order-list.js"></script><script src="bag-rules.js"></script><script src="stock-baseline-model.js"></script><script src="manager-inventory.js"></script><script src="manager-backup.js"></script><script src="workforce-model.js"></script><script src="schedule-view.js?v=staff-colors-2"></script><script src="workforce.js?v=duplicate-next-week-2-tabs"></script><script src="supply-orders.js"></script><script src="manager-tabs.js"></script><script src="page-tools.js"></script><script src="promo-discount-control.js?v=1"></script><script src="inventory-add-item.js?v=1"></script>
 <script id="manager-subtabs-script">
 (()=>{const buttons=[...document.querySelectorAll('[data-employee-subtab]')],panels=[...document.querySelectorAll('[data-employee-panel]')];
-function showEmployeeTab(name){buttons.forEach(b=>{const on=b.dataset.employeeSubtab===name;b.classList.toggle('active',on);b.setAttribute('aria-selected',String(on));});panels.forEach(p=>p.hidden=p.dataset.employeePanel!==name);
-if(name==='attendance')document.getElementById('refreshAttendance')?.click();
-if(name==='schedule')window.dispatchEvent(new Event('resize'));
+function showEmployeeTab(name){
+buttons.forEach(b=>{const on=b.dataset.employeeSubtab===name;b.classList.toggle('active',on);b.setAttribute('aria-selected',String(on));});
+panels.forEach(p=>p.hidden=p.dataset.employeePanel!==name);
+if(name==='attendance'||name==='schedule'){
+  try{window.KBRWorkforce?.open?.()}catch(e){console.warn('Workforce init failed',e)}
+}
+if(name==='attendance'){
+  setTimeout(()=>document.getElementById('refreshAttendance')?.click(),0);
+}
+if(name==='schedule'){
+  setTimeout(()=>window.dispatchEvent(new Event('resize')),0);
+}
 }
 buttons.forEach(b=>b.addEventListener('click',()=>showEmployeeTab(b.dataset.employeeSubtab)));
 showEmployeeTab('info');

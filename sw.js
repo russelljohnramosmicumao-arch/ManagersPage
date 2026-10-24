@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-v20-add-inventory-item";
+const CACHE="kbr-manager-v21-employee-subtabs-fix";
 const ASSETS=["./inventory-add-item.js","./promo-discount-control.js","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",

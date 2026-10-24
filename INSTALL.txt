@@ -1,17 +1,29 @@
-Kape' Bar-Rio Manager — Promo Discount Control
+Kape' Bar-Rio Manager — Employees Sub-tabs Fix
+
+FIXED
+Attendance and Schedule Builder were moved under Employees, but the old Workforce module was only initialized by the former top-level tabs.
+
+This update makes:
+Employees > Attendance
+Employees > Schedule Builder
+explicitly initialize KBRWorkforce.
+
+RESULT
+- Employee Information remains the default sub-tab.
+- Attendance loads recorded hours correctly.
+- Schedule Builder loads the week and schedule controls correctly.
+- Duplicate to Next Week remains available.
+- Inventory & Supply and Promo Control changes are preserved.
 
 UPLOAD TO Kape-Barrio-Manager
 - index.html
-- workforce.js
+- inventory-add-item.js
 - promo-discount-control.js
+- workforce.js
 - sw.js
 
-LOCATION
-Sales Analysis > Promo Discount Control
-
-OPTIONS
-- Promo ON / OFF
-- 100% · Free drink
-- 50% off
-
-The setting is shared through Supabase and is used by all Ordering devices.
+After deployment:
+1. Open Manager while online.
+2. Press Update if shown.
+3. Fully close the Manager PWA.
+4. Reopen it.
