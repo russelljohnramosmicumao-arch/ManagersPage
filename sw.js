@@ -1,5 +1,5 @@
-const CACHE="kbr-manager-v18-tabs-reorganized";
-const ASSETS=["./page-tools.js","./page-tools.css",
+const CACHE="kbr-manager-v19-promo-control";
+const ASSETS=["./promo-discount-control.js","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
   "./app-update.js",

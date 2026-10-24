@@ -1,21 +1,17 @@
-Kape' Bar-Rio — Manager Supply Orders UI Update
+Kape' Bar-Rio Manager — Promo Discount Control
 
-CHANGES
-1. Removed the Pending Review tab from Manager.
-2. Supply Orders now opens with Awaiting Delivery selected by default.
-3. Only awaiting-delivery rows are shown by default.
-4. Supply category tiles are clickable.
-5. Clicking a tile opens the awaiting deliveries in that category, with a direct
-   "Received · add to stock" button for each order. You no longer need to keep
-   opening the large Order payments/delivery dropdown just to receive supplies.
-6. Bumped the Manager PWA cache.
-
-UPLOAD TO THE Kape-Barrio-Manager REPOSITORY
+UPLOAD TO Kape-Barrio-Manager
 - index.html
-- supply-orders.js
-- supply-orders.css
+- workforce.js
+- promo-discount-control.js
 - sw.js
 
-After GitHub Pages deploys:
-- Hard-refresh Manager, or fully close and reopen the installed Manager PWA.
-- If an old page remains cached, reopen it online once and refresh again.
+LOCATION
+Sales Analysis > Promo Discount Control
+
+OPTIONS
+- Promo ON / OFF
+- 100% · Free drink
+- 50% off
+
+The setting is shared through Supabase and is used by all Ordering devices.
