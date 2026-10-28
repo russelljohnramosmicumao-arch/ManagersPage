@@ -524,9 +524,7 @@ function earliestHourMinute(date,service){
       : {hour:15,minute:30};
   }
 
-  return service==='delivery'
-    ? {hour:11,minute:30}
-    : {hour:11,minute:0};
+  return {hour:11,minute:30};
 }
 
 function latestHourMinute(service){
@@ -561,10 +559,8 @@ function defaultScheduledTime(){
 
     candidate=new Date(candidate);
     candidate.setUTCDate(candidate.getUTCDate()+1);
-    {
-      const nextEarliest=earliestHourMinute(candidate,service);
-      candidate.setUTCHours(nextEarliest.hour,nextEarliest.minute,0,0);
-    }
+    const nextEarliest=earliestHourMinute(candidate,service);
+    candidate.setUTCHours(nextEarliest.hour,nextEarliest.minute,0,0);
   }
   return '';
 }
@@ -578,8 +574,8 @@ function scheduledValueIsValid(value,service){
   const selected=new Date(Date.UTC(+m[1],+m[2]-1,+m[3],+m[4],+m[5]));
   const now=manilaPseudoDate();
 
-  if(selected.getTime()<=now.getTime()+10*60000){
-    return {ok:false,message:'Please schedule at least 10 minutes from now.'};
+  if(selected.getTime()<now.getTime()+30*60000){
+    return {ok:false,message:'Please choose a time at least 30 minutes from now.'};
   }
   if(selected.getTime()>now.getTime()+7*24*60*60000){
     return {ok:false,message:'You can schedule up to 7 days ahead.'};
@@ -592,9 +588,10 @@ function scheduledValueIsValid(value,service){
   const latestMins=latest.hour*60+latest.minute;
 
   if(mins<earliestMins||mins>latestMins){
-    const earliestLabel=service==='delivery'
-      ? (earliest.hour===16?'4:00 PM':'11:30 AM')
-      : (earliest.hour===15&&earliest.minute===30?'3:30 PM':'11:00 AM');
+    const weekend=selected.getUTCDay()===0||selected.getUTCDay()===6;
+    const earliestLabel=weekend
+      ? (service==='delivery'?'4:00 PM':'3:30 PM')
+      : '11:30 AM';
     return {
       ok:false,
       message:service==='delivery'
@@ -607,40 +604,26 @@ function scheduledValueIsValid(value,service){
 }
 
 function updateTimingFields(){
-  const asap=document.querySelector('input[name="orderTiming"][value="asap"]');
-  const later=document.querySelector('input[name="orderTiming"][value="later"]');
-  const field=$('scheduledTimeField');
   const input=$('scheduledTime');
-
-  if(!asap||!later||!field||!input)return;
-
-  if(!currentShopOpen){
-    asap.disabled=true;
-    later.checked=true;
-  }else{
-    asap.disabled=false;
-  }
-
-  const isLater=later.checked;
-  field.classList.toggle('hidden',!isLater);
+  if(!input)return;
 
   const minDate=manilaPseudoDate();
-  minDate.setUTCMinutes(minDate.getUTCMinutes()+10);
+  minDate.setUTCMinutes(minDate.getUTCMinutes()+30);
   input.min=formatDateTimeLocal(minDate);
 
   const maxDate=manilaPseudoDate();
   maxDate.setUTCDate(maxDate.getUTCDate()+7);
   input.max=formatDateTimeLocal(maxDate);
 
-  if(isLater&&!input.value){
+  if(!input.value || !closedPreorderConfigured){
     input.value=defaultScheduledTime();
   }
 
   const service=document.querySelector('input[name="serviceType"]:checked')?.value||'pickup';
   if($('scheduledTimeHelp')){
     $('scheduledTimeHelp').textContent=service==='delivery'
-      ? 'Delivery: 11:30 AM weekdays / 4:00 PM weekends, until 10:30 PM.'
-      : 'Pickup: 11:00 AM weekdays / 3:30 PM weekends, until 10:45 PM.';
+      ? 'Earliest: 30 minutes from now. Delivery closes 10:30 PM.'
+      : 'Earliest: 30 minutes from now. Pickup closes 10:45 PM.';
   }
 }
 
@@ -704,7 +687,7 @@ function populateClosedPreorderTimes(){
     const slot=new Date(date);
     slot.setUTCHours(hour,minute,0,0);
 
-    if(sameDay&&slot.getTime()<=now.getTime()+10*60000)continue;
+    if(sameDay&&slot.getTime()<now.getTime()+30*60000)continue;
 
     const h12=hour%12||12;
     const ampm=hour<12?'AM':'PM';
@@ -716,9 +699,10 @@ function populateClosedPreorderTimes(){
     ? options.join('')
     : '<option value="">No remaining times for this date</option>';
 
-  const earliestLabel=closedPreorderService==='delivery'
-    ? (earliest.hour===16?'4:00 PM':'11:30 AM')
-    : (earliest.hour===15&&earliest.minute===30?'3:30 PM':'11:00 AM');
+  const weekend=date.getUTCDay()===0||date.getUTCDay()===6;
+  const earliestLabel=weekend
+    ? (closedPreorderService==='delivery'?'4:00 PM':'3:30 PM')
+    : '11:30 AM';
   $('closedPreorderTimeHelp').textContent=closedPreorderService==='delivery'
     ? `Delivery times: ${earliestLabel}–10:30 PM`
     : `Pickup times: ${earliestLabel}–10:45 PM`;
@@ -744,9 +728,6 @@ function finishClosedPreorder(){
 
   const serviceRadio=document.querySelector(`input[name="serviceType"][value="${closedPreorderService}"]`);
   if(serviceRadio)serviceRadio.checked=true;
-
-  const later=document.querySelector('input[name="orderTiming"][value="later"]');
-  if(later)later.checked=true;
 
   if($('scheduledTime'))$('scheduledTime').value=value;
 
@@ -809,25 +790,10 @@ async function tryClaimPendingGuestOrder(){
 
 async function placeOrder(){
   const service=document.querySelector('input[name="serviceType"]:checked')?.value||'pickup';
-  const timing=document.querySelector('input[name="orderTiming"]:checked')?.value||'asap';
 
-  if(!currentShopOpen&&timing!=='later'){
-    $('checkoutDialog')?.close();
-    $('closedPreorderGate')?.classList.remove('hidden');
-    closedPreorderShow('intro');
-    return toast('Sorry, we’re closed right now. Choose Order for Later first.');
-  }
-
-  if(timing==='asap'&&service==='delivery'&&deliveryCutoffPassed()){
-    return toast('Last delivery order is 10:30 PM. Please choose Order for Later or Pickup.');
-  }
-
-  let requested=null;
-  if(timing==='later'){
-    const check=scheduledValueIsValid($('scheduledTime')?.value||'',service);
-    if(!check.ok)return toast(check.message);
-    requested=check.iso;
-  }
+  const check=scheduledValueIsValid($('scheduledTime')?.value||'',service);
+  if(!check.ok)return toast(check.message);
+  const requested=check.iso;
 
   const customerName=$('customerName').value.trim();
   const contact=$('contactNumber').value.trim();
@@ -1243,6 +1209,7 @@ async function loadMenu(){
     $('shopStatus').className=`shop-status ${currentShopOpen?'open':'closed'}`;
 
     if(currentShopOpen){
+      closedPreorderConfigured=false;
       $('closedPreorderGate')?.classList.add('hidden');
     }else if(!closedPreorderConfigured){
       $('closedPreorderGate')?.classList.remove('hidden');
@@ -1375,8 +1342,10 @@ $('checkoutButton')?.addEventListener('click',()=>{
 $('addToCartButton')?.addEventListener('click',e=>{e.preventDefault();addSelected()});
 $('qtyMinus')?.addEventListener('click',()=>{$('qtyInput').value=Math.max(1,Number($('qtyInput').value||1)-1)});
 $('qtyPlus')?.addEventListener('click',()=>{$('qtyInput').value=Math.min(20,Number($('qtyInput').value||1)+1)});
-document.querySelectorAll('input[name="serviceType"]').forEach(el=>el.addEventListener('change',updateServiceFields));
-document.querySelectorAll('input[name="orderTiming"]').forEach(el=>el.addEventListener('change',updateTimingFields));
+document.querySelectorAll('input[name="serviceType"]').forEach(el=>el.addEventListener('change',()=>{
+  if(!closedPreorderConfigured&&$('scheduledTime'))$('scheduledTime').value='';
+  updateServiceFields();
+}));
 $('scheduledTime')?.addEventListener('change',updateTimingFields);
 $('deliveryBarangay')?.addEventListener('change',updateDeliveryFee);
 $('cashPaymentButton')?.addEventListener('click',()=>setPayment('cash'));

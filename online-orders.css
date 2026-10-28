@@ -1047,3 +1047,15 @@ button{cursor:pointer}
   padding:12px 14px;
   font-weight:950;
 }
+
+/* v5.3 checkout time simplification */
+.closed-hours-below-button{
+  margin-top:14px;
+  margin-bottom:0;
+}
+.order-timing-section .payment-title{
+  margin-bottom:8px;
+}
+#scheduledTimeField{
+  margin-top:0;
+}
