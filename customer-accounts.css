@@ -1,0 +1,11 @@
+
+.customer-account-tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:12px 0 8px}
+.customer-account-tools input{flex:1;min-width:230px;padding:11px 12px;border:1px solid #d9c7b5;border-radius:10px;background:#fff;font:inherit;box-sizing:border-box}
+.customer-account-status{min-height:22px;color:#756456;font-weight:700}.customer-account-status.error{color:#a52d2d}
+.customer-accounts-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:14px;margin-top:14px}
+.customer-account-card{border:1px solid #decdb9;border-radius:16px;background:#fffaf3;padding:16px;display:grid;gap:12px}
+.customer-account-card h3{margin:0;color:#5b3824}.customer-account-meta{display:grid;gap:7px;font-size:14px}.customer-account-meta div{display:grid;grid-template-columns:110px 1fr;gap:8px}.customer-account-meta strong{color:#72513b}.customer-account-meta span{overflow-wrap:anywhere}
+.customer-account-badges{display:flex;gap:7px;flex-wrap:wrap}.customer-account-badge{display:inline-flex;align-items:center;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:800;background:#ede7df;color:#6b5b50}.customer-account-badge.on{background:#dcfce7;color:#166534}.customer-account-badge.google{background:#eaf2ff;color:#24508d}.customer-account-points{display:flex;gap:10px;flex-wrap:wrap}.customer-account-points span{border-radius:10px;background:#fff;padding:8px 10px;border:1px solid #eadbc9;font-weight:800;color:#5b3824}
+.customer-account-actions{display:flex;gap:8px;flex-wrap:wrap}.customer-account-actions button{flex:1}.customer-account-actions button[disabled]{opacity:.5;cursor:not-allowed}
+.customer-reset-note{font-size:12px;color:#756456;margin:0}.temporary-password-box{font:800 21px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:1px;padding:12px;border:2px dashed #7c4b2a;border-radius:12px;background:#fff8ef;text-align:center;word-break:break-all}.temporary-password-warning{font-size:13px;color:#8a4d17}
+@media(max-width:600px){.customer-accounts-list{grid-template-columns:1fr}.customer-account-meta div{grid-template-columns:1fr}.customer-account-actions{display:grid}.customer-account-actions button{width:100%}}

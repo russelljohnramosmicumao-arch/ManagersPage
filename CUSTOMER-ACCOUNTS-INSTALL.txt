@@ -1,0 +1,18 @@
+Kape Bar-Rio Manager — Customer Accounts v1
+
+Upload/replace these files in the ManagersPage repo:
+- index.html
+- manager-tabs.js
+- customer-accounts.js (new)
+- customer-accounts.css (new)
+
+The protected Supabase Edge Function kbr-customer-accounts is already deployed.
+
+Features:
+- Customer Accounts manager tab
+- Search by name, phone, or email
+- Shows Phone/Google connection state
+- Shows phone/email, points, lifetime points, joined date, last sign-in, order count and last order
+- Reset KBR phone password generates a temporary password
+- Old passwords are never visible/recoverable
+- Google-only accounts must reset their Google password through Google
