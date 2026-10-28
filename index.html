@@ -81,7 +81,18 @@
     <button type="button" id="saveNewInventoryItem">Add to inventory</button>
   </div>
   <p id="addInventoryItemStatus" class="add-inventory-status" role="status"></p>
-</div><div id="inventoryComparison">Connecting…</div><h2>Stock changes from orders</h2><p>Recent orders, ingredients used, and recorded deductions. Cancelled order movements remain in history and are labelled as restored.</p><div id="inventoryActivity">Connecting…</div></div><div id="inventorySupplyOrders" hidden><div id="managerSupplyOrders"></div></div><div id="inventoryPredictions" hidden></div>
+</div><div id="inventoryComparison">Connecting…</div>
+<div id="menuAvailabilityManager" style="margin-top:24px">
+  <h2>Menu Availability</h2>
+  <p>Hide sold-out items from Ordering and Online Orders. Turn them back on when stock is available.</p>
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0">
+    <input id="menuAvailabilitySearch" type="search" placeholder="Search menu item…" style="min-width:220px;flex:1">
+    <select id="menuAvailabilityCategory"></select>
+    <button id="refreshMenuAvailability">Refresh</button>
+  </div>
+  <div id="menuAvailabilityList">Connecting…</div>
+</div>
+<h2>Stock changes from orders</h2><p>Recent orders, ingredients used, and recorded deductions. Cancelled order movements remain in history and are labelled as restored.</p><div id="inventoryActivity">Connecting…</div></div><div id="inventorySupplyOrders" hidden><div id="managerSupplyOrders"></div></div><div id="inventoryPredictions" hidden></div>
 </section><section class="manager-panel" id="panel-sales" role="tabpanel" aria-labelledby="tab-sales" hidden><h2>Sales Analysis</h2>
 <div class="promo-control-card">
   <div>
@@ -119,4 +130,4 @@ buttons.forEach(b=>b.addEventListener('click',()=>showEmployeeTab(b.dataset.empl
 showEmployeeTab('info');
 })();
 </script>
-</body></html>
+<script src="menu-availability-control.js?v=1"></script></body></html>
