@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#6b3f24">
+  <title>Kape Bar-Rio Online Orders</title>
+  <link rel="manifest" href="online-manifest.webmanifest?v=51">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="stylesheet" href="online-orders.css?v=51">
+</head>
+<body>
+  <div id="closedPreorderGate" class="closed-preorder-gate hidden">
+    <div class="closed-preorder-card">
+      <div id="closedPreorderIntro">
+        <div class="closed-shop-icon">☕</div>
+        <div class="eyebrow">Kape Bar-Rio</div>
+        <h1>Sorry, we’re closed right now.</h1>
+        <p>You can still place your order now and schedule it for when we’re open.</p>
+        <div class="closed-hours">
+          <span><strong>Mon–Fri Pickup</strong> 11:00 AM–10:45 PM</span>
+          <span><strong>Mon–Fri Delivery</strong> 11:30 AM–10:30 PM</span>
+          <span><strong>Sat–Sun Pickup</strong> 3:30 PM–10:45 PM</span>
+          <span><strong>Sat–Sun Delivery</strong> 4:00 PM–10:30 PM</span>
+        </div>
+        <button id="closedOrderLaterButton" class="primary-button" type="button">Order for Later</button>
+      </div>
+
+      <div id="closedPreorderServiceStep" class="hidden">
+        <button id="closedPreorderBackIntro" class="auth-back-button" type="button">← Back</button>
+        <div class="eyebrow">Order for Later</div>
+        <h2>How will you receive your order?</h2>
+        <div class="closed-service-grid">
+          <button id="closedPickupButton" class="entry-choice-button" type="button">
+            <span class="entry-choice-icon">🛍️</span>
+            <span><strong>Pickup</strong><small>Pick up at Kape Bar-Rio</small></span>
+          </button>
+          <button id="closedDeliveryButton" class="entry-choice-button" type="button">
+            <span class="entry-choice-icon">🛵</span>
+            <span><strong>Delivery</strong><small>Deliver to an available San Quintin area</small></span>
+          </button>
+        </div>
+      </div>
+
+      <div id="closedPreorderTimeStep" class="hidden">
+        <button id="closedPreorderBackService" class="auth-back-button" type="button">← Back</button>
+        <div class="eyebrow">Order for Later</div>
+        <h2 id="closedPreorderTimeTitle">Choose your pickup time</h2>
+
+        <label class="field">
+          <span>Date</span>
+          <input id="closedPreorderDate" type="date">
+        </label>
+
+        <label class="field">
+          <span>Time</span>
+          <select id="closedPreorderTime"></select>
+          <small id="closedPreorderTimeHelp"></small>
+        </label>
+
+        <button id="closedPreorderContinue" class="primary-button" type="button">Continue to Menu</button>
+      </div>
+    </div>
+  </div>
+<div class="eyebrow">Kape Bar-Rio</div>
+      <h1>Shop Closed</h1>
+      <p>Online ordering is available only while the shop is open in our system.</p>
+
+      <div class="hours-card">
+        <div><strong>Monday – Friday</strong><span>11:00 AM – 11:00 PM</span></div>
+        <div><strong>Saturday – Sunday</strong><span>3:00 PM – 11:00 PM</span></div>
+      </div>
+
+      <button id="checkShopStatusButton" class="primary-button" type="button">Check Again</button>
+    </div>
+  </div>
+  <header class="online-topbar">
+    <div>
+      <div class="eyebrow">Kape Bar-Rio</div>
+      <h1>Order Online</h1>
+      <p id="shopStatus" class="shop-status">Loading live menu…</p>
+    </div>
+    <div class="header-actions">
+      <button id="customerAccountButton" class="account-icon-button" type="button" aria-label="My Account" title="My Account">
+        👤
+      </button>
+      <button id="pointsButton" class="points-button" type="button" aria-label="KBR Points" title="KBR Points">
+        <span id="headerPoints">0</span> pts
+      </button>
+      <button id="cartButton" class="cart-button" type="button">
+        Cart <span id="cartCount">0</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="hours-notice" id="hoursNotice">
+    <strong>Online Ordering Hours</strong>
+    <span>Mon–Fri: 11:00 AM–11:00 PM · Sat–Sun: 3:00 PM–11:00 PM</span>
+    <small>Last delivery order: 10:30 PM. If we are closed, you can still place an Order for Later.</small>
+  </div>
+
+
+  <main class="page-shell">
+    <nav id="categoryBar" class="category-bar" aria-label="Menu categories"></nav>
+
+    <section class="menu-section">
+      <div class="menu-heading">
+        <div>
+          <div class="eyebrow">Menu</div>
+          <h2 id="categoryTitle">Frappe &amp; Smoothies</h2>
+        </div>
+</div>
+
+      <div id="menuGrid" class="menu-grid"></div>
+      <div id="emptyState" class="empty-state hidden">No matching items found.</div>
+    </section>
+  </main>
+
+  <aside id="cartDrawer" class="drawer" aria-hidden="true">
+    <div class="drawer-backdrop" data-close-cart></div>
+    <section class="drawer-panel">
+      <div class="drawer-header">
+        <div>
+          <div class="eyebrow">Your order</div>
+          <h2>Cart</h2>
+        </div>
+        <button type="button" class="icon-button" data-close-cart aria-label="Close">×</button>
+      </div>
+
+      <div id="cartItems" class="cart-items"></div>
+
+      <div class="cart-footer">
+        <div class="total-row">
+          <span>Subtotal</span>
+          <strong id="cartTotal">₱0</strong>
+        </div>
+        <button id="checkoutButton" class="primary-button" type="button">Continue</button>
+      </div>
+    </section>
+  </aside>
+
+  <dialog id="itemDialog" class="modal">
+    <form method="dialog" class="modal-card" id="itemForm">
+      <button class="modal-close" value="cancel" aria-label="Close">×</button>
+      <img id="itemImage" class="item-image" alt="">
+      <div id="itemCategory" class="eyebrow"></div>
+      <h2 id="itemName"></h2>
+
+      <div id="typeOptions" class="option-group hidden"></div>
+      <div id="sizeOptions" class="option-group"></div>
+
+      <div id="sweetnessField" class="field hidden">
+        <span>Sweetness</span>
+        <div class="sweetness-row sweetness-row-3" role="group" aria-label="Sweetness level">
+          <button type="button" class="sweetness-option" data-sweetness="Less Sugar">Less Sugar</button>
+          <button type="button" class="sweetness-option active" data-sweetness="Normal Sugar">Normal Sugar</button>
+          <button type="button" class="sweetness-option" data-sweetness="Diabetic Level">Diabetic Level</button>
+        </div>
+      </div>
+
+      <label id="flavorField" class="field hidden">
+        <span>Flavor</span>
+        <input id="flavorInput" type="text" maxlength="60" placeholder="Flavor">
+      </label>
+
+      <label class="field">
+        <span>Quantity</span>
+        <div class="qty-control">
+          <button id="qtyMinus" type="button">−</button>
+          <input id="qtyInput" type="number" min="1" max="20" value="1">
+          <button id="qtyPlus" type="button">+</button>
+        </div>
+      </label>
+
+      <button id="addToCartButton" class="primary-button" value="default">Add to cart</button>
+    </form>
+  </dialog>
+
+  <dialog id="checkoutDialog" class="modal">
+    <form method="dialog" class="modal-card checkout-card" id="checkoutForm">
+      <button class="modal-close" value="cancel" aria-label="Close">×</button>
+
+      <div class="eyebrow">Order details</div>
+      <h2>How will you get your order?</h2>
+
+      <div class="service-choice">
+        <label>
+          <input type="radio" name="serviceType" value="pickup" checked>
+          <span>
+            <strong>Pickup</strong>
+            <small>Pick up your order at Kape Bar-Rio.</small>
+          </span>
+        </label>
+        <label>
+          <input type="radio" name="serviceType" value="delivery">
+          <span>
+            <strong>Delivery</strong>
+            <small>Have your order delivered to your address.</small>
+          </span>
+        </label>
+      </div>
+
+      <section class="order-timing-section">
+        <div class="payment-title">When do you want your order?</div>
+
+                <div class="timing-choice">
+          <label>
+            <input type="radio" name="orderTiming" value="asap" checked>
+            <span>
+              <strong>ASAP</strong>
+              <small>Prepare my order as soon as possible.</small>
+            </span>
+          </label>
+
+          <label>
+            <input type="radio" name="orderTiming" value="later">
+            <span>
+              <strong>Order for Later</strong>
+              <small>Choose a pickup or delivery time.</small>
+            </span>
+          </label>
+        </div>
+
+        <label id="scheduledTimeField" class="field hidden">
+          <span>Choose date and time</span>
+          <input id="scheduledTime" type="datetime-local" step="900">
+          <small id="scheduledTimeHelp">Choose a time during Kape Bar-Rio opening hours.</small>
+        </label>
+      </section>
+
+      <label class="field">
+        <span>Customer name</span>
+        <input id="customerName" type="text" maxlength="80" autocomplete="name" required placeholder="Your name">
+      </label>
+
+      <label class="field">
+        <span>Contact number</span>
+        <input id="contactNumber" type="tel" inputmode="tel" maxlength="20" autocomplete="tel" required placeholder="09XX XXX XXXX">
+      </label>
+
+      <div id="deliveryAddressField" class="hidden">
+        <label class="field">
+          <span>Barangay — San Quintin</span>
+          <select id="deliveryBarangay">
+            <option value="">Select barangay</option>
+          </select>
+        </label>
+
+        <div id="deliveryFeePreview" class="delivery-fee-preview hidden"></div>
+
+        <label class="field">
+          <span>Complete delivery address</span>
+          <textarea id="deliveryAddress" rows="2" maxlength="250" placeholder="House/Building, street, landmark"></textarea>
+        </label>
+      </div>
+
+      <p id="deliveryEta" class="notice hidden">
+        Delivery usually takes around 15–30 minutes. Food orders may take longer because some items still need to be cooked.
+      </p>
+
+      <label class="field">
+        <span id="notesLabel">Order notes (optional)</span>
+        <textarea id="orderNotes" rows="2" maxlength="300" placeholder="Special instructions, landmark, etc."></textarea>
+      </label>
+
+      <div class="total-row checkout-total">
+        <span>Menu subtotal</span>
+        <strong id="checkoutSubtotal">₱0</strong>
+      </div>
+
+      <div id="deliveryFeeRow" class="total-row delivery-total-row hidden">
+        <span>Delivery fee</span>
+        <strong id="deliveryFeeAmount">₱0</strong>
+      </div>
+
+      <div class="total-row grand-total-row">
+        <span>Total</span>
+        <strong id="checkoutTotal">₱0</strong>
+      </div>
+
+      <section class="payment-section">
+        <div class="payment-title">Payment</div>
+
+        <div class="payment-buttons">
+          <button type="button" id="cashPaymentButton" class="payment-choice active" data-payment="cash">Cash</button>
+          <button type="button" id="gcashPaymentButton" class="payment-choice gcash" data-payment="gcash">GCash</button>
+        </div>
+
+        <label id="cashAmountField" class="field payment-detail">
+          <span>How much will you pay?</span>
+          <input id="cashAmount" type="number" inputmode="decimal" min="0" step="1" placeholder="Amount of cash">
+          <small>So we can prepare your sukli/change.</small>
+        </label>
+
+        <div id="gcashDetails" class="gcash-details hidden">
+          <div class="gcash-number-label">Send GCash payment to</div>
+          <div id="gcashNumber" class="gcash-number">09XX XXX XXXX</div>
+          <p>Please send your GCash receipt to Kape Bar-Rio after payment.</p>
+        </div>
+      </section>
+
+      <button id="placeOrderButton" class="primary-button" value="default">Send order</button>
+    </form>
+  </dialog>
+
+
+  <dialog id="accountDialog" class="modal">
+    <div class="modal-card account-card">
+      <button class="modal-close" id="accountClose" type="button" aria-label="Close">×</button>
+
+      <div id="guestAccountView">
+        <div id="accountEntryChoice">
+          <div class="eyebrow">Welcome to Kape Bar-Rio</div>
+          <h2>How would you like to order?</h2>
+          <p class="account-copy">You can order right away as a guest, or create an account so your details, points and order history are saved.</p>
+
+          <button id="continueGuestButton" class="entry-choice-button guest-entry-button" type="button">
+            <span class="entry-choice-icon">🛍️</span>
+            <span>
+              <strong>Continue as Guest</strong>
+              <small>Order without creating an account</small>
+            </span>
+          </button>
+
+          <button id="createPointsAccountButton" class="entry-choice-button points-entry-button" type="button">
+            <span class="entry-choice-icon">⭐</span>
+            <span>
+              <strong>Create Account for Points</strong>
+              <small>Save details, collect points and view orders</small>
+            </span>
+          </button>
+        </div>
+
+        <div id="accountRegisterChoice" class="hidden">
+          <button id="backToEntryChoiceButton" class="auth-back-button" type="button">← Back</button>
+
+          <div class="eyebrow">KBR Rewards Account</div>
+          <h2>Create your account</h2>
+          <p class="account-copy">Choose how you want to register.</p>
+
+          <button id="phoneRegisterOpenButton" class="entry-choice-button phone-entry-button" type="button">
+            <span class="entry-choice-icon">📱</span>
+            <span>
+              <strong>Register thru Phone Number</strong>
+              <small>Use your mobile number and password</small>
+            </span>
+          </button>
+
+          <button id="googleSignInButton" class="entry-choice-button google-entry-button" type="button">
+            <span class="google-mark">G</span>
+            <span>
+              <strong>Register thru Google Account</strong>
+              <small>Use your Google account to sign in</small>
+            </span>
+          </button>
+
+          <button id="signInOpenButton" class="sign-in-green-button" type="button">
+            Sign In
+          </button>
+        </div>
+      </div>
+
+      <div id="signedInAccountView" class="hidden">
+        <div class="customer-profile">
+          <img id="customerAvatar" class="customer-avatar hidden" alt="">
+          <div>
+            <div class="eyebrow">My Account</div>
+            <h2 id="customerDisplayName">Customer</h2>
+          </div>
+        </div>
+
+        <div class="points-card">
+          <span>Your KBR Points</span>
+          <strong id="customerPoints">0</strong>
+        </div>
+
+        <p id="customerEmail" class="account-email"></p>
+
+        <button id="savedDetailsButton" class="saved-details-card saved-details-button" type="button">
+          <div class="saved-details-title">Saved details</div>
+          <div id="savedCustomerDetails" class="saved-details-text">No saved checkout details yet.</div>
+          <div class="saved-details-edit-hint">Tap to view or edit</div>
+        </button>
+
+        <div class="order-history-section">
+          <div class="saved-details-title">Recent online orders</div>
+          <div id="customerOrderHistory" class="customer-order-history">
+            <div class="empty-history">No online orders yet.</div>
+          </div>
+        </div>
+
+        <p class="points-note">Your name, phone number and delivery address are saved after you place an order while signed in. Points are added after your order is paid and completed.</p>
+
+        <button id="connectGoogleButton" class="google-signin-button account-link-google hidden" type="button">
+          <span class="google-mark">G</span>
+          Connect Google Account
+        </button>
+
+        <button id="customerSignOutButton" class="guest-button" type="button">Sign out</button>
+      </div>
+    </div>
+  </dialog>
+
+
+
+
+  <dialog id="signInChoiceDialog" class="modal">
+    <div class="modal-card">
+      <button class="modal-close" id="signInChoiceClose" type="button" aria-label="Close">×</button>
+      <div class="eyebrow">KBR Account</div>
+      <h2>Sign In</h2>
+      <p class="account-copy">Choose how you want to sign in.</p>
+
+      <button id="signInGoogleButton" class="entry-choice-button google-entry-button" type="button">
+        <span class="google-mark">G</span>
+        <span>
+          <strong>Sign in with Google</strong>
+          <small>Use your connected Google account</small>
+        </span>
+      </button>
+
+      <button id="signInPhoneButton" class="entry-choice-button phone-entry-button" type="button">
+        <span class="entry-choice-icon">📱</span>
+        <span>
+          <strong>Sign in with Phone Number</strong>
+          <small>Use your mobile number and password</small>
+        </span>
+      </button>
+    </div>
+  </dialog>
+
+  <dialog id="phoneAuthDialog" class="modal">
+    <div class="modal-card">
+      <button class="modal-close" id="phoneAuthClose" type="button" aria-label="Close">×</button>
+
+      <div id="phoneLoginView">
+        <div class="eyebrow">KBR Account</div>
+        <h2>Sign in with Phone</h2>
+
+        <label class="field">
+          <span>Phone number</span>
+          <input id="phoneLoginNumber" type="tel" inputmode="tel" autocomplete="tel" placeholder="09XX XXX XXXX">
+        </label>
+
+        <label class="field">
+          <span>Password</span>
+          <input id="phoneLoginPassword" type="password" autocomplete="current-password" placeholder="Password">
+        </label>
+
+        <button id="phoneLoginButton" class="primary-button" type="button">Sign in</button>
+        <button id="showPhoneRegisterButton" class="auth-switch-button" type="button">Create an account instead</button>
+      </div>
+
+      <div id="phoneRegisterView" class="hidden">
+        <div class="eyebrow">KBR Account</div>
+        <h2>Create Account</h2>
+
+        <label class="field">
+          <span>Name</span>
+          <input id="phoneRegisterName" type="text" maxlength="80" autocomplete="name" placeholder="Your name">
+        </label>
+
+        <label class="field">
+          <span>Phone number</span>
+          <input id="phoneRegisterNumber" type="tel" inputmode="tel" autocomplete="tel" placeholder="09XX XXX XXXX">
+        </label>
+
+        <label class="field">
+          <span>Password</span>
+          <input id="phoneRegisterPassword" type="password" autocomplete="new-password" minlength="6" placeholder="At least 6 characters">
+        </label>
+
+        <label class="field">
+          <span>Confirm password</span>
+          <input id="phoneRegisterConfirm" type="password" autocomplete="new-password" minlength="6" placeholder="Repeat password">
+        </label>
+
+        <button id="phoneRegisterButton" class="primary-button" type="button">Create KBR Account</button>
+        <button id="showPhoneLoginButton" class="auth-switch-button" type="button">I already have an account</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="savedDetailsDialog" class="modal">
+    <form method="dialog" class="modal-card" id="savedDetailsForm">
+      <button class="modal-close" value="cancel" aria-label="Close">×</button>
+      <div class="eyebrow">My Account</div>
+      <h2>Saved details</h2>
+
+      <label class="field">
+        <span>Name</span>
+        <input id="profileName" type="text" maxlength="80" placeholder="Your name">
+      </label>
+
+      <label class="field">
+        <span>Phone number</span>
+        <input id="profilePhone" type="tel" inputmode="tel" maxlength="20" placeholder="09XX XXX XXXX">
+      </label>
+
+      <label class="field">
+        <span>Barangay</span>
+        <select id="profileBarangay">
+          <option value="">Select barangay</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span>Location details</span>
+        <textarea id="profileAddress" rows="3" maxlength="250" placeholder="House/Building, street, landmark"></textarea>
+      </label>
+
+      <button id="saveProfileDetailsButton" class="primary-button" value="default">Save details</button>
+    </form>
+  </dialog>
+
+  <dialog id="successDialog" class="modal">
+    <div class="modal-card success-card">
+      <div class="success-mark">✓</div>
+      <div class="eyebrow">Order sent</div>
+      <h2 id="successOrderNo">Online #500001</h2>
+      <p id="successText">Your order has been sent to Kape Bar-Rio.</p>
+
+      <div id="guestClaimOffer" class="guest-claim-offer hidden">
+        <strong>Want KBR Points for this order?</strong>
+        <span>Create an account now and we’ll attach this order to it.</span>
+        <button id="claimCreateAccountButton" class="points-entry-button claim-account-button" type="button">
+          ⭐ Create Account & Get Points
+        </button>
+        <button id="claimSignInButton" class="sign-in-green-button claim-signin-button" type="button">
+          Sign In
+        </button>
+      </div>
+
+      <button id="successClose" class="primary-button" type="button">Back to menu</button>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast" role="status"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="online-orders.js?v=51" defer></script>
+</body>
+</html>

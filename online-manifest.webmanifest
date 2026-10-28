@@ -1,0 +1,10 @@
+{
+  "name": "Kape Bar-Rio Online Ordering",
+  "short_name": "KBR Online",
+  "start_url": "./online.html",
+  "scope": "./online.html",
+  "display": "standalone",
+  "background_color": "#f6efe7",
+  "theme_color": "#6b3f24",
+  "description": "Order online from Kape Bar-Rio and earn KBR Points."
+}

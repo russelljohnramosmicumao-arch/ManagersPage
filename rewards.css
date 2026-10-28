@@ -1,0 +1,96 @@
+
+:root{
+  --bg:#f6efe7;
+  --card:#fffdf9;
+  --ink:#2c1a11;
+  --muted:#7c685b;
+  --brown:#6b3f24;
+  --brown2:#9a6848;
+  --line:#eaded3;
+  --shadow:0 16px 40px rgba(76,45,26,.12);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+}
+button{font:inherit;cursor:pointer}
+.rewards-topbar{
+  position:sticky;top:0;z-index:10;
+  display:flex;align-items:center;gap:12px;
+  padding:14px 18px;
+  background:rgba(246,239,231,.95);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+}
+.rewards-topbar h1{margin:1px 0;font-size:1.4rem}
+.back-button{
+  width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:#fff;color:var(--brown);
+  font-size:1.35rem;font-weight:900;
+}
+.eyebrow{
+  text-transform:uppercase;letter-spacing:.14em;
+  font-size:.7rem;font-weight:900;color:var(--brown2);
+}
+.eyebrow.light{color:#ead9cb}
+.rewards-shell{max-width:1100px;margin:auto;padding:18px}
+.balance-card{
+  display:flex;justify-content:space-between;align-items:center;gap:18px;
+  padding:22px;border-radius:24px;
+  background:linear-gradient(135deg,#5d351f,#9a6443);
+  color:#fff;box-shadow:var(--shadow);
+}
+.points-balance{font-size:2.6rem;font-weight:950;line-height:1}
+.reward-value-box{text-align:right}
+.reward-value-box span{display:block;font-size:.78rem;opacity:.85}
+.reward-value-box strong{display:block;font-size:1.55rem;margin-top:3px}
+.rule-note{
+  margin:14px 0 22px;
+  padding:11px 13px;border-radius:12px;
+  background:#fff;border:1px solid var(--line);
+  color:var(--muted);font-size:.84rem;line-height:1.45;
+}
+.section-heading h2{margin:.25rem 0 14px;font-size:1.3rem}
+.reward-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(170px,1fr));
+  gap:12px;
+}
+.reward-card{
+  overflow:hidden;background:var(--card);border:1px solid var(--line);
+  border-radius:18px;box-shadow:0 7px 20px rgba(76,45,26,.06);
+}
+.reward-card img{
+  width:100%;aspect-ratio:1/1;object-fit:contain;background:#fff;
+}
+.reward-card-body{padding:10px}
+.reward-card h3{margin:0;font-size:.9rem;line-height:1.2}
+.reward-meta{margin-top:5px;color:var(--muted);font-size:.76rem}
+.reward-price{margin-top:7px;font-weight:900;color:var(--brown)}
+.eligible-badge{
+  display:inline-block;margin-top:7px;padding:4px 7px;border-radius:999px;
+  background:#e9f4eb;color:#267148;font-size:.68rem;font-weight:900;
+}
+.empty-state{
+  padding:32px;text-align:center;color:var(--muted);
+  background:#fff;border:1px solid var(--line);border-radius:16px;
+}
+.hidden{display:none!important}
+.toast{
+  position:fixed;left:50%;bottom:20px;z-index:30;
+  transform:translate(-50%,15px);opacity:0;
+  background:#2d2019;color:#fff;padding:10px 14px;border-radius:999px;
+  transition:.2s;pointer-events:none;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:640px){
+  .rewards-shell{padding:13px}
+  .balance-card{padding:18px}
+  .points-balance{font-size:2.2rem}
+  .reward-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .reward-card-body{padding:8px}
+  .reward-card h3{font-size:.8rem}
+}
