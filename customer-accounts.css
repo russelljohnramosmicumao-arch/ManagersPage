@@ -9,3 +9,11 @@
 .customer-account-actions{display:flex;gap:8px;flex-wrap:wrap}.customer-account-actions button{flex:1}.customer-account-actions button[disabled]{opacity:.5;cursor:not-allowed}
 .customer-reset-note{font-size:12px;color:#756456;margin:0}.temporary-password-box{font:800 21px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:1px;padding:12px;border:2px dashed #7c4b2a;border-radius:12px;background:#fff8ef;text-align:center;word-break:break-all}.temporary-password-warning{font-size:13px;color:#8a4d17}
 @media(max-width:600px){.customer-accounts-list{grid-template-columns:1fr}.customer-account-meta div{grid-template-columns:1fr}.customer-account-actions{display:grid}.customer-account-actions button{width:100%}}
+
+.owner-points-button{
+  background:#7a4a24;
+  color:#fff;
+  border-color:#7a4a24;
+  font-weight:900;
+}
+.owner-points-button:hover{filter:brightness(.95);}
