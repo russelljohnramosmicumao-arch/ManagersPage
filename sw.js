@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-v22-inventory-on-demand";
+const CACHE="kbr-manager-v23-container-reference-only";
 const ASSETS=["./inventory-add-item.js","./promo-discount-control.js","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
@@ -8,7 +8,7 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js","./page-to
   "./index.html",
   "./manager-backup.js",
   "./manager-icon.svg",
-  "./manager-inventory.js?v=ondemand-20261104",
+  "./manager-inventory.js?v=container-ref-20261104",
   "./manager-tabs.css",
   "./manager-tabs.js",
   "./workforce-model.js",
