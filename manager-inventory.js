@@ -37,7 +37,7 @@ function SyrupPriorNotice(syrup,id,value){
  return syrup&&value===undefined&&priorGramWeights[id]!==undefined?'<small style="display:block;color:#875e26">Previously '+esc(priorGramWeights[id])+' g; enter ml</small>':'';
 }
 const categoryNames={'packaging':'Packaging','syrups':'Syrups','powders-coffee-beans':'Powders and Coffee Beans','carton-soda-cans-sinkers':'Carton, Soda, Cans, Sinkers','ice-creams':'Ice Creams','sanitation-miscellaneous':'Sanitation and Miscellaneous'};
-function renderComparison(){if(!comparisonData)return;const {counts,live,events}=comparisonData;const projection=ledger?window.KBRStockBaselineModel.project({items:live,events,...ledger}):null;const liveStock=new Map(live.map(i=>[i.id,i]));const groups=new Map();for(const item of counts){const id=item.categoryId||item.category||'other';if(!groups.has(id))groups.set(id,{name:item.category||categoryNames[id]||id,items:[]});groups.get(id).items.push(item);}
+function renderComparison(){if(!comparisonData)return;const {counts,live,events}=comparisonData;const projection=ledger?window.KBRStockBaselineModel.project({items:live,events,...ledger}):null;const liveStock=new Map(live.map(i=>[i.id,i]));const countedIds=new Set(counts.map(i=>i.id));const visibleRows=[...counts.map(i=>({...i,inventoryHidden:liveStock.get(i.id)?.inventoryHidden??i.inventoryHidden})),...live.filter(i=>!countedIds.has(i.id))];const groups=new Map();for(const item of visibleRows){const id=item.categoryId||item.category||'other';if(!groups.has(id))groups.set(id,{name:item.category||categoryNames[id]||id,items:[]});groups.get(id).items.push(item);}
  const cell=(v,note='',style='')=>'<td style="padding:10px;border-bottom:1px solid #ddd;'+style+'">'+esc(v)+(note?'<small style="display:block;font-weight:normal">'+esc(note)+'</small>':'')+'</td>';
  content.innerHTML='<p>Current stock = latest completed physical count − container amount − sales since the count + received supplies and restored cancellations. The calculation runs only when you open or refresh this view. Container amounts are stored on this manager device.</p>'+(projection?.warnings.length?'<p role="status">Check stock accuracy: '+esc(projection.warnings.join(' · '))+'</p>':'')+[...groups].map(([id,g])=>{
  const showTare=id==='syrups'||id==='powders-coffee-beans'; // Other categories can contain individual jam/jelly items
@@ -66,14 +66,14 @@ function renderComparison(){if(!comparisonData)return;const {counts,live,events}
  }));
  content.querySelectorAll('[data-inventory-hidden]').forEach(button=>button.addEventListener('click',async()=>{
   if(busy||button.disabled)return;
-  const itemId=button.dataset.inventoryHidden,item=comparisonData?.counts?.find(x=>x.id===itemId);if(!item)return;
+  const itemId=button.dataset.inventoryHidden,item=comparisonData?.live?.find(x=>x.id===itemId)||comparisonData?.counts?.find(x=>x.id===itemId);if(!item)return;
   const hidden=!Boolean(item.inventoryHidden);
   button.disabled=true;button.textContent='Saving…';
   try{
     const result=await KBRCloud.rpc('kbr_set_inventory_barista_hidden',{p_item_id:itemId,p_hidden:hidden});
     if(result?.error)throw Error(result.error);
     if(result?.id!==itemId)throw Error('Could not confirm inventory visibility change.');
-    item.inventoryHidden=hidden;
+    item.inventoryHidden=hidden;const counted=comparisonData?.counts?.find(x=>x.id===itemId);if(counted)counted.inventoryHidden=hidden;
     renderComparison();
   }catch(error){button.disabled=false;button.textContent=item.inventoryHidden?'Not Available':'Available';alert('Could not change inventory visibility: '+error.message);}
  }));
