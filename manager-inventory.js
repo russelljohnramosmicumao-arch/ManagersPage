@@ -21,8 +21,15 @@ const tareStorageKey='kbr_manager_container_measures_v2';
 let tareWeights={},priorGramWeights={};
 try{const saved=JSON.parse(localStorage.getItem('kbr_manager_container_weights_g_v1')||'{}');if(saved&&typeof saved==='object'&&!Array.isArray(saved))priorGramWeights=saved;}catch{}
 try{const saved=JSON.parse(localStorage.getItem(tareStorageKey)||'{}');if(saved&&typeof saved==='object'&&!Array.isArray(saved))tareWeights=saved;}catch{}
+function containerUnit(item){
+ const name=String(item.name||'');
+ if(/\b(jam|jelly|jellies)\b/i.test(name))return ['ml','l'].includes(String(item.unit||'').toLowerCase())?'ml':'g';
+ if(item.categoryId==='syrups')return 'ml';
+ if(item.categoryId==='powders-coffee-beans')return 'g';
+ return null;
+}
 function tareColumn(item){
- const syrup=item.categoryId==='syrups',unit=syrup?'ml':'g',value=tareWeights[item.id]??(!syrup?priorGramWeights[item.id]:undefined);
+ const unit=containerUnit(item),syrup=unit==='ml',value=tareWeights[item.id]??(!syrup?priorGramWeights[item.id]:undefined);
  const old=SyrupPriorNotice(syrup,item.id,value);
  return '<td style="padding:10px;border-bottom:1px solid #ddd"><label style="font-size:12px">Container ('+unit+')<input type="number" data-container-tare="'+esc(item.id)+'" min="0" max="1000000" step="any" inputmode="decimal" value="'+(Number.isFinite(Number(value))&&value!==undefined?esc(value):'')+'" placeholder="0" aria-label="Container '+(syrup?'volume in milliliters':'weight in grams')+' for '+esc(item.name)+'" style="width:110px;display:block;padding:7px;margin-top:4px"></label>'+old+'</td>';
 }
@@ -33,15 +40,15 @@ const categoryNames={'packaging':'Packaging','syrups':'Syrups','powders-coffee-b
 function renderComparison(){if(!comparisonData)return;const {counts,live,events}=comparisonData;const projection=ledger?window.KBRStockBaselineModel.project({items:live,events,...ledger}):null;const liveStock=new Map(live.map(i=>[i.id,i]));const groups=new Map();for(const item of counts){const id=item.categoryId||item.category||'other';if(!groups.has(id))groups.set(id,{name:item.category||categoryNames[id]||id,items:[]});groups.get(id).items.push(item);}
  const cell=(v,note='',style='')=>'<td style="padding:10px;border-bottom:1px solid #ddd;'+style+'">'+esc(v)+(note?'<small style="display:block;font-weight:normal">'+esc(note)+'</small>':'')+'</td>';
  content.innerHTML='<p>Current stock = latest completed physical count − container amount − sales since the count + received supplies and restored cancellations. The calculation runs only when you open or refresh this view. Container amounts are stored on this manager device.</p>'+(projection?.warnings.length?'<p role="status">Check stock accuracy: '+esc(projection.warnings.join(' · '))+'</p>':'')+[...groups].map(([id,g])=>{
- const showTare=id==='syrups'||id==='powders-coffee-beans';
+ const showTare=id==='syrups'||id==='powders-coffee-beans'; // Other categories can contain individual jam/jelly items
  return '<details data-inventory-category="'+esc(id)+'" '+(openCategories.has(id)?'open':'')+' style="border:1px solid #cad8cd;border-radius:10px;margin:12px 0;padding:12px"><summary style="cursor:pointer;font-weight:700;padding:8px">'+esc(g.name)+' <span style="font-weight:normal">('+g.items.length+')</span></summary><div style="overflow:auto"><table style="width:100%;text-align:left;border-collapse:collapse"><thead><tr>'+['Order','Ingredient','Latest count',id==='syrups'?'Container (ml)':id==='powders-coffee-beans'?'Container (g)':'Container','Sold since count','Current stock','Barista inventory'].map(v=>'<th style="padding:10px">'+v+'</th>').join('')+'</tr></thead><tbody>'+g.items.map(i=>{
-  const previous=completedCount(i.id,events),estimate=projection?.items.get(i.id);
-  const containerValue=showTare?(tareWeights[i.id]??(id!=='syrups'?priorGramWeights[i.id]:undefined)):undefined;
+  const previous=completedCount(i.id,events),estimate=projection?.items.get(i.id);const hasContainer=Boolean(containerUnit(i));
+  const containerValue=hasContainer?(tareWeights[i.id]??(containerUnit(i)!=='ml'?priorGramWeights[i.id]:undefined)):undefined;
   const container=containerValue===undefined?0:Number(containerValue);
   const validContainer=Number.isFinite(container)&&container>=0;
   const current=estimate?.expected==null||!validContainer?null:Math.max(0,estimate.expected-container);
   const currentNote=estimate?.expected==null?(estimate?.note||'No completed count'):(!validContainer?'Invalid container amount':(i.countDirty?'New count pending upload · showing last completed count':'')+(Number(estimate.received||0)+Number(estimate.restored||0)>0?' · +'+displayQuantity(Number(estimate.received||0)+Number(estimate.restored||0),i.unit)+' received/restored':''));
-  return '<tr><td style="padding:10px;border-bottom:1px solid #ddd"><input type="checkbox" data-order-item="'+esc(i.id)+'" aria-label="Add '+esc(i.name)+' to order list" '+(window.KBRInventoryOrderList?.has(i.id)?'checked':'')+'></td>'+cell(i.name)+cell(displayQuantity(previous?.gross,previous?.item?.unit||i.unit),previous?date(previous.time):'No completed count')+(showTare?tareColumn(i):cell('—'))+cell(displayQuantity(estimate?.used,i.unit))+cell(current==null?'—':displayQuantity(current,i.unit),currentNote,'font-weight:750')+'<td style="padding:10px;border-bottom:1px solid #ddd"><button type="button" data-inventory-hidden="'+esc(i.id)+'" aria-pressed="'+(!!i.inventoryHidden)+'" style="min-width:118px;padding:8px;border-radius:8px;border:1px solid #a18a72;background:'+(i.inventoryHidden?'#fff0eb':'#e8f5e8')+'">'+(i.inventoryHidden?'Not Available':'Available')+'</button></td></tr>';
+  return '<tr><td style="padding:10px;border-bottom:1px solid #ddd"><input type="checkbox" data-order-item="'+esc(i.id)+'" aria-label="Add '+esc(i.name)+' to order list" '+(window.KBRInventoryOrderList?.has(i.id)?'checked':'')+'></td>'+cell(i.name)+cell(displayQuantity(previous?.gross,previous?.item?.unit||i.unit),previous?date(previous.time):'No completed count')+(hasContainer?tareColumn(i):cell('—'))+cell(displayQuantity(estimate?.used,i.unit))+cell(current==null?'—':displayQuantity(current,i.unit),currentNote,'font-weight:750')+'<td style="padding:10px;border-bottom:1px solid #ddd"><button type="button" data-inventory-hidden="'+esc(i.id)+'" aria-pressed="'+(!!i.inventoryHidden)+'" style="min-width:118px;padding:8px;border-radius:8px;border:1px solid #a18a72;background:'+(i.inventoryHidden?'#fff0eb':'#e8f5e8')+'">'+(i.inventoryHidden?'Not Available':'Available')+'</button></td></tr>';
  }).join('')+'</tbody></table></div></details>';
  }).join('');
  window.KBRInventoryOrderList?.updateItems(live);
