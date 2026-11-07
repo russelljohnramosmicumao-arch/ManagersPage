@@ -46,43 +46,16 @@
 .kbr-price-availability{font-size:11px;line-height:1.4;background:#efebe4;padding:5px 8px;border-radius:16px}
 .kbr-price-row{display:grid;grid-template-columns:minmax(140px,1fr) minmax(210px,1fr);gap:12px;align-items:center;padding:10px 0;border-top:1px solid #ebded1}
 .kbr-price-detail b,.kbr-price-detail small{display:block}.kbr-price-detail small{color:#786250;font-size:12px;margin-top:4px}
+.kbr-product-availability{border-radius:10px;border:1px solid #3d814b;background:#e2f3e3;color:#285a35;padding:9px 12px;white-space:nowrap;font-weight:700;cursor:pointer}
+.kbr-product-availability.unavailable{background:#fae8e8;color:#96332d;border-color:#b3514a}
+.kbr-size-availability{display:flex;align-items:center;gap:7px;white-space:nowrap;font-size:12px;font-weight:750;cursor:pointer}
+.kbr-size-availability input{width:18px;height:18px;accent-color:#246940}
+.kbr-price-row{grid-template-columns:minmax(120px,1fr) minmax(190px,1fr) minmax(95px,auto)}
 .kbr-price-form{display:grid;grid-template-columns:minmax(75px,1fr) auto;gap:7px;align-items:center}.kbr-price-preview{grid-column:1/-1;color:#386944;font-weight:700;font-size:11px}
 #priceStatus{font-weight:700;color:#316a42}#priceStatus.error{color:#b33232}.kbr-price-version{font-size:12px;color:#786250}
 @media(max-width:650px){.kbr-price-tools{grid-template-columns:1fr}.kbr-price-row{grid-template-columns:1fr}.kbr-price-card{padding:12px}}
 </style>
-<style id="kbr-menu-editor-style">
-#panel-menu .kbr-menu-tools{display:grid;grid-template-columns:minmax(170px,2fr) minmax(140px,1fr) auto auto;gap:9px;margin:15px 0}
-#panel-menu input,#panel-menu select{padding:10px;border:1px solid #d8c7b8;border-radius:10px;min-width:0;max-width:100%;background:#fff}
-#panel-menu button{cursor:pointer}
-#menuManageNew,#menuEditorSave{background:#65432d;color:#fff;border-color:#65432d;font-weight:800}
-#menuManageStatus{color:#35653f;font-weight:700}#menuManageStatus.bad{color:#a12424}
-.kbr-menu-list{display:grid;gap:10px}.kbr-menu-card{display:grid;grid-template-columns:72px minmax(100px,1fr) auto;gap:12px;align-items:center;background:#fffaf5;border:1px solid #e1cbb9;padding:10px;border-radius:14px}
-.kbr-menu-thumb{width:70px;height:70px;border-radius:10px;object-fit:cover;background:#eee5dc}
-.kbr-menu-thumb.empty{border:1px dashed #bba593}
-.kbr-menu-info{min-width:0}.kbr-menu-info strong,.kbr-menu-info small{display:block;overflow-wrap:anywhere}.kbr-menu-info small{font-size:12px;color:#736354;margin-top:3px}
-.kbr-menu-actions{display:flex;gap:6px;flex-wrap:wrap}.kbr-menu-actions button{font-size:13px}
-.kbr-menu-actions .menu-active{background:#2f7943;color:white;border-color:#2f7943}
-.kbr-menu-actions .menu-inactive{background:#9a423d;color:white;border-color:#9a423d}
-#menuManageEditor{margin:14px 0 20px;background:#fff9f0;border:2px solid #c8ad90;padding:16px;border-radius:16px}
-#menuManageEditor[hidden]{display:none!important}.kbr-menu-editor-heading{display:flex;justify-content:space-between;align-items:center}
-.kbr-menu-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.kbr-menu-fields label{display:flex;flex-direction:column;gap:5px;font-weight:700}
-.kbr-menu-fields .kbr-menu-food{display:flex;flex-direction:row;align-items:center}
-.kbr-menu-photo{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:16px 0}.kbr-menu-photo img{height:125px;width:125px;object-fit:cover;border-radius:12px}
-.kbr-menu-photo label{font-weight:700;display:grid;gap:7px}.kbr-menu-photo small{font-size:12px;color:#786353}
-.kbr-menu-size-head,.kbr-menu-size-row{display:grid;grid-template-columns:110px minmax(105px,1fr) 110px 115px 34px;gap:8px;align-items:center;margin:8px 0}
-.kbr-menu-size-head{font-weight:700;font-size:12px;color:#80634d}
-.kbr-menu-size-available{display:flex;gap:5px;align-items:center;font-size:12px;font-weight:700}
-.kbr-menu-size-available input{width:18px;height:18px}
-#menuManageEditor[data-menu-mode="food"] .kbr-menu-size-kind,#menuManageEditor[data-menu-mode="food"] .kbr-menu-size-head span:first-child{display:none}
-#menuManageEditor[data-menu-mode="food"] .kbr-menu-size-row{grid-template-columns:minmax(140px,1fr) 130px 115px 34px}
-#menuManageEditor[data-menu-mode="food"] .kbr-menu-size-head{grid-template-columns:minmax(140px,1fr) 130px 115px 34px}
-#menuManageEditor[data-menu-mode="food"] .kbr-menu-food{display:none}
-#menuManageEditor[data-menu-mode="food"] .kbr-menu-size-label{min-width:0}
-
-.kbr-menu-editor-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
-@media(max-width:760px){#menuManageEditor[data-menu-mode="food"] .kbr-menu-size-row{grid-template-columns:1fr 1fr}#panel-menu .kbr-menu-tools{grid-template-columns:1fr 1fr}.kbr-menu-card{grid-template-columns:54px minmax(100px,1fr)}.kbr-menu-thumb{width:52px;height:52px}.kbr-menu-actions{grid-column:2}.kbr-menu-fields{grid-template-columns:1fr}.kbr-menu-size-head{display:none}.kbr-menu-size-row{grid-template-columns:1fr 1fr;gap:8px;border-bottom:1px solid #d8c7b8;padding:10px 0}.kbr-menu-size-row select{grid-column:1}.kbr-menu-size-available{grid-column:1}.kbr-menu-size-row button{grid-column:2;justify-self:end}}
-</style></head><body><main><header class="manager-header"><h1>Kape’ Bar-Rio · Manager</h1><div class="manager-tools"><button onclick="KBRCloud.logout()">Sign out</button></div></header><p id="status" role="status">Checking manager access…</p><div id="managerContent" hidden><nav class="manager-tabs" role="tablist" aria-label="Manager sections"><button id="tab-employees" role="tab" data-manager-tab="employees" aria-controls="panel-employees">Employees</button><button id="tab-customers" role="tab" data-manager-tab="customers" aria-controls="panel-customers">Customer Accounts</button><button id="tab-menu" role="tab" data-manager-tab="menu" aria-controls="panel-menu">Menu Management</button><button id="tab-prices" role="tab" data-manager-tab="prices" aria-controls="panel-prices">Price Management</button><button id="tab-inventory" role="tab" data-manager-tab="inventory" aria-controls="panel-inventory">Inventory &amp; Supply</button><button id="tab-sales" role="tab" data-manager-tab="sales" aria-controls="panel-sales">Sales Analysis</button><button id="tab-backup" role="tab" data-manager-tab="backup" aria-controls="panel-backup">Back Up</button></nav><section class="manager-panel" id="panel-employees" role="tabpanel" aria-labelledby="tab-employees">
+</head><body><main><header class="manager-header"><h1>Kape’ Bar-Rio · Manager</h1><div class="manager-tools"><button onclick="KBRCloud.logout()">Sign out</button></div></header><p id="status" role="status">Checking manager access…</p><div id="managerContent" hidden><nav class="manager-tabs" role="tablist" aria-label="Manager sections"><button id="tab-employees" role="tab" data-manager-tab="employees" aria-controls="panel-employees">Employees</button><button id="tab-customers" role="tab" data-manager-tab="customers" aria-controls="panel-customers">Customer Accounts</button><button id="tab-prices" role="tab" data-manager-tab="prices" aria-controls="panel-prices">Price Management</button><button id="tab-inventory" role="tab" data-manager-tab="inventory" aria-controls="panel-inventory">Inventory &amp; Supply</button><button id="tab-sales" role="tab" data-manager-tab="sales" aria-controls="panel-sales">Sales Analysis</button><button id="tab-backup" role="tab" data-manager-tab="backup" aria-controls="panel-backup">Back Up</button></nav><section class="manager-panel" id="panel-employees" role="tabpanel" aria-labelledby="tab-employees">
 <h2>Employees</h2>
 <nav class="manager-subtabs" role="tablist" aria-label="Employee sections">
 <button type="button" class="manager-subtab active" data-employee-subtab="info" aria-selected="true">Employee Information</button>
@@ -103,36 +76,13 @@
 <div id="customerAccountsList" class="customer-accounts-list"></div>
 </section><section class="manager-panel" id="panel-prices" role="tabpanel" aria-labelledby="tab-prices" hidden>
 <h2>Price Management</h2>
-<p>Change a drink or food price here, once. Ordering, Barista, Online Ordering, and KBR Rewards use the same shared menu for all new orders. Point requirements recalculate from the selling price. Existing paid orders keep their original amounts.</p>
+<p>Set selling prices and switch availability for the whole product or individual sizes. For names, pictures, categories, or renaming sizes, use <a href="https://russelljohnramosmicumao-arch.github.io/recipe-and-costing/recipe.html" target="_blank" rel="noopener">Recipe &amp; Costing → Menu Details</a>. Changes sync to Ordering, Online Ordering and Rewards for new orders.</p>
 <div class="kbr-price-tools"><input id="priceSearch" type="search" placeholder="Search drink, food or category…" aria-label="Search prices">
 <select id="priceCategory" aria-label="Choose menu category"><option value="">All categories</option></select>
 <button id="refreshPrices" type="button">Refresh prices</button></div>
 <p id="priceStatus" role="status" aria-live="polite">Open this section to load shared prices.</p>
 <p id="priceRevision" class="kbr-price-version"></p>
 <div id="priceList" class="kbr-price-list"></div>
-</section><section class="manager-panel" id="panel-menu" role="tabpanel" aria-labelledby="tab-menu" hidden>
-<h2>Menu Management</h2>
-<p>Add and edit drinks or food, photos, selling prices, and product or size availability. Changes are saved to the shared menu for Ordering, Barista, Online Ordering and Rewards. Existing orders keep their recorded details.</p><p><strong>Inventory note:</strong> For newly added drinks, set up the drink's ingredients and recipe in <a href="https://russelljohnramosmicumao-arch.github.io/recipe-and-costing/" target="_blank" rel="noopener">Recipe &amp; Costing</a> before expecting automatic ingredient deductions. Menu products and stocked ingredients are different records.</p>
-<div class="kbr-menu-tools"><input type="search" id="menuManageSearch" placeholder="Search menu item…" aria-label="Search menu"><select id="menuManageCategory" aria-label="Category filter"><option value="">All categories</option></select><button id="menuManageRefresh" type="button">Refresh</button><button id="menuManageNew" type="button">＋ Add Menu Item</button></div>
-<p id="menuManageStatus" role="status">Open Menu Management to load products.</p>
-<div id="menuManageEditor" hidden>
- <div class="kbr-menu-editor-heading"><h3 id="menuEditorTitle">Add Menu Item</h3><button type="button" id="menuEditorClose">Close</button></div>
- <form id="menuEditorForm">
-  <div class="kbr-menu-fields">
-   <label>Product name<input id="menuEditorName" required maxlength="100" placeholder="e.g. Caramel Matcha Latte"></label>
-   <label>Category<select id="menuEditorCategory" required><option value="">Select category…</option></select></label>
-   <label>Availability<select id="menuEditorAvailability"><option value="available">Available</option><option value="unavailable">Not Available</option></select></label>
-   <label class="kbr-menu-food"><input type="checkbox" id="menuEditorFood"> Food item</label>
-  </div>
-  <div class="kbr-menu-photo"><img id="menuEditorPreview" alt="Menu product photo preview" hidden><label>Upload or replace product picture<input type="file" id="menuEditorPhoto" accept="image/jpeg,image/png,image/webp"></label><small>JPG, PNG or WebP. The app optimizes the picture and stores it in shared cloud storage.</small></div>
-  <h4 id="menuEditorSizeHeading">Sizes, prices, and availability</h4><p id="menuEditorSizeHelp">Uncheck <b>Available</b> to hide a size without deleting its price. Use × to remove a size.</p>
-  <div class="kbr-menu-size-head"><span>Variant</span><span>Size</span><span>Price</span><span>Availability</span></div>
-  <div id="menuEditorSizes"></div>
-  <button id="menuEditorAddSize" type="button" class="secondary">＋ Add Another Size</button>
-  <div class="kbr-menu-editor-actions"><button id="menuEditorSave" type="submit">Save Changes</button><button type="button" onclick="document.getElementById('menuEditorClose').click()">Cancel</button></div>
- </form>
-</div>
-<div id="menuManageList" class="kbr-menu-list"></div>
 </section><section class="manager-panel" id="panel-inventory" role="tabpanel" aria-labelledby="tab-inventory" hidden>
 <h2>Inventory</h2><nav class="workforce-tools" role="tablist"><button data-inventory-view="current" role="tab" aria-selected="true">Current inventory</button><button data-inventory-view="orders" role="tab" aria-selected="false">Supply Orders</button><button data-inventory-view="predictions" role="tab" aria-selected="false">Replenishment predictions</button></nav><div id="inventoryCurrentView"><div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:12px 0">
 <button id="refreshInventoryComparison">Refresh</button>
@@ -188,7 +138,7 @@
     <button type="button" id="savePromoDiscount">Save promo setting</button>
   </div>
   <p id="promoDiscountStatus" class="promo-control-status" role="status">Loading promo setting…</p>
-</div><p><a class="back" href="sales.html" target="_blank" rel="noopener">Open reports full screen</a></p><iframe class="manager-frame" id="salesFrame" title="Sales analysis and transactions"></iframe></section><section class="manager-panel" id="panel-backup" role="tabpanel" aria-labelledby="tab-backup" hidden><h2>Back Up</h2><p>Download the latest shared data as JSON files.</p><div class="embed-tools"><button data-backup="all">Download all shared data</button><button data-backup="inventory">Inventory</button><button data-backup="recipes">Recipes</button><button data-backup="menu">Menu</button><button data-backup="sales">Transactions and shifts</button><button data-backup="employees">Employee information</button></div><p id="sharedBackupStatus" class="backup-status" role="status"></p><h3>Previous device backup</h3><button id="backup">Download pre-sync backup</button><p id="backupStatus" role="status"></p></section></div><p id="denied" hidden>Owner access required. <a href="sync-login.html?next=index.html">Sign in as owner</a></p></main><script src="app-links.js"></script><script src="sync-config.js"></script><script src="sync-core.js"></script><script src="sync-ui.js"></script><script src="staff-manager.js"></script><script src="employee-information.js"></script><script src="manager.js"></script><script src="inventory-forecast-model.js"></script><script src="inventory-forecast.js"></script><script src="inventory-order-list.js"></script><script src="bag-rules.js"></script><script src="stock-baseline-model.js"></script><script src="manager-inventory.js?v=add-item-visible-20261104"></script><script src="manager-backup.js"></script><script src="workforce-model.js"></script><script src="schedule-view.js?v=staff-colors-2"></script><script src="workforce.js?v=duplicate-next-week-2-tabs"></script><script src="supply-orders.js"></script><script src="customer-accounts.js?v=1"></script><script src="price-management.js?v=2-save-enabled"></script><script src="manager-tabs.js"></script><script src="page-tools.js"></script><script src="promo-discount-control.js?v=1"></script><script src="inventory-add-item.js?v=1"></script>
+</div><p><a class="back" href="sales.html" target="_blank" rel="noopener">Open reports full screen</a></p><iframe class="manager-frame" id="salesFrame" title="Sales analysis and transactions"></iframe></section><section class="manager-panel" id="panel-backup" role="tabpanel" aria-labelledby="tab-backup" hidden><h2>Back Up</h2><p>Download the latest shared data as JSON files.</p><div class="embed-tools"><button data-backup="all">Download all shared data</button><button data-backup="inventory">Inventory</button><button data-backup="recipes">Recipes</button><button data-backup="menu">Menu</button><button data-backup="sales">Transactions and shifts</button><button data-backup="employees">Employee information</button></div><p id="sharedBackupStatus" class="backup-status" role="status"></p><h3>Previous device backup</h3><button id="backup">Download pre-sync backup</button><p id="backupStatus" role="status"></p></section></div><p id="denied" hidden>Owner access required. <a href="sync-login.html?next=index.html">Sign in as owner</a></p></main><script src="app-links.js"></script><script src="sync-config.js"></script><script src="sync-core.js"></script><script src="sync-ui.js"></script><script src="staff-manager.js"></script><script src="employee-information.js"></script><script src="manager.js"></script><script src="inventory-forecast-model.js"></script><script src="inventory-forecast.js"></script><script src="inventory-order-list.js"></script><script src="bag-rules.js"></script><script src="stock-baseline-model.js"></script><script src="manager-inventory.js?v=add-item-visible-20261104"></script><script src="manager-backup.js"></script><script src="workforce-model.js"></script><script src="schedule-view.js?v=staff-colors-2"></script><script src="workforce.js?v=duplicate-next-week-2-tabs"></script><script src="supply-orders.js"></script><script src="customer-accounts.js?v=1"></script><script src="price-management.js?v=3-size-availability"></script><script src="manager-tabs.js"></script><script src="page-tools.js"></script><script src="promo-discount-control.js?v=1"></script><script src="inventory-add-item.js?v=1"></script>
 <script id="manager-subtabs-script">
 (()=>{const buttons=[...document.querySelectorAll('[data-employee-subtab]')],panels=[...document.querySelectorAll('[data-employee-panel]')];
 function showEmployeeTab(name){
@@ -208,4 +158,4 @@ buttons.forEach(b=>b.addEventListener('click',()=>showEmployeeTab(b.dataset.empl
 showEmployeeTab('info');
 })();
 </script>
-<script src="menu-management.js?v=3-category-layouts"></script></body></html>
+</body></html>
