@@ -74,8 +74,14 @@
 .kbr-menu-size-head{font-weight:700;font-size:12px;color:#80634d}
 .kbr-menu-size-available{display:flex;gap:5px;align-items:center;font-size:12px;font-weight:700}
 .kbr-menu-size-available input{width:18px;height:18px}
+#menuManageEditor[data-menu-mode="food"] .kbr-menu-size-kind,#menuManageEditor[data-menu-mode="food"] .kbr-menu-size-head span:first-child{display:none}
+#menuManageEditor[data-menu-mode="food"] .kbr-menu-size-row{grid-template-columns:minmax(140px,1fr) 130px 115px 34px}
+#menuManageEditor[data-menu-mode="food"] .kbr-menu-size-head{grid-template-columns:minmax(140px,1fr) 130px 115px 34px}
+#menuManageEditor[data-menu-mode="food"] .kbr-menu-food{display:none}
+#menuManageEditor[data-menu-mode="food"] .kbr-menu-size-label{min-width:0}
+
 .kbr-menu-editor-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
-@media(max-width:760px){#panel-menu .kbr-menu-tools{grid-template-columns:1fr 1fr}.kbr-menu-card{grid-template-columns:54px minmax(100px,1fr)}.kbr-menu-thumb{width:52px;height:52px}.kbr-menu-actions{grid-column:2}.kbr-menu-fields{grid-template-columns:1fr}.kbr-menu-size-head{display:none}.kbr-menu-size-row{grid-template-columns:1fr 1fr;gap:8px;border-bottom:1px solid #d8c7b8;padding:10px 0}.kbr-menu-size-row select{grid-column:1}.kbr-menu-size-available{grid-column:1}.kbr-menu-size-row button{grid-column:2;justify-self:end}}
+@media(max-width:760px){#menuManageEditor[data-menu-mode="food"] .kbr-menu-size-row{grid-template-columns:1fr 1fr}#panel-menu .kbr-menu-tools{grid-template-columns:1fr 1fr}.kbr-menu-card{grid-template-columns:54px minmax(100px,1fr)}.kbr-menu-thumb{width:52px;height:52px}.kbr-menu-actions{grid-column:2}.kbr-menu-fields{grid-template-columns:1fr}.kbr-menu-size-head{display:none}.kbr-menu-size-row{grid-template-columns:1fr 1fr;gap:8px;border-bottom:1px solid #d8c7b8;padding:10px 0}.kbr-menu-size-row select{grid-column:1}.kbr-menu-size-available{grid-column:1}.kbr-menu-size-row button{grid-column:2;justify-self:end}}
 </style></head><body><main><header class="manager-header"><h1>Kape’ Bar-Rio · Manager</h1><div class="manager-tools"><button onclick="KBRCloud.logout()">Sign out</button></div></header><p id="status" role="status">Checking manager access…</p><div id="managerContent" hidden><nav class="manager-tabs" role="tablist" aria-label="Manager sections"><button id="tab-employees" role="tab" data-manager-tab="employees" aria-controls="panel-employees">Employees</button><button id="tab-customers" role="tab" data-manager-tab="customers" aria-controls="panel-customers">Customer Accounts</button><button id="tab-menu" role="tab" data-manager-tab="menu" aria-controls="panel-menu">Menu Management</button><button id="tab-prices" role="tab" data-manager-tab="prices" aria-controls="panel-prices">Price Management</button><button id="tab-inventory" role="tab" data-manager-tab="inventory" aria-controls="panel-inventory">Inventory &amp; Supply</button><button id="tab-sales" role="tab" data-manager-tab="sales" aria-controls="panel-sales">Sales Analysis</button><button id="tab-backup" role="tab" data-manager-tab="backup" aria-controls="panel-backup">Back Up</button></nav><section class="manager-panel" id="panel-employees" role="tabpanel" aria-labelledby="tab-employees">
 <h2>Employees</h2>
 <nav class="manager-subtabs" role="tablist" aria-label="Employee sections">
@@ -114,12 +120,12 @@
  <form id="menuEditorForm">
   <div class="kbr-menu-fields">
    <label>Product name<input id="menuEditorName" required maxlength="100" placeholder="e.g. Caramel Matcha Latte"></label>
-   <label>Category<input id="menuEditorCategory" required maxlength="100" list="menuManageCategories" placeholder="Choose or type category"><datalist id="menuManageCategories"></datalist></label>
+   <label>Category<select id="menuEditorCategory" required><option value="">Select category…</option></select></label>
    <label>Availability<select id="menuEditorAvailability"><option value="available">Available</option><option value="unavailable">Not Available</option></select></label>
    <label class="kbr-menu-food"><input type="checkbox" id="menuEditorFood"> Food item</label>
   </div>
   <div class="kbr-menu-photo"><img id="menuEditorPreview" alt="Menu product photo preview" hidden><label>Upload or replace product picture<input type="file" id="menuEditorPhoto" accept="image/jpeg,image/png,image/webp"></label><small>JPG, PNG or WebP. The app optimizes the picture and stores it in shared cloud storage.</small></div>
-  <h4>Sizes, prices, and availability</h4><p>Uncheck <b>Available</b> to hide a size (for example, 12 oz) without deleting its price. Use × to permanently remove a size from future menus.</p>
+  <h4 id="menuEditorSizeHeading">Sizes, prices, and availability</h4><p id="menuEditorSizeHelp">Uncheck <b>Available</b> to hide a size without deleting its price. Use × to remove a size.</p>
   <div class="kbr-menu-size-head"><span>Variant</span><span>Size</span><span>Price</span><span>Availability</span></div>
   <div id="menuEditorSizes"></div>
   <button id="menuEditorAddSize" type="button" class="secondary">＋ Add Another Size</button>
@@ -202,4 +208,4 @@ buttons.forEach(b=>b.addEventListener('click',()=>showEmployeeTab(b.dataset.empl
 showEmployeeTab('info');
 })();
 </script>
-<script src="menu-management.js?v=2-shared-menu"></script></body></html>
+<script src="menu-management.js?v=3-category-layouts"></script></body></html>
