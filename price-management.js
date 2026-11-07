@@ -52,7 +52,7 @@ function render(){
    const preview=document.createElement('small');preview.className='kbr-price-preview';
    const setPreview=()=>{const n=Number(field.value);const t=Number.isSafeInteger(n)&&n>=1&&n<=99999?points(n,item,variant.size):null;preview.textContent=t?'New reward tier: '+t.toLocaleString('en-PH')+' points':t===null&&item.food?'Food — no points':t===null&&/ice cream/i.test(item.category||'')?'Ice cream — no points':' ';};
    field.addEventListener('input',setPreview);setPreview();
-   const save=document.createElement('button');save.type='submit';save.textContent='Save';save.disabled=busy;
+   const save=document.createElement('button');save.type='submit';save.textContent='Save';save.disabled=false;
    form.append(field,save,preview);form.addEventListener('submit',event=>savePrice(event,item,variant,field,save));
    row.append(detail,form);card.append(row);
   }
