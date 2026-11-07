@@ -38,7 +38,15 @@ function render(){
  for(const item of shown){
   const card=document.createElement('section');card.className='kbr-price-card';
   const h=document.createElement('div');h.className='kbr-price-heading';
-  h.innerHTML='<div><strong>'+esc(item.name)+'</strong><small>'+esc(item.category)+'</small></div><span class="kbr-price-availability">'+esc(item.availability||'available')+'</span>';
+  h.innerHTML='<div><strong>'+esc(item.name)+'</strong><small>'+esc(item.category)+'</small></div>';
+  const productToggle=document.createElement('button');
+  const itemAvailable=!['unavailable','not-available','out-of-stock'].includes(item.availability||'available');
+  productToggle.type='button';
+  productToggle.className='kbr-product-availability'+(itemAvailable?'':' unavailable');
+  productToggle.textContent=itemAvailable?'Item Available':'Item Not Available';
+  productToggle.title='Enable or disable this entire product across all ordering apps.';
+  productToggle.onclick=()=>toggleProduct(item,itemAvailable);
+  h.append(productToggle);
   card.append(h);
   for(const variant of variants(item)){
    const row=document.createElement('div');row.className='kbr-price-row';
@@ -54,7 +62,15 @@ function render(){
    field.addEventListener('input',setPreview);setPreview();
    const save=document.createElement('button');save.type='submit';save.textContent='Save';save.disabled=false;
    form.append(field,save,preview);form.addEventListener('submit',event=>savePrice(event,item,variant,field,save));
-   row.append(detail,form);card.append(row);
+   const availability=document.createElement('label');availability.className='kbr-size-availability';
+   const checked=document.createElement('input');checked.type='checkbox';
+   const hidden=(item.sizeUnavailable?.[variant.variant]||[]).includes(variant.size);
+   checked.checked=!hidden;
+   checked.setAttribute('aria-label','Available '+item.name+' '+variant.size);
+   const text=document.createElement('span');text.textContent=hidden?'Not Available':'Available';
+   checked.addEventListener('change',()=>toggleSize(item,variant,checked,text));
+   availability.append(checked,text);
+   row.append(detail,form,availability);card.append(row);
   }
   fragment.append(card);
  }
@@ -74,6 +90,52 @@ async function load(){
   render();label('Edit a price and press Save. New orders and point tiers use the updated shared menu.');
  }catch(e){label(e?.message||'Could not load prices.',true);if(!loaded)list.textContent='Unable to load the shared menu.';}
  finally{busy=false;refresh.disabled=false;}
+}
+async function toggleProduct(item,currentlyAvailable){
+ if(busy)return;
+ if(!confirm((currentlyAvailable?'Hide ':'Enable ')+item.name+' in all ordering apps?'))return;
+ busy=true;label('Updating product availability…');
+ try{
+  const result=await KBRCloud.rpc('kbr_set_menu_item_availability',{
+   p_product_id:item.productId,p_available:!currentlyAvailable
+  });
+  if(!result?.ok)throw Error('Product availability not saved.');
+  busy=false;await load();
+  label('Updated '+item.name+' product availability.');
+ }catch(error){label(error?.message||'Could not change product availability.',true);}
+ finally{busy=false;}
+}
+async function toggleSize(item,variant,checkbox,text){
+ if(busy){checkbox.checked=!checkbox.checked;return;}
+ busy=true;checkbox.disabled=true;
+ const newAvailable=checkbox.checked;
+ label('Saving availability for '+item.name+' · '+variant.size+'…');
+ try{
+  const result=await KBRCloud.rpc('kbr_manager_set_menu_size_availability',{
+   p_product_id:item.productId,
+   p_variant:variant.variant,
+   p_size:variant.size,
+   p_available:newAvailable,
+   p_expected_revision:revision
+  });
+  if(result?.conflict){
+   busy=false;await load();
+   label('The menu changed elsewhere. Reloaded latest values; please review before trying again.',true);
+   return;
+  }
+  if(!result?.ok)throw Error('Availability update was not confirmed.');
+  revision=Number(result.revision);
+  item.sizeUnavailable??={standard:[],premium:[]};
+  let group=item.sizeUnavailable[variant.variant]||[];
+  group=newAvailable?group.filter(x=>x!==variant.size):[...new Set([...group,variant.size])];
+  item.sizeUnavailable[variant.variant]=group;
+  text.textContent=newAvailable?'Available':'Not Available';
+  render();
+  label(item.name+' · '+variant.size+' is '+(newAvailable?'available':'not available')+' for new orders.');
+ }catch(e){
+  checkbox.checked=!newAvailable;
+  label(e?.message||'Could not save size availability.',true);
+ }finally{busy=false;checkbox.disabled=false;}
 }
 async function savePrice(event,item,variant,field,button){
  event.preventDefault();if(busy)return;
