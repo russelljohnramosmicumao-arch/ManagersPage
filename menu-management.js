@@ -93,7 +93,7 @@ function updateEditorLayout(previousCategory=''){
    row.querySelector('.kbr-menu-size-label').placeholder=category==='Snackies'?'e.g. Solo, Barkada, 6 pcs':'e.g. 1 piece, 1 tub';
   }
  }
- if(previousCategory && previousCategory!==category && !editing){
+ if(previousCategory!==category && !editing){
   // Replace the initial blank drink template when choosing snacks/ice creams.
   const draft=[...rows.children].map(row=>({
    size:row.querySelector('.kbr-menu-size-label').value.trim(),
@@ -111,8 +111,8 @@ function updateEditorLayout(previousCategory=''){
  }
 }
 function addSizeRow(variant='standard',size='',price='',active=true){
- const row=document.createElement('div');row.className='kbr-menu-size-row';row.dataset.variant=variant;
  if(menuMode(editorCategory.value)==='food')variant='standard';
+ const row=document.createElement('div');row.className='kbr-menu-size-row';row.dataset.variant=variant;
  const kind=document.createElement('select');kind.className='kbr-menu-size-kind';
  kind.append(new Option('Standard','standard'),new Option('Premium','premium'));kind.value=variant;
  const label=document.createElement('input');label.className='kbr-menu-size-label';label.placeholder=menuMode(editorCategory.value)==='food'?'e.g. 1 order':'e.g. 16 oz';label.maxLength=50;label.required=true;label.value=size;
