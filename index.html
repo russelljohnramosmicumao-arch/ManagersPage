@@ -106,7 +106,7 @@
 <div id="priceList" class="kbr-price-list"></div>
 </section><section class="manager-panel" id="panel-menu" role="tabpanel" aria-labelledby="tab-menu" hidden>
 <h2>Menu Management</h2>
-<p>Add and edit drinks or food, photos, selling prices, and product or size availability. Changes are saved to the shared menu for Ordering, Barista, Online Ordering and Rewards. Existing orders keep their recorded details.</p>
+<p>Add and edit drinks or food, photos, selling prices, and product or size availability. Changes are saved to the shared menu for Ordering, Barista, Online Ordering and Rewards. Existing orders keep their recorded details.</p><p><strong>Inventory note:</strong> For newly added drinks, set up the drink's ingredients and recipe in <a href="https://russelljohnramosmicumao-arch.github.io/recipe-and-costing/" target="_blank" rel="noopener">Recipe &amp; Costing</a> before expecting automatic ingredient deductions. Menu products and stocked ingredients are different records.</p>
 <div class="kbr-menu-tools"><input type="search" id="menuManageSearch" placeholder="Search menu item…" aria-label="Search menu"><select id="menuManageCategory" aria-label="Category filter"><option value="">All categories</option></select><button id="menuManageRefresh" type="button">Refresh</button><button id="menuManageNew" type="button">＋ Add Menu Item</button></div>
 <p id="menuManageStatus" role="status">Open Menu Management to load products.</p>
 <div id="menuManageEditor" hidden>
@@ -202,4 +202,4 @@ buttons.forEach(b=>b.addEventListener('click',()=>showEmployeeTab(b.dataset.empl
 showEmployeeTab('info');
 })();
 </script>
-<script src="menu-management.js?v=1"></script></body></html>
+<script src="menu-management.js?v=2-shared-menu"></script></body></html>
