@@ -11,12 +11,21 @@ const escape=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>'
 const money=v=>'₱'+Number(v).toLocaleString('en-PH');
 const imageURL=v=>!v?'':/^https:\/\//i.test(v)?v:'https://russelljohnramosmicumao-arch.github.io/Kape-Barrio/'+v.replace(/^\.\//,'');
 const show=(msg,bad=false)=>{status.textContent=msg;status.classList.toggle('bad',bad)};
+const MAIN_CATEGORIES=['Frappe & Smoothies','Coffee Series','Matcha Series','Milk Tea Series','Soda','Floats','Specials','Snackies','Ice Cream'];
+const editorCategory=$('menuEditorCategory');
+function menuMode(category){return category==='Snackies'||category==='Ice Cream'?'food':'drink';}
 function cleanCatList(){
- const categories=[...new Set(items.map(i=>i.category).filter(Boolean))].sort();
+ const categories=[...new Set([...MAIN_CATEGORIES,...items.map(i=>i.category).filter(Boolean)])];
+ categories.sort((a,b)=>{
+  const ai=MAIN_CATEGORIES.indexOf(a),bi=MAIN_CATEGORIES.indexOf(b);
+  return ai>=0&&bi>=0?ai-bi:ai>=0?-1:bi>=0?1:a.localeCompare(b);
+ });
  const previous=filter.value;
  filter.replaceChildren(new Option('All categories',''),...categories.map(x=>new Option(x,x)));
  filter.value=categories.includes(previous)?previous:'';
- const hints=$('menuManageCategories');hints.replaceChildren(...categories.map(x=>new Option(x)));
+ const current=editorCategory.value;
+ editorCategory.replaceChildren(new Option('Select category…',''),...categories.map(x=>new Option(x==='Soda'?'Fruit Soda':x==='Ice Cream'?'Ice Creams':x,x)));
+ editorCategory.value=current&&categories.includes(current)?current:'';
 }
 function allSizes(item){
  return ['standard','premium'].flatMap(type=>{
@@ -58,11 +67,55 @@ async function load(){
  }catch(err){show(err.message||'Unable to load menu',true);}
  finally{busy=false;}
 }
+function updateEditorLayout(previousCategory=''){
+ const category=editorCategory.value;
+ const food=menuMode(category)==='food';
+ edit.dataset.menuMode=food?'food':'drink';
+ $('menuEditorFood').checked=food;
+ $('menuEditorFood').disabled=food;
+ const heading=$('menuEditorSizeHeading'),help=$('menuEditorSizeHelp'),add=$('menuEditorAddSize');
+ if(category==='Snackies'){
+  heading.textContent='Portions and prices';
+  help.textContent='Set the price per order or portion. Add options such as Solo, Barkada, 6 pcs or 12 pcs. You can hide individual portions.';
+  add.textContent='＋ Add Portion / Serving';
+ }else if(category==='Ice Cream'){
+  heading.textContent='Ice cream options and prices';
+  help.textContent='Set the price for each selling unit, such as 1 piece, 1 scoop or 1.3 L tub. You can add more options.';
+  add.textContent='＋ Add Ice Cream Option';
+ }else{
+  heading.textContent='Sizes, prices, and availability';
+  help.textContent='Uncheck Available to hide an individual size without deleting its price. Use × to remove a size.';
+  add.textContent='＋ Add Another Size';
+ }
+ if(food){
+  for(const row of rows.children){
+   row.querySelector('.kbr-menu-size-kind').value='standard';
+   row.querySelector('.kbr-menu-size-label').placeholder=category==='Snackies'?'e.g. Solo, Barkada, 6 pcs':'e.g. 1 piece, 1 tub';
+  }
+ }
+ if(previousCategory && previousCategory!==category && !editing){
+  // Replace the initial blank drink template when choosing snacks/ice creams.
+  const draft=[...rows.children].map(row=>({
+   size:row.querySelector('.kbr-menu-size-label').value.trim(),
+   price:row.querySelector('.kbr-menu-size-price').value
+  }));
+  const untouchedDrinkTemplate=draft.length===3
+   && draft.every((x,i)=>x.size===['12 oz','16 oz','22 oz'][i]&&!x.price);
+  const untouchedFoodTemplate=draft.length===1&&!draft[0].price
+   && ['1 piece','1 order'].includes(draft[0].size);
+  if((food && untouchedDrinkTemplate)||(!food && untouchedFoodTemplate)){
+   rows.replaceChildren();
+   if(food)addSizeRow('standard',category==='Snackies'?'1 order':'1 piece','',true);
+   else for(const size of ['12 oz','16 oz','22 oz'])addSizeRow('standard',size,'',true);
+  }
+ }
+}
 function addSizeRow(variant='standard',size='',price='',active=true){
  const row=document.createElement('div');row.className='kbr-menu-size-row';row.dataset.variant=variant;
+ if(menuMode(editorCategory.value)==='food')variant='standard';
  const kind=document.createElement('select');kind.className='kbr-menu-size-kind';
  kind.append(new Option('Standard','standard'),new Option('Premium','premium'));kind.value=variant;
- const label=document.createElement('input');label.className='kbr-menu-size-label';label.placeholder='e.g. 16 oz';label.maxLength=50;label.required=true;label.value=size;
+ const label=document.createElement('input');label.className='kbr-menu-size-label';label.placeholder=menuMode(editorCategory.value)==='food'?'e.g. 1 order':'e.g. 16 oz';label.maxLength=50;label.required=true;label.value=size;
  const value=document.createElement('input');value.type='number';value.className='kbr-menu-size-price';value.placeholder='Price (₱)';value.min='1';value.max='99999';value.step='.01';value.required=true;value.value=String(price);
  const checked=document.createElement('label');checked.className='kbr-menu-size-available';const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.checked=active;checked.append(checkbox,document.createTextNode(' Available'));
  const remove=document.createElement('button');remove.type='button';remove.className='secondary';remove.textContent='×';remove.title='Remove this size';remove.onclick=()=>{if(rows.children.length<=1){show('A product needs at least one size.',true);return;}row.remove();};
@@ -72,20 +125,25 @@ function openEditor(item=null){
  editing=item?structuredClone(item):null;photoFile=null;photo.value='';
  title.textContent=item?'Edit '+item.name:'Add New Menu Item';
  $('menuEditorName').value=item?.name||'';
- $('menuEditorCategory').value=item?.category||'';
+ if(item?.category&&!Array.from(editorCategory.options).some(x=>x.value===item.category)){
+  editorCategory.append(new Option(item.category,item.category));
+ }
+ editorCategory.value=item?.category||'';
  $('menuEditorAvailability').value=item?.availability==='available'||!item?.availability?'available':'unavailable';
  $('menuEditorFood').checked=!!item?.food;
+ updateEditorLayout();
  const src=imageURL(item?.image);imagePreview.hidden=!src;
  if(src)imagePreview.src=src;else imagePreview.removeAttribute('src');
  rows.replaceChildren();
  if(item){
   for(const x of allSizes(item))addSizeRow(x.type,x.name,x.price,!x.hidden);
+ }else if(menuMode(editorCategory.value)==='food'){
+  addSizeRow('standard',editorCategory.value==='Snackies'?'1 order':'1 piece','',true);
  }else{
-  addSizeRow('standard','12 oz','',true);
-  addSizeRow('standard','16 oz','',true);
-  addSizeRow('standard','22 oz','',true);
+  for(const size of ['12 oz','16 oz','22 oz'])addSizeRow('standard',size,'',true);
  }
  show(item?'Edit the product, sizes, availability and picture.':'Enter the new menu item details.');
+ editorCategory.dataset.previousCategory=editorCategory.value;
  edit.hidden=false;edit.scrollIntoView({behavior:'smooth',block:'start'});
 }
 function collect(){
@@ -107,7 +165,7 @@ function collect(){
  const original=editing||{};
  return {...original,name,category,
   availability:$('menuEditorAvailability').value,
-  food:$('menuEditorFood').checked,
+  food:menuMode(category)==='food'||$('menuEditorFood').checked,
   sizes:groups.standard.map(x=>x.size),
   prices:groups.standard.map(x=>x.price),
   premiumSizes:groups.premium.length?groups.premium.map(x=>x.size):null,
@@ -172,6 +230,11 @@ async function toggle(item,currentlyAvailable){
  }catch(err){show(err.message||'Could not change availability.',true);}
  finally{busy=false;}
 }
+editorCategory.addEventListener('change',()=>{
+ const previous=editorCategory.dataset.previousCategory||'';
+ updateEditorLayout(previous);
+ editorCategory.dataset.previousCategory=editorCategory.value;
+});
 $('menuManageNew').addEventListener('click',()=>openEditor());
 $('menuManageRefresh').addEventListener('click',load);
 $('menuEditorClose').addEventListener('click',()=>{edit.hidden=true;photoFile=null;});
