@@ -50,7 +50,33 @@
 #priceStatus{font-weight:700;color:#316a42}#priceStatus.error{color:#b33232}.kbr-price-version{font-size:12px;color:#786250}
 @media(max-width:650px){.kbr-price-tools{grid-template-columns:1fr}.kbr-price-row{grid-template-columns:1fr}.kbr-price-card{padding:12px}}
 </style>
-</head><body><main><header class="manager-header"><h1>Kape’ Bar-Rio · Manager</h1><div class="manager-tools"><button onclick="KBRCloud.logout()">Sign out</button></div></header><p id="status" role="status">Checking manager access…</p><div id="managerContent" hidden><nav class="manager-tabs" role="tablist" aria-label="Manager sections"><button id="tab-employees" role="tab" data-manager-tab="employees" aria-controls="panel-employees">Employees</button><button id="tab-customers" role="tab" data-manager-tab="customers" aria-controls="panel-customers">Customer Accounts</button><button id="tab-prices" role="tab" data-manager-tab="prices" aria-controls="panel-prices">Price Management</button><button id="tab-inventory" role="tab" data-manager-tab="inventory" aria-controls="panel-inventory">Inventory &amp; Supply</button><button id="tab-sales" role="tab" data-manager-tab="sales" aria-controls="panel-sales">Sales Analysis</button><button id="tab-backup" role="tab" data-manager-tab="backup" aria-controls="panel-backup">Back Up</button></nav><section class="manager-panel" id="panel-employees" role="tabpanel" aria-labelledby="tab-employees">
+<style id="kbr-menu-editor-style">
+#panel-menu .kbr-menu-tools{display:grid;grid-template-columns:minmax(170px,2fr) minmax(140px,1fr) auto auto;gap:9px;margin:15px 0}
+#panel-menu input,#panel-menu select{padding:10px;border:1px solid #d8c7b8;border-radius:10px;min-width:0;max-width:100%;background:#fff}
+#panel-menu button{cursor:pointer}
+#menuManageNew,#menuEditorSave{background:#65432d;color:#fff;border-color:#65432d;font-weight:800}
+#menuManageStatus{color:#35653f;font-weight:700}#menuManageStatus.bad{color:#a12424}
+.kbr-menu-list{display:grid;gap:10px}.kbr-menu-card{display:grid;grid-template-columns:72px minmax(100px,1fr) auto;gap:12px;align-items:center;background:#fffaf5;border:1px solid #e1cbb9;padding:10px;border-radius:14px}
+.kbr-menu-thumb{width:70px;height:70px;border-radius:10px;object-fit:cover;background:#eee5dc}
+.kbr-menu-thumb.empty{border:1px dashed #bba593}
+.kbr-menu-info{min-width:0}.kbr-menu-info strong,.kbr-menu-info small{display:block;overflow-wrap:anywhere}.kbr-menu-info small{font-size:12px;color:#736354;margin-top:3px}
+.kbr-menu-actions{display:flex;gap:6px;flex-wrap:wrap}.kbr-menu-actions button{font-size:13px}
+.kbr-menu-actions .menu-active{background:#2f7943;color:white;border-color:#2f7943}
+.kbr-menu-actions .menu-inactive{background:#9a423d;color:white;border-color:#9a423d}
+#menuManageEditor{margin:14px 0 20px;background:#fff9f0;border:2px solid #c8ad90;padding:16px;border-radius:16px}
+#menuManageEditor[hidden]{display:none!important}.kbr-menu-editor-heading{display:flex;justify-content:space-between;align-items:center}
+.kbr-menu-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.kbr-menu-fields label{display:flex;flex-direction:column;gap:5px;font-weight:700}
+.kbr-menu-fields .kbr-menu-food{display:flex;flex-direction:row;align-items:center}
+.kbr-menu-photo{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:16px 0}.kbr-menu-photo img{height:125px;width:125px;object-fit:cover;border-radius:12px}
+.kbr-menu-photo label{font-weight:700;display:grid;gap:7px}.kbr-menu-photo small{font-size:12px;color:#786353}
+.kbr-menu-size-head,.kbr-menu-size-row{display:grid;grid-template-columns:110px minmax(105px,1fr) 110px 115px 34px;gap:8px;align-items:center;margin:8px 0}
+.kbr-menu-size-head{font-weight:700;font-size:12px;color:#80634d}
+.kbr-menu-size-available{display:flex;gap:5px;align-items:center;font-size:12px;font-weight:700}
+.kbr-menu-size-available input{width:18px;height:18px}
+.kbr-menu-editor-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+@media(max-width:760px){#panel-menu .kbr-menu-tools{grid-template-columns:1fr 1fr}.kbr-menu-card{grid-template-columns:54px minmax(100px,1fr)}.kbr-menu-thumb{width:52px;height:52px}.kbr-menu-actions{grid-column:2}.kbr-menu-fields{grid-template-columns:1fr}.kbr-menu-size-head{display:none}.kbr-menu-size-row{grid-template-columns:1fr 1fr;gap:8px;border-bottom:1px solid #d8c7b8;padding:10px 0}.kbr-menu-size-row select{grid-column:1}.kbr-menu-size-available{grid-column:1}.kbr-menu-size-row button{grid-column:2;justify-self:end}}
+</style></head><body><main><header class="manager-header"><h1>Kape’ Bar-Rio · Manager</h1><div class="manager-tools"><button onclick="KBRCloud.logout()">Sign out</button></div></header><p id="status" role="status">Checking manager access…</p><div id="managerContent" hidden><nav class="manager-tabs" role="tablist" aria-label="Manager sections"><button id="tab-employees" role="tab" data-manager-tab="employees" aria-controls="panel-employees">Employees</button><button id="tab-customers" role="tab" data-manager-tab="customers" aria-controls="panel-customers">Customer Accounts</button><button id="tab-menu" role="tab" data-manager-tab="menu" aria-controls="panel-menu">Menu Management</button><button id="tab-prices" role="tab" data-manager-tab="prices" aria-controls="panel-prices">Price Management</button><button id="tab-inventory" role="tab" data-manager-tab="inventory" aria-controls="panel-inventory">Inventory &amp; Supply</button><button id="tab-sales" role="tab" data-manager-tab="sales" aria-controls="panel-sales">Sales Analysis</button><button id="tab-backup" role="tab" data-manager-tab="backup" aria-controls="panel-backup">Back Up</button></nav><section class="manager-panel" id="panel-employees" role="tabpanel" aria-labelledby="tab-employees">
 <h2>Employees</h2>
 <nav class="manager-subtabs" role="tablist" aria-label="Employee sections">
 <button type="button" class="manager-subtab active" data-employee-subtab="info" aria-selected="true">Employee Information</button>
@@ -78,6 +104,29 @@
 <p id="priceStatus" role="status" aria-live="polite">Open this section to load shared prices.</p>
 <p id="priceRevision" class="kbr-price-version"></p>
 <div id="priceList" class="kbr-price-list"></div>
+</section><section class="manager-panel" id="panel-menu" role="tabpanel" aria-labelledby="tab-menu" hidden>
+<h2>Menu Management</h2>
+<p>Add and edit drinks or food, photos, selling prices, and product or size availability. Changes are saved to the shared menu for Ordering, Barista, Online Ordering and Rewards. Existing orders keep their recorded details.</p>
+<div class="kbr-menu-tools"><input type="search" id="menuManageSearch" placeholder="Search menu item…" aria-label="Search menu"><select id="menuManageCategory" aria-label="Category filter"><option value="">All categories</option></select><button id="menuManageRefresh" type="button">Refresh</button><button id="menuManageNew" type="button">＋ Add Menu Item</button></div>
+<p id="menuManageStatus" role="status">Open Menu Management to load products.</p>
+<div id="menuManageEditor" hidden>
+ <div class="kbr-menu-editor-heading"><h3 id="menuEditorTitle">Add Menu Item</h3><button type="button" id="menuEditorClose">Close</button></div>
+ <form id="menuEditorForm">
+  <div class="kbr-menu-fields">
+   <label>Product name<input id="menuEditorName" required maxlength="100" placeholder="e.g. Caramel Matcha Latte"></label>
+   <label>Category<input id="menuEditorCategory" required maxlength="100" list="menuManageCategories" placeholder="Choose or type category"><datalist id="menuManageCategories"></datalist></label>
+   <label>Availability<select id="menuEditorAvailability"><option value="available">Available</option><option value="unavailable">Not Available</option></select></label>
+   <label class="kbr-menu-food"><input type="checkbox" id="menuEditorFood"> Food item</label>
+  </div>
+  <div class="kbr-menu-photo"><img id="menuEditorPreview" alt="Menu product photo preview" hidden><label>Upload or replace product picture<input type="file" id="menuEditorPhoto" accept="image/jpeg,image/png,image/webp"></label><small>JPG, PNG or WebP. The app optimizes the picture and stores it in shared cloud storage.</small></div>
+  <h4>Sizes, prices, and availability</h4><p>Uncheck <b>Available</b> to hide a size (for example, 12 oz) without deleting its price. Use × to permanently remove a size from future menus.</p>
+  <div class="kbr-menu-size-head"><span>Variant</span><span>Size</span><span>Price</span><span>Availability</span></div>
+  <div id="menuEditorSizes"></div>
+  <button id="menuEditorAddSize" type="button" class="secondary">＋ Add Another Size</button>
+  <div class="kbr-menu-editor-actions"><button id="menuEditorSave" type="submit">Save Changes</button><button type="button" onclick="document.getElementById('menuEditorClose').click()">Cancel</button></div>
+ </form>
+</div>
+<div id="menuManageList" class="kbr-menu-list"></div>
 </section><section class="manager-panel" id="panel-inventory" role="tabpanel" aria-labelledby="tab-inventory" hidden>
 <h2>Inventory</h2><nav class="workforce-tools" role="tablist"><button data-inventory-view="current" role="tab" aria-selected="true">Current inventory</button><button data-inventory-view="orders" role="tab" aria-selected="false">Supply Orders</button><button data-inventory-view="predictions" role="tab" aria-selected="false">Replenishment predictions</button></nav><div id="inventoryCurrentView"><div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:12px 0">
 <button id="refreshInventoryComparison">Refresh</button>
@@ -115,16 +164,6 @@
   </div>
   <p id="addInventoryItemStatus" class="add-inventory-status" role="status"></p>
 </div><div id="inventoryComparison">Connecting…</div>
-<div id="menuAvailabilityManager" style="margin-top:24px">
-  <h2>Menu Availability</h2>
-  <p>Hide sold-out items from Ordering and Online Orders. Turn them back on when stock is available.</p>
-  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0">
-    <input id="menuAvailabilitySearch" type="search" placeholder="Search menu item…" style="min-width:220px;flex:1">
-    <select id="menuAvailabilityCategory"></select>
-    <button id="refreshMenuAvailability">Refresh</button>
-  </div>
-  <div id="menuAvailabilityList">Connecting…</div>
-</div>
 <h2>Stock changes from orders</h2><p>Recent orders, ingredients used, and recorded deductions. Cancelled order movements remain in history and are labelled as restored.</p><div id="inventoryActivity">Connecting…</div></div><div id="inventorySupplyOrders" hidden><div id="managerSupplyOrders"></div></div><div id="inventoryPredictions" hidden></div>
 </section><section class="manager-panel" id="panel-sales" role="tabpanel" aria-labelledby="tab-sales" hidden><h2>Sales Analysis</h2>
 <div class="promo-control-card">
@@ -163,4 +202,4 @@ buttons.forEach(b=>b.addEventListener('click',()=>showEmployeeTab(b.dataset.empl
 showEmployeeTab('info');
 })();
 </script>
-<script src="menu-availability-control.js?v=1"></script></body></html>
+<script src="menu-management.js?v=1"></script></body></html>
