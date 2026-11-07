@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-v26-price-save-enabled";
+const CACHE="kbr-manager-v27-menu-management";
 const ASSETS=["./inventory-add-item.js","./promo-discount-control.js","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
@@ -11,6 +11,7 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js","./page-to
   "./manager-inventory.js?v=current-stock-visibility-20261104",
   "./manager-tabs.css",
   "./manager-tabs.js",
+  "./menu-management.js?v=2-shared-menu",
   "./price-management.js?v=2-save-enabled",
   "./workforce-model.js",
   "./workforce.js",
