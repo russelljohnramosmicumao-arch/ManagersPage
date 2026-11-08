@@ -64,6 +64,18 @@ window.KBRCashRegistryAudit = (() => {
     return peso(e.cash);
   }
 
+  function coinClosingHtml(close){
+    if(!close||!close.denominations||!Object.keys(close.denominations).length)return '';
+    const quantities=close.denominations;
+    const count=n=>Math.max(0,Number(quantities[n]||0));
+    const coins=[1,5,10,20].reduce((sum,n)=>sum+n*count(n),0);
+    const bills=[50,100,500,1000].reduce((sum,n)=>sum+n*count(n),0);
+    return '<div class="cash-breakdown" style="background:#e8f3e9;padding:12px;border-radius:12px;margin:12px 0">'+
+      '<div><span>Coins left overnight</span><strong>'+peso(coins)+'</strong></div>'+
+      '<div><span>Bills taken from drawer (₱50+)</span><strong>'+peso(bills)+'</strong></div>'+
+      '<div><span>₱1 / ₱5 / ₱10 / ₱20 coin pieces</span><strong>'+[1,5,10,20].map(n=>count(n)).join(' / ')+'</strong></div>'+
+      '</div>';
+  }
   function shiftHtml(s,i){
     const m=metrics(s);
     const cls=m.variance==null?'':m.variance<0?'short':m.variance>0?'over':'';
@@ -84,6 +96,7 @@ window.KBRCashRegistryAudit = (() => {
           <div><span>GCash</span><strong>${peso(m.gcash)}</strong></div>
           <div><span>Expected drawer</span><strong>${peso(m.expected)}</strong></div>
         </div>
+        ${coinClosingHtml(m.lastClose)}
         ${m.rows.length?`<div style="overflow:auto"><table class="cash-ledger">
           <thead><tr><th>Time</th><th>Type</th><th>Staff</th><th>Details</th><th class="money">Amount / Count</th></tr></thead>
           <tbody>${m.rows.map(e=>`<tr class="${esc(e.kind||'')}">
