@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-v30-payment-settings";
+const CACHE="kbr-manager-v31-payment-coin-summary";
 const ASSETS=["./inventory-add-item.js","./promo-discount-control.js","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
@@ -10,7 +10,7 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js","./page-to
   "./manager-icon.svg",
   "./manager-inventory.js?v=current-stock-visibility-20261104",
   "./manager-tabs.css",
-  "./payment-settings.js?v=1",
+  "./payment-settings.js?v=2-coin-summary",
   "./manager-tabs.js",
   "./price-management.js?v=3-size-availability",
   "./workforce-model.js",
