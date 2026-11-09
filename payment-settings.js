@@ -3,7 +3,7 @@
 const root=document.getElementById('panel-settings');
 if(!root||!window.KBRCloud)return;
 const list=root.querySelector('#kbrPaymentMethods'),notice=root.querySelector('#kbrPaymentStatus');
-let methods=[],busy=false;
+let methods=[],busy=false,selectedPaymentTile=null;
 const say=(s)=>{notice.textContent=s};
 const esc=v=>String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const SUPABASE='https://wkyyuyyfauyhpivebrdg.supabase.co';
@@ -97,8 +97,38 @@ async function load(){
 }
 function render(){
  list.replaceChildren();
+ const tiles=root.querySelector('#kbrPaymentTiles');
+ const detail=root.querySelector('#kbrPaymentDetails');
+ const addDetail=root.querySelector('#kbrPaymentAddDetails');
+ const coin=root.querySelector('#kbrCoinCarrySummary');
+ tiles.replaceChildren();
+ // Only the selected payment's editor becomes visible; no settings are modified until saved.
+ const selectTile=(code)=>{
+  selectedPaymentTile=code;
+  for(const tile of tiles.querySelectorAll('[data-payment-tile]'))tile.setAttribute('aria-pressed',String(tile.dataset.paymentTile===code));
+  detail.hidden=code==='add'||!code;
+  addDetail.hidden=code!=='add';
+  coin.hidden=code!=='cash';
+  for(const form of list.querySelectorAll('[data-payment-form]'))form.hidden=form.dataset.paymentForm!==code;
+ };
+ const tile=(code,label,emoji,subtitle)=>{
+  const button=document.createElement('button');button.type='button';button.className='kbr-settings-tile';
+  button.dataset.paymentTile=code;button.setAttribute('aria-pressed','false');
+  const picture=document.createElement('span');picture.className='tile-emoji';picture.textContent=emoji;
+  const title=document.createElement('strong');title.textContent=label;
+  const sub=document.createElement('small');sub.textContent=subtitle;
+  button.append(picture,title,sub);
+  button.onclick=()=>selectTile(code);
+  tiles.append(button);
+ };
  for(const method of methods){
-  const form=document.createElement('form');form.className='kbr-payment-card';
+  tile(method.code,method.code==='cash'?'Cash':method.code==='gcash'?'GCash':method.label,
+   method.code==='cash'?'💵':method.code==='gcash'?'📱':'💳',
+   method.code==='cash'?'Cash drawer and settings':method.type==='digital'?'Account and QR settings':'Payment settings');
+ }
+ tile('add','Add Payment Method','➕','Maya, bank transfer or another option');
+ for(const method of methods){
+  const form=document.createElement('form');form.className='kbr-payment-card';form.dataset.paymentForm=method.code;
   const heading=document.createElement('h3');heading.textContent=method.label+' ('+method.code+')';
   const fields=document.createElement('div');fields.className='kbr-payment-fields';
   const make=(label,value,kind='text',max=80)=>{
@@ -129,6 +159,8 @@ function render(){
   };
   list.append(form);
  }
+ if(selectedPaymentTile && !methods.some(x=>x.code===selectedPaymentTile) && selectedPaymentTile!=='add')selectedPaymentTile=null;
+ selectTile(selectedPaymentTile);
 }
 const newForm=root.querySelector('#kbrAddPaymentForm');
 const addQR=document.createElement('label');addQR.className='kbr-add-payment-qr';addQR.textContent='Payment QR picture (optional)';

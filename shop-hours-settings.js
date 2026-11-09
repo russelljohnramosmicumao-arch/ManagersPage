@@ -46,6 +46,37 @@
  </form>
  <details class="kbr-shop-card"><summary>Shop Settings Change History (Manager Only)</summary><button id="shopHoursHistoryRefresh" type="button">Load history</button><div id="shopHoursHistory"></div></details>
  `;
+ // Reorganize the existing live settings form into two expandable tiles.
+ // Keeping all controls in the same form preserves the existing save/revision workflow.
+ const form=$('shopHoursForm');
+ const cards=[...form.querySelectorAll(':scope > .kbr-shop-card')];
+ if(cards.length!==5)throw Error('Unexpected Shop & Hours layout');
+ const grid=document.createElement('div');
+ grid.className='kbr-settings-tiles';
+ const details=document.createElement('div');
+ const makePanel=(key,label,emoji,description)=>{
+  const tile=document.createElement('button');tile.type='button';tile.className='kbr-settings-tile';
+  tile.setAttribute('aria-pressed','false');tile.dataset.shopTile=key;
+  tile.innerHTML='<span class="tile-emoji" aria-hidden="true">'+emoji+'</span><strong>'+label+'</strong><small>'+description+'</small>';
+  grid.append(tile);
+  const pane=document.createElement('section');pane.className='kbr-settings-detail';pane.hidden=true;
+  pane.id='kbr-shop-pane-'+key;pane.setAttribute('aria-label',label);details.append(pane);
+  tile.onclick=()=>{
+   for(const button of grid.querySelectorAll('[data-shop-tile]'))button.setAttribute('aria-pressed',String(button===tile));
+   for(const section of details.children)section.hidden=section!==pane;
+   form.querySelector('.kbr-shop-footer').hidden=false;
+  };
+  return pane;
+ };
+ const schedulePane=makePanel('schedule','Shop Schedule','🕒','Hours, temporary closures and special dates');
+ const onlinePane=makePanel('online','Online Orders','🛵','Delivery, pickup and advance ordering');
+ schedulePane.append(cards[0],cards[1],cards[4]);
+ onlinePane.append(cards[2],cards[3]);
+ // Move the owner-only audit trail with the schedule details.
+ const historySection=host.querySelector('details.kbr-shop-card');
+ if(historySection)schedulePane.append(historySection);
+ form.prepend(grid,details);
+ form.querySelector('.kbr-shop-footer').hidden=true;
  function row(day){
   const line=document.createElement('div');line.className='kbr-shop-day';line.dataset.day=day.day;
   const dayLabel=document.createElement('strong');dayLabel.textContent=weekdays[day.day-1];

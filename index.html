@@ -108,6 +108,19 @@
 #kbrShopHours #shopHoursHistory pre{overflow-x:auto;white-space:pre-wrap;background:#f5eee6;padding:10px;border-radius:8px}
 #kbrShopHours [hidden]{display:none!important}
 @media(max-width:750px){#kbrShopHours .kbr-shop-day{grid-template-columns:1fr 1fr}#kbrShopHours .kbr-shop-day strong{grid-column:1/-1}#kbrShopHours .kbr-shop-grid{grid-template-columns:1fr}#kbrShopHours .kbr-shop-special{grid-template-columns:1fr 1fr}}
+</style><style id="kbr-settings-tiles-style">
+#panel-settings .kbr-settings-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 18px;padding:6px;background:#f2e7da;border-radius:14px}
+#panel-settings .kbr-settings-tabs button{flex:1;min-width:130px;border:0;border-radius:10px;background:transparent;color:#60412e;padding:13px 16px;font-weight:800;cursor:pointer}
+#panel-settings .kbr-settings-tabs button[aria-selected="true"]{background:#60412e;color:#fff}
+#panel-settings .kbr-settings-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin:16px 0}
+#panel-settings .kbr-settings-tile{border:2px solid #e0c9b5;border-radius:17px;background:#fffaf5;color:#60412e;padding:22px 14px;min-height:132px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;cursor:pointer;text-align:center;transition:background .15s,border-color .15s}
+#panel-settings .kbr-settings-tile:hover,#panel-settings .kbr-settings-tile[aria-pressed="true"]{background:#f2e4d5;border-color:#875a37}
+#panel-settings .kbr-settings-tile .tile-emoji{font-size:32px}
+#panel-settings .kbr-settings-tile strong{font-size:15px}
+#panel-settings .kbr-settings-tile small{font-size:12px;color:#806652}
+#panel-settings .kbr-settings-detail{margin:12px 0;padding:16px;border:1px solid #dcc5b0;border-radius:15px;background:#fffdfa}
+#panel-settings [hidden]{display:none!important}
+@media(max-width:520px){#panel-settings .kbr-settings-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}#panel-settings .kbr-settings-tile{min-height:110px;padding:15px 9px}}
 </style></head><body><main><header class="manager-header"><h1>Kape’ Bar-Rio · Manager</h1><div class="manager-tools"><button onclick="KBRCloud.logout()">Sign out</button></div></header><p id="status" role="status">Checking manager access…</p><div id="managerContent" hidden><nav class="manager-tabs" role="tablist" aria-label="Manager sections"><button id="tab-employees" role="tab" data-manager-tab="employees" aria-controls="panel-employees">Employees</button><button id="tab-customers" role="tab" data-manager-tab="customers" aria-controls="panel-customers">Customer Accounts</button><button id="tab-prices" role="tab" data-manager-tab="prices" aria-controls="panel-prices">Price Management</button><button id="tab-settings" role="tab" data-manager-tab="settings" aria-controls="panel-settings">Settings</button><button id="tab-inventory" role="tab" data-manager-tab="inventory" aria-controls="panel-inventory">Inventory &amp; Supply</button><button id="tab-sales" role="tab" data-manager-tab="sales" aria-controls="panel-sales">Sales Analysis</button><button id="tab-backup" role="tab" data-manager-tab="backup" aria-controls="panel-backup">Back Up</button></nav><section class="manager-panel" id="panel-employees" role="tabpanel" aria-labelledby="tab-employees">
 <h2>Employees</h2>
 <nav class="manager-subtabs" role="tablist" aria-label="Employee sections">
@@ -156,8 +169,18 @@
   <p id="promoDiscountStatus" class="promo-control-status" role="status">Loading promo setting…</p>
 </div></div>
 </section><section class="manager-panel" id="panel-settings" role="tabpanel" aria-labelledby="tab-settings" hidden>
-<h2>Shop Settings</h2><section id="kbrShopHours" class="kbr-shop-hours" aria-label="Shop & operating hours"></section>
-<h3>Payment Methods</h3>
+<h2>Settings</h2>
+<nav class="kbr-settings-tabs" role="tablist" aria-label="Settings categories">
+<button type="button" role="tab" data-settings-tab="shop" aria-controls="kbrSettingsShop" aria-selected="true">Shop Settings</button>
+<button type="button" role="tab" data-settings-tab="payments" aria-controls="kbrSettingsPayments" aria-selected="false">Payment Settings</button>
+</nav>
+<section id="kbrSettingsShop" role="tabpanel" aria-label="Shop Settings">
+<section id="kbrShopHours" class="kbr-shop-hours" aria-label="Shop & operating hours"></section>
+</section>
+<section id="kbrSettingsPayments" role="tabpanel" aria-label="Payment Settings" hidden>
+<h3>Payment Settings</h3>
+<div id="kbrPaymentTiles" class="kbr-settings-tiles" role="group" aria-label="Select a payment method"></div>
+<div id="kbrPaymentDetails" hidden>
 <div id="kbrCoinCarrySummary" style="border:1px solid #b9d4b9;background:#f0f8ed;border-radius:14px;padding:15px;margin:14px 0">
 <strong>Cash Drawer — Overnight Coins</strong>
 <p>Loading the most recent closing count…</p>
@@ -166,6 +189,8 @@
 <button id="kbrPaymentRefresh" type="button">Refresh payment settings</button>
 <p id="kbrPaymentStatus" role="status"></p>
 <div id="kbrPaymentMethods"></div>
+</div>
+<div id="kbrPaymentAddDetails" hidden>
 <form id="kbrAddPaymentForm" class="kbr-payment-card">
 <h3>＋ Add Payment Method</h3>
 <div class="kbr-payment-fields">
@@ -174,6 +199,8 @@
 <label>Receiving account / number<input name="account" maxlength="80" placeholder="Account number (optional)"></label>
 <label>Payment instructions<input name="instructions" maxlength="300" placeholder="How customers should pay"></label>
 </div><button type="submit">Add Payment Method</button></form>
+</div>
+</section>
 </section><section class="manager-panel" id="panel-inventory" role="tabpanel" aria-labelledby="tab-inventory" hidden>
 <h2>Inventory</h2><nav class="workforce-tools" role="tablist"><button data-inventory-view="current" role="tab" aria-selected="true">Current inventory</button><button data-inventory-view="orders" role="tab" aria-selected="false">Supply Orders</button><button data-inventory-view="predictions" role="tab" aria-selected="false">Replenishment predictions</button></nav><div id="inventoryCurrentView"><div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:12px 0">
 <button id="refreshInventoryComparison">Refresh</button>
@@ -213,7 +240,7 @@
 </div><div id="inventoryComparison">Connecting…</div>
 <h2>Stock changes from orders</h2><p>Recent orders, ingredients used, and recorded deductions. Cancelled order movements remain in history and are labelled as restored.</p><div id="inventoryActivity">Connecting…</div></div><div id="inventorySupplyOrders" hidden><div id="managerSupplyOrders"></div></div><div id="inventoryPredictions" hidden></div>
 </section><section class="manager-panel" id="panel-sales" role="tabpanel" aria-labelledby="tab-sales" hidden><h2>Sales Analysis</h2>
-<p><a class="back" href="sales.html" target="_blank" rel="noopener">Open reports full screen</a></p><iframe class="manager-frame" id="salesFrame" title="Sales analysis and transactions"></iframe></section><section class="manager-panel" id="panel-backup" role="tabpanel" aria-labelledby="tab-backup" hidden><h2>Back Up</h2><p>Download the latest shared data as JSON files.</p><div class="embed-tools"><button data-backup="all">Download all shared data</button><button data-backup="inventory">Inventory</button><button data-backup="recipes">Recipes</button><button data-backup="menu">Menu</button><button data-backup="sales">Transactions and shifts</button><button data-backup="employees">Employee information</button></div><p id="sharedBackupStatus" class="backup-status" role="status"></p><h3>Previous device backup</h3><button id="backup">Download pre-sync backup</button><p id="backupStatus" role="status"></p></section></div><p id="denied" hidden>Owner access required. <a href="sync-login.html?next=index.html">Sign in as owner</a></p></main><script src="app-links.js"></script><script src="sync-config.js"></script><script src="sync-core.js"></script><script src="sync-ui.js"></script><script src="staff-manager.js"></script><script src="employee-information.js"></script><script src="manager.js"></script><script src="inventory-forecast-model.js"></script><script src="inventory-forecast.js"></script><script src="inventory-order-list.js"></script><script src="bag-rules.js"></script><script src="stock-baseline-model.js"></script><script src="manager-inventory.js?v=add-item-visible-20261104"></script><script src="manager-backup.js"></script><script src="workforce-model.js"></script><script src="schedule-view.js?v=staff-colors-2"></script><script src="workforce.js?v=duplicate-next-week-2-tabs"></script><script src="supply-orders.js"></script><script src="customer-accounts.js?v=1"></script><script src="price-management.js?v=4-product-tiles"></script><script src="payment-settings.js?v=4-payment-qr"></script><script src="shop-hours-settings.js?v=1"></script><script src="manager-tabs.js"></script><script src="page-tools.js"></script><script src="promo-discount-control.js?v=2-price-tab"></script><script src="inventory-add-item.js?v=1"></script>
+<p><a class="back" href="sales.html" target="_blank" rel="noopener">Open reports full screen</a></p><iframe class="manager-frame" id="salesFrame" title="Sales analysis and transactions"></iframe></section><section class="manager-panel" id="panel-backup" role="tabpanel" aria-labelledby="tab-backup" hidden><h2>Back Up</h2><p>Download the latest shared data as JSON files.</p><div class="embed-tools"><button data-backup="all">Download all shared data</button><button data-backup="inventory">Inventory</button><button data-backup="recipes">Recipes</button><button data-backup="menu">Menu</button><button data-backup="sales">Transactions and shifts</button><button data-backup="employees">Employee information</button></div><p id="sharedBackupStatus" class="backup-status" role="status"></p><h3>Previous device backup</h3><button id="backup">Download pre-sync backup</button><p id="backupStatus" role="status"></p></section></div><p id="denied" hidden>Owner access required. <a href="sync-login.html?next=index.html">Sign in as owner</a></p></main><script src="app-links.js"></script><script src="sync-config.js"></script><script src="sync-core.js"></script><script src="sync-ui.js"></script><script src="staff-manager.js"></script><script src="employee-information.js"></script><script src="manager.js"></script><script src="inventory-forecast-model.js"></script><script src="inventory-forecast.js"></script><script src="inventory-order-list.js"></script><script src="bag-rules.js"></script><script src="stock-baseline-model.js"></script><script src="manager-inventory.js?v=add-item-visible-20261104"></script><script src="manager-backup.js"></script><script src="workforce-model.js"></script><script src="schedule-view.js?v=staff-colors-2"></script><script src="workforce.js?v=duplicate-next-week-2-tabs"></script><script src="supply-orders.js"></script><script src="customer-accounts.js?v=1"></script><script src="price-management.js?v=4-product-tiles"></script><script src="payment-settings.js?v=settings-tiles-v1"></script><script src="shop-hours-settings.js?v=settings-tiles-v1"></script><script src="settings-layout.js?v=1"></script><script src="manager-tabs.js"></script><script src="page-tools.js"></script><script src="promo-discount-control.js?v=2-price-tab"></script><script src="inventory-add-item.js?v=1"></script>
 <script id="manager-subtabs-script">
 (()=>{const buttons=[...document.querySelectorAll('[data-employee-subtab]')],panels=[...document.querySelectorAll('[data-employee-panel]')];
 function showEmployeeTab(name){
