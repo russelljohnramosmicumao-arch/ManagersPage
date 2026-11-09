@@ -82,6 +82,13 @@
 #priceList .kbr-price-card.expanded .kbr-price-heading{margin-top:8px}
 @media(min-width:1000px){#priceList.kbr-price-list{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:520px){#priceList.kbr-price-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}#priceList .kbr-price-tile-trigger{grid-template-columns:48px minmax(0,1fr);padding:8px;gap:6px}#priceList .kbr-product-thumb{height:48px;width:48px}#priceList .kbr-price-tile-arrow{display:none}}
+</style><style id="kbr-qr-settings-style">
+#panel-settings .kbr-payment-qr-editor{margin:14px 0;padding:14px;background:#f8efe4;border:1px solid #e4cdb8;border-radius:12px;display:grid;gap:10px}
+#panel-settings .kbr-payment-qr-preview{height:185px;max-width:190px;object-fit:contain;background:white;border:1px solid #e2cbb7;border-radius:11px;padding:5px}
+#panel-settings .kbr-payment-qr-preview[hidden]{display:none!important}
+#panel-settings .kbr-payment-qr-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+#panel-settings .kbr-payment-qr-actions input{min-width:160px;max-width:280px}
+#panel-settings .kbr-add-payment-qr{display:grid;gap:7px}
 </style></head><body><main><header class="manager-header"><h1>Kape’ Bar-Rio · Manager</h1><div class="manager-tools"><button onclick="KBRCloud.logout()">Sign out</button></div></header><p id="status" role="status">Checking manager access…</p><div id="managerContent" hidden><nav class="manager-tabs" role="tablist" aria-label="Manager sections"><button id="tab-employees" role="tab" data-manager-tab="employees" aria-controls="panel-employees">Employees</button><button id="tab-customers" role="tab" data-manager-tab="customers" aria-controls="panel-customers">Customer Accounts</button><button id="tab-prices" role="tab" data-manager-tab="prices" aria-controls="panel-prices">Price Management</button><button id="tab-settings" role="tab" data-manager-tab="settings" aria-controls="panel-settings">Settings</button><button id="tab-inventory" role="tab" data-manager-tab="inventory" aria-controls="panel-inventory">Inventory &amp; Supply</button><button id="tab-sales" role="tab" data-manager-tab="sales" aria-controls="panel-sales">Sales Analysis</button><button id="tab-backup" role="tab" data-manager-tab="backup" aria-controls="panel-backup">Back Up</button></nav><section class="manager-panel" id="panel-employees" role="tabpanel" aria-labelledby="tab-employees">
 <h2>Employees</h2>
 <nav class="manager-subtabs" role="tablist" aria-label="Employee sections">
