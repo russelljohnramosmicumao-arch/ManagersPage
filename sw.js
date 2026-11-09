@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-v31-payment-coin-summary";
+const CACHE="kbr-manager-v32-private-coins-sales-audit";
 const ASSETS=["./inventory-add-item.js","./promo-discount-control.js","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
@@ -28,6 +28,7 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js","./page-to
   "./reset-password.js",
   "./sales-data.js",
   "./sales.html",
+  "./drawer-coin-audit.js?v=1",
   "./sales.js",
   "./staff-manager.js",
   "./sync-config.js",
