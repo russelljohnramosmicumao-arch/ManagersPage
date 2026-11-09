@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-compact-customers-v6";
+const CACHE="kbr-manager-store-bazaar-schedule-v7";
 const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-tab","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
@@ -18,8 +18,8 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-t
   "./settings-layout.js?v=1",
   "./price-management.js?v=4-product-tiles",
   "./workforce-model.js",
-  "./workforce.js",
-  "./schedule-view.js",
+  "./workforce.js?v=store-bazaar-location-v1",
+  "./schedule-view.js?v=store-bazaar-location-v1",
   "./manager.html",
   "./manager.js",
   "./manifest.json",
