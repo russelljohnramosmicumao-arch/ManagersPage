@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-v32-private-coins-sales-audit";
+const CACHE="kbr-manager-v33-sales-six-tile-dashboard";
 const ASSETS=["./inventory-add-item.js","./promo-discount-control.js","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
@@ -29,7 +29,9 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js","./page-to
   "./sales-data.js",
   "./sales.html",
   "./drawer-coin-audit.js?v=1",
-  "./sales.js",
+  "./sales-dashboard.js?v=1",
+  "./profit-summary.js?v=six-tiles-v1",
+  "./sales.js?v=six-tiles-v1",
   "./staff-manager.js",
   "./sync-config.js",
   "./sync-core.js",
