@@ -66,32 +66,11 @@ function paymentQRControls(method){
  };
  return wrap;
 }
-async function showCoinCarry(){
- const host=root.querySelector('#kbrCoinCarrySummary');if(!host)return;
- try{
-  const result=await KBRCloud.rpc('kbr_coin_carryover_snapshot',{});
-  host.replaceChildren();
-  const h=document.createElement('strong');h.textContent='Cash Drawer — Overnight Coins';host.append(h);
-  const p=document.createElement('p');
-  if(!result?.hasClosing){p.textContent='No previous closing coin count recorded yet.';host.append(p);return;}
-  p.textContent='Last closing: '+new Date(result.closedAt).toLocaleString('en-PH',{timeZone:'Asia/Manila'})+
-   ' · Coins kept: ₱'+Number(result.coinTotal||0).toLocaleString('en-PH');
-  host.append(p);
-  const denominations=document.createElement('p');
-  denominations.textContent=[1,5,10,20].map(n=>'₱'+n+': '+Number(result.coins?.[n]||0)+' pcs').join(' | ');
-  host.append(denominations);
-  const comparison=document.createElement('p');
-  comparison.textContent=result.reconciled
-   ? result.matched?'✓ Coin quantities matched the next opening.':'⚠ Next opening coin quantities differed from the last closing.'
-   :'Next opening has not been recorded yet. The cashier will be prompted to confirm these coins.';
-  host.append(comparison);
- }catch(e){host.querySelector('p').textContent='Coin carryover temporarily unavailable: '+(e.message||e);}
-}
 async function load(){
  if(busy)return;
  busy=true;say('Loading payment methods…');
  try{const data=await KBRCloud.rpc('kbr_manager_payment_methods_snapshot',{});
-  methods=Array.isArray(data)?data:[];render();showCoinCarry();say('Manage the payment choices shown in Online Ordering and Barista checkout.');
+  methods=Array.isArray(data)?data:[];render();say('Manage the payment choices shown in Online Ordering and Barista checkout.');
  }catch(e){say(e.message||'Could not load payment methods.');}
  finally{busy=false;}
 }
@@ -100,7 +79,6 @@ function render(){
  const tiles=root.querySelector('#kbrPaymentTiles');
  const detail=root.querySelector('#kbrPaymentDetails');
  const addDetail=root.querySelector('#kbrPaymentAddDetails');
- const coin=root.querySelector('#kbrCoinCarrySummary');
  tiles.replaceChildren();
  // Only the selected payment's editor becomes visible; no settings are modified until saved.
  const selectTile=(code)=>{
@@ -108,7 +86,6 @@ function render(){
   for(const tile of tiles.querySelectorAll('[data-payment-tile]'))tile.setAttribute('aria-pressed',String(tile.dataset.paymentTile===code));
   detail.hidden=code==='add'||!code;
   addDetail.hidden=code!=='add';
-  coin.hidden=code!=='cash';
   for(const form of list.querySelectorAll('[data-payment-form]'))form.hidden=form.dataset.paymentForm!==code;
  };
  const tile=(code,label,emoji,subtitle)=>{
