@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-stage-shop-hours-v1";
+const CACHE="kbr-manager-settings-tiles-v2";
 const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-tab","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
@@ -10,9 +10,10 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-t
   "./manager-icon.svg",
   "./manager-inventory.js?v=current-stock-visibility-20261104",
   "./manager-tabs.css",
-  "./payment-settings.js?v=4-payment-qr",
-  "./shop-hours-settings.js?v=1",
+  "./payment-settings.js?v=settings-tiles-v1",
+  "./shop-hours-settings.js?v=settings-tiles-v1",
   "./manager-tabs.js",
+  "./settings-layout.js?v=1",
   "./price-management.js?v=4-product-tiles",
   "./workforce-model.js",
   "./workforce.js",
