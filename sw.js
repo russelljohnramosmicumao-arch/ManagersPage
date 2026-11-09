@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-customer-phone-status-v5";
+const CACHE="kbr-manager-compact-customers-v6";
 const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-tab","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
@@ -13,8 +13,8 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-t
   "./payment-settings.js?v=remove-coin-summary-v2",
   "./shop-hours-settings.js?v=settings-tiles-v1",
   "./manager-tabs.js",
-  "./customer-accounts.js?v=phone-status-v3",
-  "./customer-accounts.css?v=customer-tiles-v2",
+  "./customer-accounts.js?v=compact-names-v4",
+  "./customer-accounts.css?v=compact-names-v4",
   "./settings-layout.js?v=1",
   "./price-management.js?v=4-product-tiles",
   "./workforce-model.js",
