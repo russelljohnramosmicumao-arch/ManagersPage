@@ -23,10 +23,11 @@
  <small>Temporary modes require an expiry. They revert to Automatic when the expiry passes.</small></div>
  <div class="kbr-shop-card"><h4>Weekly hours (Philippines)</h4><div id="shopHoursDays"></div>
  <small>Each day can be closed. Closing times are normally later than opening times.</small></div>
- <div class="kbr-shop-card"><h4>Ordering channels</h4>
+ <div class="kbr-shop-card"><h4>Online Ordering — Service Availability</h4>
+ <p>Turn Delivery or Pickup on or off independently. Disabling Delivery does not close the online ordering app or stop Pickup orders. Customers will see which option is unavailable. Existing submitted orders are not cancelled.</p>
  <label class="kbr-shop-switch"><span><b>Online Ordering</b><small>Emergency pause immediately stops new online submissions</small></span><input type="checkbox" id="shopHoursOnline"></label>
- <label class="kbr-shop-switch"><span><b>Pickup</b><small>Show and allow pickup orders</small></span><input type="checkbox" id="shopHoursPickup"></label>
- <label class="kbr-shop-switch"><span><b>Delivery</b><small>Show and allow delivery orders</small></span><input type="checkbox" id="shopHoursDelivery"></label>
+ <label class="kbr-shop-switch"><span><b>Accept Pickup Orders</b><small>Customers can choose Pickup at checkout when enabled</small></span><input type="checkbox" id="shopHoursPickup"></label>
+ <label class="kbr-shop-switch"><span><b>Accept Delivery Orders</b><small>When disabled, customers see: Delivery is currently unavailable. Pickup is still available if enabled.</small></span><input type="checkbox" id="shopHoursDelivery"></label>
  <label class="kbr-shop-switch"><span><b>Advance orders</b><small>Allow scheduling for a future open period</small></span><input type="checkbox" id="shopHoursAdvance"></label></div>
  <div class="kbr-shop-card"><h4>Order timing</h4><div class="kbr-shop-grid">
  <label>Advance notice (minutes)<input id="shopHoursNotice" type="number" min="0" max="180" step="5"></label>
@@ -140,7 +141,7 @@
    next[k]=value;
   }
   if(next.advance_days<1||next.advance_days>30)throw Error('Advance days must be 1–30.');
-  if(next.online_enabled&&!next.pickup_enabled&&!next.delivery_enabled)throw Error('Enable pickup or delivery, or pause all online ordering.');
+  // Both services may be paused while leaving the online menu visible. Checkout stays blocked server-side.
   return next;
  }
  async function save(ev){
