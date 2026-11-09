@@ -100,8 +100,7 @@ begin
  then raise exception 'For now, closing hours must be later than opening hours'; end if;
 
  for v_day in select value from jsonb_array_elements(p_settings->'schedule') loop
-   if coalesce(v_day->>'day','') !~ '^[1-7]
-      or coalesce(v_day->>'open','') !~ '^([01][0-9]|2[0-3]):[0-5][0-9]$'
+   if coalesce(v_day->>'day','') !~ '^[1-7]      or coalesce(v_day->>'open','') !~ '^([01][0-9]|2[0-3]):[0-5][0-9]$'
       or coalesce(v_day->>'close','') !~ '^([01][0-9]|2[0-3]):[0-5][0-9]$'
    then raise exception 'Invalid weekly day or hours';end if;
  end loop;
@@ -259,7 +258,8 @@ as $function$
  ) from public.kbr_menu m where m.id=1;
 $function$;
 -- No GRANT changes for the existing public online menu snapshot.
- or jsonb_typeof(v_day->'closed') is distinct from 'boolean'
+
+      or jsonb_typeof(v_day->'closed') is distinct from 'boolean'
       or coalesce(v_day->>'open','') !~ '^([01][0-9]|2[0-3]):[0-5][0-9]$'
       or coalesce(v_day->>'close','') !~ '^([01][0-9]|2[0-3]):[0-5][0-9]$'
    then raise exception 'Invalid weekly day or hours';end if;
@@ -268,7 +268,7 @@ $function$;
  then raise exception 'Each weekday must be configured once';end if;
  for v_special in select value from jsonb_array_elements(p_settings->'special_dates') loop
    if coalesce(v_special->>'date','') !~ '^20[0-9]{2}-[01][0-9]-[0-3][0-9]$'
-       or jsonb_typeof(v_special->'closed')<>'boolean'
+       or jsonb_typeof(v_special->'closed') is distinct from 'boolean'
        or char_length(coalesce(v_special->>'reason',''))>100
    then raise exception 'Invalid special date';end if;
    if coalesce((v_special->>'closed')::boolean,false)=false
@@ -371,8 +371,8 @@ begin
  desired_min:=extract(hour from target_local)::integer*60+extract(minute from target_local)::integer;
  if effective_end<effective_start or desired_min<effective_start or desired_min>effective_end then
   return jsonb_build_object('allowed',false,'reason','Please select a time within the available service hours',
-   'earliest',to_char(make_time(effective_start/60,effective_start%60,0),'HH24:MI'),
-   'latest',to_char(make_time(effective_end/60,effective_end%60,0),'HH24:MI'));
+   'earliest',lpad((effective_start/60)::text,2,'0') || ':' || lpad((effective_start%60)::text,2,'0'),
+   'latest',lpad((effective_end/60)::text,2,'0') || ':' || lpad((effective_end%60)::text,2,'0'));
  end if;
  return jsonb_build_object('allowed',true,'type','scheduled');
 end;
