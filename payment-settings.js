@@ -146,8 +146,11 @@ newForm.onsubmit=async e=>{
  p_instructions:newForm.elements.instructions.value.trim(),
  p_account_number:newForm.elements.account.value.trim()
  });if(!result?.ok)throw Error('Save was not confirmed.');
- if(addQRInput.files?.[0])await saveQR(slug,addQRInput.files[0]);
- newForm.reset();busy=false;await load();say(label+' added successfully'+(addQRInput.files?.length?' with QR':'')+'.');
+ const photo=addQRInput.files?.[0]||null;
+ let qrError=null;
+ if(photo)try{await saveQR(slug,photo);}catch(error){qrError=error;}
+ newForm.reset();busy=false;await load();
+ say(qrError?label+' was added, but its QR image could not be saved: '+(qrError.message||qrError)+'. Use its card above to retry.':label+' added successfully'+(photo?' with QR':'')+'.');
  }catch(error){say(error?.message||'Could not add payment method.');}finally{busy=false;}
 };
 root.querySelector('#kbrPaymentRefresh').onclick=load;
