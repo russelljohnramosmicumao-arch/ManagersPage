@@ -1,5 +1,5 @@
-const CACHE="kbr-manager-v33-sales-six-tile-dashboard";
-const ASSETS=["./inventory-add-item.js","./promo-discount-control.js","./page-tools.js","./page-tools.css",
+const CACHE="kbr-manager-v34-price-tiles-mobile-qr";
+const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-tab","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
   "./app-update.js",
@@ -10,9 +10,9 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js","./page-to
   "./manager-icon.svg",
   "./manager-inventory.js?v=current-stock-visibility-20261104",
   "./manager-tabs.css",
-  "./payment-settings.js?v=2-coin-summary",
+  "./payment-settings.js?v=3-payment-qr",
   "./manager-tabs.js",
-  "./price-management.js?v=3-size-availability",
+  "./price-management.js?v=4-product-tiles",
   "./workforce-model.js",
   "./workforce.js",
   "./schedule-view.js",
