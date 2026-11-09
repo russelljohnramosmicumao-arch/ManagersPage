@@ -100,7 +100,9 @@ begin
  then raise exception 'For now, closing hours must be later than opening hours'; end if;
 
  for v_day in select value from jsonb_array_elements(p_settings->'schedule') loop
-   if coalesce(v_day->>'day','') !~ '^[1-7]      or coalesce(v_day->>'open','') !~ '^([01][0-9]|2[0-3]):[0-5][0-9]$'
+   if coalesce(v_day->>'day','') !~ '^[1-7]$'
+      or jsonb_typeof(v_day->'closed') is distinct from 'boolean'
+      or coalesce(v_day->>'open','') !~ '^([01][0-9]|2[0-3]):[0-5][0-9]$'
       or coalesce(v_day->>'close','') !~ '^([01][0-9]|2[0-3]):[0-5][0-9]$'
    then raise exception 'Invalid weekly day or hours';end if;
  end loop;
