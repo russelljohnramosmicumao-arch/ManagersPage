@@ -8,6 +8,7 @@ const refresh=panel.querySelector('#refreshPrices');
 const list=panel.querySelector('#priceList');
 const status=panel.querySelector('#priceStatus');
 const revisionLabel=panel.querySelector('#priceRevision');
+let expandedProductId=null;
 let items=[],revision=null,busy=false,loaded=false;
 const esc=(v='')=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const money=n=>'₱'+Number(n||0).toLocaleString('en-PH',{maximumFractionDigits:0});
@@ -36,8 +37,25 @@ function render(){
  if(!shown.length){list.textContent='No menu items found.';return;}
  const fragment=document.createDocumentFragment();
  for(const item of shown){
-  const card=document.createElement('section');card.className='kbr-price-card';
+  const card=document.createElement('article');card.className='kbr-price-card';card.dataset.product=item.productId||'';
   const h=document.createElement('div');h.className='kbr-price-heading';
+  const expanded=expandedProductId===item.productId;
+  card.classList.toggle('expanded',expanded);
+  const image=document.createElement('img');
+  image.className='kbr-product-thumb';image.alt='';
+  const src=item.image||'';
+  if(src)image.src=/^https?:\/\//i.test(src)?src:'https://russelljohnramosmicumao-arch.github.io/Kape-Barrio/'+src.replace(/^\.\//,'');
+  image.onerror=()=>image.style.visibility='hidden';
+  const summary=document.createElement('button');summary.type='button';summary.className='kbr-price-tile-trigger';
+  const details=document.createElement('div');details.className='kbr-price-tile-info';
+  const prices=variants(item).map(x=>x.price).filter(x=>Number.isFinite(x));
+  details.innerHTML='<strong>'+esc(item.name)+'</strong><small>'+esc(item.category)+'</small><span>From '+(prices.length?money(Math.min(...prices)):'No price')+'</span>';
+  const arrow=document.createElement('span');arrow.className='kbr-price-tile-arrow';arrow.textContent=expanded?'−':'+';
+  summary.append(image,details,arrow);
+  summary.setAttribute('aria-expanded',String(expanded));
+  summary.onclick=()=>{expandedProductId=expanded?null:item.productId;render();};
+  card.append(summary);
+  if(!expanded){fragment.append(card);continue;}
   h.innerHTML='<div><strong>'+esc(item.name)+'</strong><small>'+esc(item.category)+'</small></div>';
   const productToggle=document.createElement('button');
   const itemAvailable=!['unavailable','not-available','out-of-stock'].includes(item.availability||'available');
@@ -83,6 +101,7 @@ async function load(){
   const data=await KBRCloud.rpc('kbr_manager_menu_snapshot',{});
   if(!Array.isArray(data?.items)||!Number.isInteger(Number(data.revision)))throw Error('Shared menu response is invalid.');
   items=data.items;revision=Number(data.revision);loaded=true;
+  if(expandedProductId&&!items.some(item=>item.productId===expandedProductId))expandedProductId=null;
   const categories=['',...new Set(items.map(x=>x.category).filter(Boolean))].sort((a,b)=>!a?-1:!b?1:a.localeCompare(b));
   const previous=category.value;
   category.innerHTML=categories.map(c=>'<option value="'+esc(c)+'">'+esc(c||'All categories')+'</option>').join('');
