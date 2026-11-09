@@ -212,8 +212,8 @@ begin
  desired_min:=extract(hour from target_local)::integer*60+extract(minute from target_local)::integer;
  if effective_end<effective_start or desired_min<effective_start or desired_min>effective_end then
   return jsonb_build_object('allowed',false,'reason','Please select a time within the available service hours',
-   'earliest',to_char(make_time(effective_start/60,effective_start%60,0),'HH24:MI'),
-   'latest',to_char(make_time(effective_end/60,effective_end%60,0),'HH24:MI'));
+   'earliest',lpad((effective_start/60)::text,2,'0') || ':' || lpad((effective_start%60)::text,2,'0'),
+   'latest',lpad((effective_end/60)::text,2,'0') || ':' || lpad((effective_end%60)::text,2,'0'));
  end if;
  return jsonb_build_object('allowed',true,'type','scheduled');
 end;
