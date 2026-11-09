@@ -6,6 +6,66 @@ const list=root.querySelector('#kbrPaymentMethods'),notice=root.querySelector('#
 let methods=[],busy=false;
 const say=(s)=>{notice.textContent=s};
 const esc=v=>String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const SUPABASE='https://wkyyuyyfauyhpivebrdg.supabase.co';
+async function saveQR(code,file){
+ if(!file||!['image/png','image/jpeg','image/webp'].includes(file.type))throw Error('Choose a PNG, JPG or WebP QR image.');
+ if(file.size>8000000)throw Error('QR file is too large (8 MB maximum).');
+ const img=await createImageBitmap(file);
+ const scale=Math.min(1,1100/Math.max(img.width,img.height));
+ const canvas=document.createElement('canvas');
+ canvas.width=Math.max(1,Math.round(img.width*scale));canvas.height=Math.max(1,Math.round(img.height*scale));
+ const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.imageSmoothingEnabled=false;ctx.drawImage(img,0,0,canvas.width,canvas.height);img.close();
+ let blob=await new Promise(r=>canvas.toBlob(r,'image/png'));
+ let contentType='image/png',extension='png';
+ if(!blob||blob.size>2097152){blob=await new Promise(r=>canvas.toBlob(r,'image/jpeg',.94));contentType='image/jpeg';extension='jpg';}
+ if(!blob||blob.size>2097152)throw Error('QR picture is too large after optimizing.');
+ await KBRCloud.rpc('kbr_management_access',{});
+ const session=KBRCloud.session();
+ if(!session?.access_token)throw Error('Sign in again as manager to upload payment QR.');
+ const filename=crypto.randomUUID()+'.'+extension;
+ const response=await fetch(SUPABASE+'/storage/v1/object/kbr-payment-qrs/'+filename,{
+ method:'POST',headers:{
+  apikey:KBRCloud.config.key,
+  Authorization:'Bearer '+session.access_token,
+  'Content-Type':contentType,'Cache-Control':'3600','x-upsert':'false'
+ },body:blob});
+ if(!response.ok){const problem=await response.json().catch(()=>({}));throw Error(problem.message||problem.error||'Could not upload QR image.');}
+ const url=SUPABASE+'/storage/v1/object/public/kbr-payment-qrs/'+filename;
+ const linked=await KBRCloud.rpc('kbr_manager_set_payment_qr',{p_code:code,p_qr_url:url});
+ if(!linked?.ok)throw Error('QR uploaded, but could not link it to the payment method.');
+ return url;
+}
+function paymentQRControls(method){
+ const wrap=document.createElement('div');wrap.className='kbr-payment-qr-editor';
+ const title=document.createElement('strong');title.textContent='Payment QR picture';
+ const preview=document.createElement('img');preview.alt='QR code for '+method.label;preview.className='kbr-payment-qr-preview';
+ const imageUrl=method.qrUrl||'';
+ if(imageUrl)preview.src=imageUrl;else preview.hidden=true;
+ const field=document.createElement('input');field.type='file';field.accept='image/png,image/jpeg,image/webp';field.setAttribute('aria-label','Upload QR picture for '+method.label);
+ const upload=document.createElement('button');upload.type='button';upload.textContent='Upload / Replace QR';
+ const remove=document.createElement('button');remove.type='button';remove.textContent='Remove QR';remove.disabled=!imageUrl;
+ const actions=document.createElement('div');actions.className='kbr-payment-qr-actions';actions.append(field,upload,remove);
+ wrap.append(title,preview,actions);
+ field.addEventListener('change',()=>{
+  const file=field.files?.[0];if(!file)return;
+  const local=URL.createObjectURL(file);
+  preview.src=local;preview.hidden=false;preview.onload=()=>URL.revokeObjectURL(local);
+ });
+ upload.onclick=async()=>{
+  if(busy)return;
+  const file=field.files?.[0];if(!file){say('Choose a QR picture first.');return;}
+  busy=true;upload.disabled=true;say('Saving QR for '+method.label+'…');
+  try{await saveQR(method.code,file);busy=false;await load();say(method.label+' QR saved and shared with both ordering apps.');}
+  catch(e){say('QR upload failed: '+(e.message||e));}finally{busy=false;upload.disabled=false;}
+ };
+ remove.onclick=async()=>{
+  if(busy||!confirm('Remove the QR image for '+method.label+'?'))return;
+  busy=true;remove.disabled=true;
+  try{await KBRCloud.rpc('kbr_manager_set_payment_qr',{p_code:method.code,p_qr_url:''});busy=false;await load();say('QR removed.');}
+  catch(e){say(e.message||'Unable to remove QR.');}finally{busy=false;remove.disabled=false;}
+ };
+ return wrap;
+}
 async function showCoinCarry(){
  const host=root.querySelector('#kbrCoinCarrySummary');if(!host)return;
  try{
@@ -57,7 +117,7 @@ function render(){
   const onlineLabel=document.createElement('label');onlineLabel.append(online,document.createTextNode(' Show in Online Ordering'));
   switches.append(enabledLabel,onlineLabel);
   const save=document.createElement('button');save.type='submit';save.textContent='Save '+method.label;
-  form.append(heading,fields,switches,save);form.onsubmit=async e=>{
+  form.append(heading,fields,switches,...(method.type==='digital'?[paymentQRControls(method)]:[]),save);form.onsubmit=async e=>{
    e.preventDefault();if(busy)return;
    busy=true;save.disabled=true;say('Saving '+method.label+'…');
    try{const result=await KBRCloud.rpc('kbr_manager_upsert_payment_method',{
@@ -71,6 +131,9 @@ function render(){
  }
 }
 const newForm=root.querySelector('#kbrAddPaymentForm');
+const addQR=document.createElement('label');addQR.className='kbr-add-payment-qr';addQR.textContent='Payment QR picture (optional)';
+const addQRInput=document.createElement('input');addQRInput.type='file';addQRInput.accept='image/png,image/jpeg,image/webp';addQR.append(addQRInput);
+newForm.querySelector('.kbr-payment-fields')?.append(addQR);
 newForm.onsubmit=async e=>{
  e.preventDefault();if(busy)return;
  const label=newForm.elements.label.value.trim(),type=newForm.elements.type.value;
@@ -83,7 +146,8 @@ newForm.onsubmit=async e=>{
  p_instructions:newForm.elements.instructions.value.trim(),
  p_account_number:newForm.elements.account.value.trim()
  });if(!result?.ok)throw Error('Save was not confirmed.');
- newForm.reset();busy=false;await load();say(label+' added successfully.');
+ if(addQRInput.files?.[0])await saveQR(slug,addQRInput.files[0]);
+ newForm.reset();busy=false;await load();say(label+' added successfully'+(addQRInput.files?.length?' with QR':'')+'.');
  }catch(error){say(error?.message||'Could not add payment method.');}finally{busy=false;}
 };
 root.querySelector('#kbrPaymentRefresh').onclick=load;
