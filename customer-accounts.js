@@ -15,6 +15,7 @@ function render(){
  list().innerHTML=filtered.map(a=>{
   const active=selectedCustomerId===a.userId;
   const phone=a.loginPhone||a.profilePhone||'—',email=a.loginEmail||a.profileEmail||'—',last=a.lastOrder;
+  const phoneOnFile=!!String(a.profilePhone||a.loginPhone||'').trim();
   const reset=a.phoneConnected
    ?'<button type="button" data-reset-password="'+esc(a.userId)+'">Reset KBR Password</button>'
    :'<p class="customer-reset-note">No KBR phone/password login. '+(a.googleConnected?'This customer signs in through Google and must reset their Google password with Google.':'A KBR password reset is unavailable for this login.')+'</p>';
@@ -23,7 +24,7 @@ function render(){
    '<button type="button" class="customer-name-tile" data-open-customer="'+esc(a.userId)+'" aria-expanded="'+active+'" aria-controls="customer-details-'+esc(a.userId)+'">'+
    '<span class="customer-avatar" aria-hidden="true">👤</span><span class="customer-tile-title">'+esc(a.name||'KBR Customer')+'</span><span class="customer-tile-arrow" aria-hidden="true">'+(active?'▴':'▾')+'</span></button>'+
    '<div id="customer-details-'+esc(a.userId)+'" class="customer-details" '+(active?'':'hidden')+'>'+
-    '<div class="customer-account-badges"><span class="customer-account-badge '+(a.phoneConnected?'on':'')+'">📱 KBR Phone '+(a.phoneConnected?'Connected':'Not connected')+'</span><span class="customer-account-badge '+(a.googleConnected?'google':'')+'">G Google '+(a.googleConnected?'Connected':'Not connected')+'</span></div>'+
+    '<div class="customer-account-badges"><span class="customer-account-badge '+(phoneOnFile?'on':'')+'">📱 Phone '+(phoneOnFile?'Connected':'Not connected')+'</span><span class="customer-account-badge '+(a.googleConnected?'google':'')+'">G Google '+(a.googleConnected?'Connected':'Not connected')+'</span></div>'+
     '<div class="customer-account-meta">'+
      '<div><strong>Login phone</strong><span>'+esc(a.loginPhone||'—')+'</span></div>'+
      '<div><strong>Contact phone</strong><span>'+esc(a.profilePhone||'—')+'</span></div>'+
@@ -37,7 +38,7 @@ function render(){
     '<div class="customer-account-points"><span>⭐ '+Number(a.points||0).toLocaleString()+' points</span><span>Lifetime '+Number(a.lifetimePoints||0).toLocaleString()+'</span></div>'+
     '<div class="customer-account-actions"><button type="button" data-edit-profile="'+esc(a.userId)+'">Edit Customer Information</button>'+ (a.phoneConnected?reset:'')+pointAdjust+'</div>'+
     (!a.phoneConnected?reset:'')+
-    '<p class="customer-reset-note">Changes to contact details do not change the customer’s sign-in phone or Google account. Existing passwords cannot be viewed.</p>'+
+    '<p class="customer-reset-note">Phone Connected means a phone number is saved for customer lookup. It does not mean a KBR phone/password login has been set up. Contact edits do not change sign-in methods. Existing passwords cannot be viewed.</p>'+
    '</div></article>';
  }).join('');
  for(const b of list().querySelectorAll('[data-open-customer]'))b.onclick=()=>{selectedCustomerId=selectedCustomerId===b.dataset.openCustomer?null:b.dataset.openCustomer;render();};
