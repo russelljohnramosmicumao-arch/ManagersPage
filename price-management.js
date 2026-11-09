@@ -8,6 +8,15 @@ const refresh=panel.querySelector('#refreshPrices');
 const list=panel.querySelector('#priceList');
 const status=panel.querySelector('#priceStatus');
 const revisionLabel=panel.querySelector('#priceRevision');
+const subtabs=[...panel.querySelectorAll('[data-price-subtab]')];
+function selectPriceTab(name){
+ const products=name!=='promos';
+ panel.querySelector('#priceProductsTab').hidden=!products;
+ panel.querySelector('#pricePromosTab').hidden=products;
+ subtabs.forEach(b=>b.setAttribute('aria-selected',String(b.dataset.priceSubtab===(products?'products':'promos'))));
+}
+subtabs.forEach(b=>b.addEventListener('click',()=>selectPriceTab(b.dataset.priceSubtab)));
+selectPriceTab('products');
 let expandedProductId=null;
 let items=[],revision=null,busy=false,loaded=false;
 const esc=(v='')=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
