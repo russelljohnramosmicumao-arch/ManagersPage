@@ -93,6 +93,12 @@ begin
    if v_offset>180 or (v_key='advance_days' and v_offset>30) then raise exception 'Timing outside supported range';end if;
  end loop;
  if (p_settings->>'advance_days')::integer<1 then raise exception 'Advance bookings must span at least one day';end if;
+ -- Overnight trading windows need a separate cross-day checkout implementation;
+ -- prohibit them until that workflow is tested end-to-end.
+ if exists(select 1 from jsonb_array_elements(p_settings->'schedule') d
+  where (d->>'closed')::boolean=false and (d->>'close')::time <= (d->>'open')::time)
+ then raise exception 'For now, closing hours must be later than opening hours'; end if;
+
  for v_day in select value from jsonb_array_elements(p_settings->'schedule') loop
    if coalesce(v_day->>'day','') !~ '^[1-7]$' or jsonb_typeof(v_day->'closed')<>'boolean'
       or coalesce(v_day->>'open','') !~ '^([01][0-9]|2[0-3]):[0-5][0-9]$'
@@ -106,6 +112,9 @@ begin
        or jsonb_typeof(v_special->'closed')<>'boolean'
        or char_length(coalesce(v_special->>'reason',''))>100
    then raise exception 'Invalid special date';end if;
+   if coalesce((v_special->>'closed')::boolean,false)=false
+      and (v_special->>'close')::time <= (v_special->>'open')::time
+   then raise exception 'Special hours must close after opening'; end if;
    if coalesce((v_special->>'closed')::boolean,false)=false and (
     coalesce(v_special->>'open','') !~ '^([01][0-9]|2[0-3]):[0-5][0-9]$' or
     coalesce(v_special->>'close','') !~ '^([01][0-9]|2[0-3]):[0-5][0-9]$'
@@ -166,6 +175,7 @@ begin
     if coalesce((day_cfg->>'closed')::boolean,false) then return jsonb_build_object('allowed',false,'reason','Shop is closed today');end if;
     start_min:=split_part(day_cfg->>'open',':',1)::integer*60+split_part(day_cfg->>'open',':',2)::integer;
     end_min:=split_part(day_cfg->>'close',':',1)::integer*60+split_part(day_cfg->>'close',':',2)::integer;
+    if end_min<=start_min then return jsonb_build_object('allowed',false,'reason','Overnight service hours are not yet supported');end if;
     desired_min:=extract(hour from target_local)::integer*60+extract(minute from target_local)::integer;
     -- Overnight windows can cross midnight; the production rollout must verify such schedules first.
     if end_min>start_min and (desired_min<start_min or desired_min>end_min) then
@@ -178,9 +188,9 @@ begin
    return jsonb_build_object('allowed',false,'reason','Advance ordering is disabled');
  end if;
  target_local:=p_requested at time zone 'Asia/Manila';
- if p_requested<clock_timestamp()+make_interval(mins=coalesce((cfg->>'advance_notice_minutes')::integer,30))
+ if p_requested<clock_timestamp()+make_interval(mins => coalesce((cfg->>'advance_notice_minutes')::integer,30))
  then return jsonb_build_object('allowed',false,'reason','Please select a later time');end if;
- if p_requested>clock_timestamp()+make_interval(days=coalesce((cfg->>'advance_days')::integer,7))
+ if p_requested>clock_timestamp()+make_interval(days => coalesce((cfg->>'advance_days')::integer,7))
  then return jsonb_build_object('allowed',false,'reason','Requested date is too far ahead');end if;
  day_number:=extract(isodow from target_local)::integer;
  select x into day_cfg from jsonb_array_elements(cfg->'schedule') x where (x->>'day')::integer=day_number;
@@ -191,6 +201,7 @@ begin
  end if;
  start_min:=split_part(day_cfg->>'open',':',1)::integer*60+split_part(day_cfg->>'open',':',2)::integer;
  end_min:=split_part(day_cfg->>'close',':',1)::integer*60+split_part(day_cfg->>'close',':',2)::integer;
+ if end_min<=start_min then return jsonb_build_object('allowed',false,'reason','Overnight service hours are not yet supported');end if;
  start_offset:=case when p_service='delivery' and day_number in (6,7)
   then (cfg->>'weekend_delivery_start_offset_minutes')::integer
   when p_service='delivery' then (cfg->>'delivery_start_offset_minutes')::integer
