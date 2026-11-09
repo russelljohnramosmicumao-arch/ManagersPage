@@ -29,3 +29,11 @@
 .customer-details[hidden]{display:none!important}
 .customer-edit-box{max-width:590px}.customer-edit-form{display:grid;gap:14px}.customer-edit-form label{display:grid;gap:5px;font-weight:700}.customer-edit-form input{width:100%;box-sizing:border-box;min-height:44px;padding:10px;border:1px solid #cfbba8;border-radius:9px;background:white;font:inherit}
 @media(max-width:620px){.customer-accounts-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.customer-account-card.selected{grid-column:span 2}.customer-name-tile{padding:13px 8px;min-height:108px}.customer-details{padding:12px}.customer-account-meta div{grid-template-columns:1fr}.customer-account-actions{display:grid}}
+
+/* Compact names-only customer selector. Details still expand on click. */
+.customer-accounts-list{grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:8px}
+.customer-account-card{border-radius:10px}
+.customer-name-tile{min-height:48px;padding:10px 8px;gap:0;flex-direction:row;border-radius:9px;line-height:1.25}
+.customer-tile-title{font-size:12px;font-weight:750;line-height:1.25}
+.customer-account-card.selected .customer-name-tile{min-height:48px}
+@media(max-width:620px){.customer-accounts-list{grid-template-columns:repeat(auto-fill,minmax(125px,1fr));gap:7px}.customer-name-tile{min-height:44px;padding:8px 6px}.customer-tile-title{font-size:11px}}

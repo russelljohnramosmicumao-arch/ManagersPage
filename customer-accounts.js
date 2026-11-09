@@ -22,7 +22,7 @@ function render(){
   const pointAdjust=isOwner?'<button type="button" class="owner-points-button" data-adjust-points="'+esc(a.userId)+'">⭐ Adjust Points</button>':'';
   return '<article class="customer-account-card'+(active?' selected':'')+'" data-customer-id="'+esc(a.userId)+'">'+
    '<button type="button" class="customer-name-tile" data-open-customer="'+esc(a.userId)+'" aria-expanded="'+active+'" aria-controls="customer-details-'+esc(a.userId)+'">'+
-   '<span class="customer-avatar" aria-hidden="true">👤</span><span class="customer-tile-title">'+esc(a.name||'KBR Customer')+'</span><span class="customer-tile-arrow" aria-hidden="true">'+(active?'▴':'▾')+'</span></button>'+
+   '<span class="customer-tile-title">'+esc(a.name||'KBR Customer')+'</span></button>'+
    '<div id="customer-details-'+esc(a.userId)+'" class="customer-details" '+(active?'':'hidden')+'>'+
     '<div class="customer-account-badges"><span class="customer-account-badge '+(phoneOnFile?'on':'')+'">📱 Phone '+(phoneOnFile?'Connected':'Not connected')+'</span><span class="customer-account-badge '+(a.googleConnected?'google':'')+'">G Google '+(a.googleConnected?'Connected':'Not connected')+'</span></div>'+
     '<div class="customer-account-meta">'+
