@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-v34-price-tiles-mobile-qr";
+const CACHE="kbr-manager-v35-price-tiles-mobile-qr";
 const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-tab","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
@@ -10,7 +10,7 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-t
   "./manager-icon.svg",
   "./manager-inventory.js?v=current-stock-visibility-20261104",
   "./manager-tabs.css",
-  "./payment-settings.js?v=3-payment-qr",
+  "./payment-settings.js?v=4-payment-qr",
   "./manager-tabs.js",
   "./price-management.js?v=4-product-tiles",
   "./workforce-model.js",
