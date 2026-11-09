@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-settings-tiles-v2";
+const CACHE="kbr-manager-settings-tiles-v3-no-coin-card";
 const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-tab","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
@@ -10,7 +10,7 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-t
   "./manager-icon.svg",
   "./manager-inventory.js?v=current-stock-visibility-20261104",
   "./manager-tabs.css",
-  "./payment-settings.js?v=settings-tiles-v1",
+  "./payment-settings.js?v=remove-coin-summary-v2",
   "./shop-hours-settings.js?v=settings-tiles-v1",
   "./manager-tabs.js",
   "./settings-layout.js?v=1",
