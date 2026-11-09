@@ -64,6 +64,24 @@
 #panel-settings .kbr-payment-switches label{display:flex;gap:7px;align-items:center}
 #panel-settings .kbr-payment-card button{background:#68442f;color:white;padding:10px 15px;border-radius:9px;border:0}
 @media(max-width:650px){#panel-settings .kbr-payment-fields{grid-template-columns:1fr}}
+</style><style id="kbr-price-catalog-v2">
+.kbr-price-subtabs{display:flex;gap:9px;flex-wrap:wrap;margin:18px 0}
+.kbr-price-subtabs button{border:1px solid #d5bea8;padding:12px 17px;background:#fff;color:#64422f;border-radius:12px;font-weight:800;cursor:pointer}
+.kbr-price-subtabs button[aria-selected="true"]{background:#62402e;color:#fff}
+#pricePromosTab[hidden],#priceProductsTab[hidden]{display:none!important}
+#priceList.kbr-price-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:13px;align-items:start}
+#priceList .kbr-price-card{padding:0;border:1px solid #e0cbb7;border-radius:16px;overflow:hidden;margin:0;background:#fffcf8;min-width:0}
+#priceList .kbr-price-tile-trigger{border:0;background:transparent;color:#4c321e;width:100%;text-align:left;padding:12px;display:grid;grid-template-columns:64px minmax(0,1fr) 14px;align-items:center;gap:10px;cursor:pointer;min-height:94px}
+#priceList .kbr-product-thumb{width:64px;height:64px;object-fit:cover;border-radius:10px;background:#eee1d3}
+#priceList .kbr-price-tile-info{display:grid;gap:4px;min-width:0}
+#priceList .kbr-price-tile-info strong{font-size:14px;line-height:1.25;overflow-wrap:anywhere}
+#priceList .kbr-price-tile-info small,#priceList .kbr-price-tile-info span{font-size:12px;color:#826957}
+#priceList .kbr-price-tile-arrow{font-weight:800;font-size:18px}
+#priceList .kbr-price-card.expanded{grid-column:1/-1;padding:8px 13px 14px}
+#priceList .kbr-price-card.expanded .kbr-price-tile-trigger{min-height:70px}
+#priceList .kbr-price-card.expanded .kbr-price-heading{margin-top:8px}
+@media(min-width:1000px){#priceList.kbr-price-list{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:520px){#priceList.kbr-price-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}#priceList .kbr-price-tile-trigger{grid-template-columns:48px minmax(0,1fr);padding:8px;gap:6px}#priceList .kbr-product-thumb{height:48px;width:48px}#priceList .kbr-price-tile-arrow{display:none}}
 </style></head><body><main><header class="manager-header"><h1>Kape’ Bar-Rio · Manager</h1><div class="manager-tools"><button onclick="KBRCloud.logout()">Sign out</button></div></header><p id="status" role="status">Checking manager access…</p><div id="managerContent" hidden><nav class="manager-tabs" role="tablist" aria-label="Manager sections"><button id="tab-employees" role="tab" data-manager-tab="employees" aria-controls="panel-employees">Employees</button><button id="tab-customers" role="tab" data-manager-tab="customers" aria-controls="panel-customers">Customer Accounts</button><button id="tab-prices" role="tab" data-manager-tab="prices" aria-controls="panel-prices">Price Management</button><button id="tab-settings" role="tab" data-manager-tab="settings" aria-controls="panel-settings">Settings</button><button id="tab-inventory" role="tab" data-manager-tab="inventory" aria-controls="panel-inventory">Inventory &amp; Supply</button><button id="tab-sales" role="tab" data-manager-tab="sales" aria-controls="panel-sales">Sales Analysis</button><button id="tab-backup" role="tab" data-manager-tab="backup" aria-controls="panel-backup">Back Up</button></nav><section class="manager-panel" id="panel-employees" role="tabpanel" aria-labelledby="tab-employees">
 <h2>Employees</h2>
 <nav class="manager-subtabs" role="tablist" aria-label="Employee sections">
@@ -86,12 +104,31 @@
 </section><section class="manager-panel" id="panel-prices" role="tabpanel" aria-labelledby="tab-prices" hidden>
 <h2>Price Management</h2>
 <p>Set selling prices and switch availability for the whole product or individual sizes. For names, pictures, categories, or renaming sizes, use <a href="https://russelljohnramosmicumao-arch.github.io/recipe-and-costing/recipe.html" target="_blank" rel="noopener">Recipe &amp; Costing → Menu Details</a>. Changes sync to Ordering, Online Ordering and Rewards for new orders.</p>
-<div class="kbr-price-tools"><input id="priceSearch" type="search" placeholder="Search drink, food or category…" aria-label="Search prices">
+<nav class="kbr-price-subtabs" role="tablist" aria-label="Price and promotion settings">
+<button type="button" data-price-subtab="products" aria-selected="true">Products & Prices</button>
+<button type="button" data-price-subtab="promos" aria-selected="false">Promos</button>
+</nav><div id="priceProductsTab"><div class="kbr-price-tools"><input id="priceSearch" type="search" placeholder="Search drink, food or category…" aria-label="Search prices">
 <select id="priceCategory" aria-label="Choose menu category"><option value="">All categories</option></select>
 <button id="refreshPrices" type="button">Refresh prices</button></div>
 <p id="priceStatus" role="status" aria-live="polite">Open this section to load shared prices.</p>
 <p id="priceRevision" class="kbr-price-version"></p>
-<div id="priceList" class="kbr-price-list"></div>
+<div id="priceList" class="kbr-price-list"></div></div><div id="pricePromosTab" hidden><h3>Promo Settings</h3><p>Manage in-store promo discounts without editing the app.</p><div class="promo-control-card">
+  <div>
+    <h3>Promo Discount Control</h3>
+    <p>Control the special promo discount shown on each drink in the Barista page.</p>
+  </div>
+  <div class="promo-control-grid">
+    <label class="promo-toggle-label"><input type="checkbox" id="promoDiscountEnabled"> <span>Promo enabled</span></label>
+    <label>Discount
+      <select id="promoDiscountPercent">
+        <option value="100">100% · Free drink</option>
+        <option value="50">50% off</option>
+      </select>
+    </label>
+    <button type="button" id="savePromoDiscount">Save promo setting</button>
+  </div>
+  <p id="promoDiscountStatus" class="promo-control-status" role="status">Loading promo setting…</p>
+</div></div>
 </section><section class="manager-panel" id="panel-settings" role="tabpanel" aria-labelledby="tab-settings" hidden>
 <h2>Shop Settings — Payment Methods</h2>
 <div id="kbrCoinCarrySummary" style="border:1px solid #b9d4b9;background:#f0f8ed;border-radius:14px;padding:15px;margin:14px 0">
@@ -149,23 +186,7 @@
 </div><div id="inventoryComparison">Connecting…</div>
 <h2>Stock changes from orders</h2><p>Recent orders, ingredients used, and recorded deductions. Cancelled order movements remain in history and are labelled as restored.</p><div id="inventoryActivity">Connecting…</div></div><div id="inventorySupplyOrders" hidden><div id="managerSupplyOrders"></div></div><div id="inventoryPredictions" hidden></div>
 </section><section class="manager-panel" id="panel-sales" role="tabpanel" aria-labelledby="tab-sales" hidden><h2>Sales Analysis</h2>
-<div class="promo-control-card">
-  <div>
-    <h3>Promo Discount Control</h3>
-    <p>Control the special promo discount shown on each drink in the Barista page.</p>
-  </div>
-  <div class="promo-control-grid">
-    <label class="promo-toggle-label"><input type="checkbox" id="promoDiscountEnabled"> <span>Promo enabled</span></label>
-    <label>Discount
-      <select id="promoDiscountPercent">
-        <option value="100">100% · Free drink</option>
-        <option value="50">50% off</option>
-      </select>
-    </label>
-    <button type="button" id="savePromoDiscount">Save promo setting</button>
-  </div>
-  <p id="promoDiscountStatus" class="promo-control-status" role="status">Loading promo setting…</p>
-</div><p><a class="back" href="sales.html" target="_blank" rel="noopener">Open reports full screen</a></p><iframe class="manager-frame" id="salesFrame" title="Sales analysis and transactions"></iframe></section><section class="manager-panel" id="panel-backup" role="tabpanel" aria-labelledby="tab-backup" hidden><h2>Back Up</h2><p>Download the latest shared data as JSON files.</p><div class="embed-tools"><button data-backup="all">Download all shared data</button><button data-backup="inventory">Inventory</button><button data-backup="recipes">Recipes</button><button data-backup="menu">Menu</button><button data-backup="sales">Transactions and shifts</button><button data-backup="employees">Employee information</button></div><p id="sharedBackupStatus" class="backup-status" role="status"></p><h3>Previous device backup</h3><button id="backup">Download pre-sync backup</button><p id="backupStatus" role="status"></p></section></div><p id="denied" hidden>Owner access required. <a href="sync-login.html?next=index.html">Sign in as owner</a></p></main><script src="app-links.js"></script><script src="sync-config.js"></script><script src="sync-core.js"></script><script src="sync-ui.js"></script><script src="staff-manager.js"></script><script src="employee-information.js"></script><script src="manager.js"></script><script src="inventory-forecast-model.js"></script><script src="inventory-forecast.js"></script><script src="inventory-order-list.js"></script><script src="bag-rules.js"></script><script src="stock-baseline-model.js"></script><script src="manager-inventory.js?v=add-item-visible-20261104"></script><script src="manager-backup.js"></script><script src="workforce-model.js"></script><script src="schedule-view.js?v=staff-colors-2"></script><script src="workforce.js?v=duplicate-next-week-2-tabs"></script><script src="supply-orders.js"></script><script src="customer-accounts.js?v=1"></script><script src="price-management.js?v=3-size-availability"></script><script src="payment-settings.js?v=2-coin-summary"></script><script src="manager-tabs.js"></script><script src="page-tools.js"></script><script src="promo-discount-control.js?v=1"></script><script src="inventory-add-item.js?v=1"></script>
+<p><a class="back" href="sales.html" target="_blank" rel="noopener">Open reports full screen</a></p><iframe class="manager-frame" id="salesFrame" title="Sales analysis and transactions"></iframe></section><section class="manager-panel" id="panel-backup" role="tabpanel" aria-labelledby="tab-backup" hidden><h2>Back Up</h2><p>Download the latest shared data as JSON files.</p><div class="embed-tools"><button data-backup="all">Download all shared data</button><button data-backup="inventory">Inventory</button><button data-backup="recipes">Recipes</button><button data-backup="menu">Menu</button><button data-backup="sales">Transactions and shifts</button><button data-backup="employees">Employee information</button></div><p id="sharedBackupStatus" class="backup-status" role="status"></p><h3>Previous device backup</h3><button id="backup">Download pre-sync backup</button><p id="backupStatus" role="status"></p></section></div><p id="denied" hidden>Owner access required. <a href="sync-login.html?next=index.html">Sign in as owner</a></p></main><script src="app-links.js"></script><script src="sync-config.js"></script><script src="sync-core.js"></script><script src="sync-ui.js"></script><script src="staff-manager.js"></script><script src="employee-information.js"></script><script src="manager.js"></script><script src="inventory-forecast-model.js"></script><script src="inventory-forecast.js"></script><script src="inventory-order-list.js"></script><script src="bag-rules.js"></script><script src="stock-baseline-model.js"></script><script src="manager-inventory.js?v=add-item-visible-20261104"></script><script src="manager-backup.js"></script><script src="workforce-model.js"></script><script src="schedule-view.js?v=staff-colors-2"></script><script src="workforce.js?v=duplicate-next-week-2-tabs"></script><script src="supply-orders.js"></script><script src="customer-accounts.js?v=1"></script><script src="price-management.js?v=4-product-tiles"></script><script src="payment-settings.js?v=3-payment-qr"></script><script src="manager-tabs.js"></script><script src="page-tools.js"></script><script src="promo-discount-control.js?v=2-price-tab"></script><script src="inventory-add-item.js?v=1"></script>
 <script id="manager-subtabs-script">
 (()=>{const buttons=[...document.querySelectorAll('[data-employee-subtab]')],panels=[...document.querySelectorAll('[data-employee-panel]')];
 function showEmployeeTab(name){
