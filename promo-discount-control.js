@@ -38,7 +38,8 @@ async function save(){
 }
 document.addEventListener('DOMContentLoaded',()=>{
   $('savePromoDiscount')?.addEventListener('click',save);
-  document.querySelector('[data-manager-tab="sales"]')?.addEventListener('click',load);
+  document.querySelector('[data-manager-tab="prices"]')?.addEventListener('click',()=>{if(!document.getElementById('pricePromosTab')?.hidden)load();});
+  document.querySelectorAll('[data-price-subtab]').forEach(btn=>btn.addEventListener('click',()=>{if(btn.dataset.priceSubtab==='promos')load();}));
   load();
 });
 })();
