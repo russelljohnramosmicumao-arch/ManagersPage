@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-store-bazaar-load-fix-v8";
+const CACHE="kbr-manager-combined-location-v9";
 const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-tab","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
@@ -18,8 +18,8 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-t
   "./settings-layout.js?v=1",
   "./price-management.js?v=4-product-tiles",
   "./workforce-model.js",
-  "./workforce.js?v=store-bazaar-load-fix-v2",
-  "./schedule-view.js?v=store-bazaar-location-v1",
+  "./workforce.js?v=combined-location-v3",
+  "./schedule-view.js?v=combined-location-v2",
   "./manager.html",
   "./manager.js",
   "./manifest.json",
