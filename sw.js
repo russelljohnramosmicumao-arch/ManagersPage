@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-attendance-auto-v10-customer-security-v1-inventory-tiles-v1-update-guard-v3-clean-inventory-v1";
+const CACHE="kbr-manager-attendance-auto-v10-customer-security-v1-inventory-tiles-v1-update-guard-v3-clean-inventory-v1-role-ui-v1";
 const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-tab","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
