@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-attendance-auto-v10-cf-v1-navfix2-assets-phase2-customer-security-v1-inventory-tiles-v1";
+const CACHE="kbr-manager-attendance-auto-v10-cf-v1-navfix2-assets-phase2-customer-security-v1-inventory-tiles-v1-update-guard-v3";
 const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-tab","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
@@ -8,7 +8,7 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-t
   "./index.html",
   "./manager-backup.js",
   "./manager-icon.svg",
-  "./manager-inventory.js?v=current-stock-visibility-20261104",
+  "./manager-inventory.js?v=add-item-visible-20261104",
   "./manager-tabs.css",
   "./payment-settings.js?v=remove-coin-summary-v2",
   "./shop-hours-settings.js?v=settings-tiles-v1",
