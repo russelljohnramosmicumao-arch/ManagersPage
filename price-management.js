@@ -52,8 +52,8 @@ function render(){
   card.classList.toggle('expanded',expanded);
   const image=document.createElement('img');
   image.className='kbr-product-thumb';image.alt='';
-  const src=item.image||'';
-  if(src)image.src=/^https?:\/\//i.test(src)?src:'https://russelljohnramosmicumao-arch.github.io/Kape-Barrio/'+src.replace(/^\.\//,'');
+  const src=String(item.image||'').replace(/^https:\/\/russelljohnramosmicumao-arch\.github\.io\/Kape-Barrio\/images\//i,'https://kape-barrio.pages.dev/images/');
+  if(src)image.src=/^https?:\/\//i.test(src)?src:'https://kape-barrio.pages.dev/'+src.replace(/^\.\//,'');
   image.onerror=()=>image.style.visibility='hidden';
   const summary=document.createElement('button');summary.type='button';summary.className='kbr-price-tile-trigger';
   const details=document.createElement('div');details.className='kbr-price-tile-info';
