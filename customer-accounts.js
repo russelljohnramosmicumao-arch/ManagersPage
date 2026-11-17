@@ -19,6 +19,7 @@ function render(){
   const reset=a.phoneConnected
    ?'<button type="button" data-reset-password="'+esc(a.userId)+'">Reset KBR Password</button>'
    :'<p class="customer-reset-note">No KBR phone/password login. '+(a.googleConnected?'This customer signs in through Google and must reset their Google password with Google.':'A KBR password reset is unavailable for this login.')+'</p>';
+  const deleteButton=isOwner&&Number(a.orderCount||0)===0&&Number(a.points||0)===0&&Number(a.lifetimePoints||0)===0?'<button type="button" style="color:#a51e24;border-color:#a51e24" data-delete-test="'+esc(a.userId)+'">Delete Unused Account</button>':'';
   const pointAdjust=isOwner?'<button type="button" class="owner-points-button" data-adjust-points="'+esc(a.userId)+'">⭐ Adjust Points</button>':'';
   return '<article class="customer-account-card'+(active?' selected':'')+'" data-customer-id="'+esc(a.userId)+'">'+
    '<button type="button" class="customer-name-tile" data-open-customer="'+esc(a.userId)+'" aria-expanded="'+active+'" aria-controls="customer-details-'+esc(a.userId)+'">'+
@@ -36,7 +37,7 @@ function render(){
      '<div><strong>Last order</strong><span>'+(last?'#'+esc(last.order_number)+' · '+esc(last.status)+' · '+money(last.total)+' · '+esc(date(last.created_at)):'—')+'</span></div>'+
     '</div>'+
     '<div class="customer-account-points"><span>⭐ '+Number(a.points||0).toLocaleString()+' points</span><span>Lifetime '+Number(a.lifetimePoints||0).toLocaleString()+'</span></div>'+
-    '<div class="customer-account-actions"><button type="button" data-edit-profile="'+esc(a.userId)+'">Edit Customer Information</button>'+ (a.phoneConnected?reset:'')+pointAdjust+'</div>'+
+    '<div class="customer-account-actions"><button type="button" data-edit-profile="'+esc(a.userId)+'">Edit Customer Information</button>'+ (a.phoneConnected?reset:'')+pointAdjust+deleteButton+'</div>'+
     (!a.phoneConnected?reset:'')+
     '<p class="customer-reset-note">Phone Connected means a phone number is saved for customer lookup. It does not mean a KBR phone/password login has been set up. Contact edits do not change sign-in methods. Existing passwords cannot be viewed.</p>'+
    '</div></article>';
@@ -44,7 +45,14 @@ function render(){
  for(const b of list().querySelectorAll('[data-open-customer]'))b.onclick=()=>{selectedCustomerId=selectedCustomerId===b.dataset.openCustomer?null:b.dataset.openCustomer;render();};
  for(const b of list().querySelectorAll('[data-edit-profile]'))b.onclick=()=>editProfile(b.dataset.editProfile);
  for(const b of list().querySelectorAll('[data-reset-password]'))b.onclick=()=>resetPassword(b.dataset.resetPassword,b);
+ for(const b of list().querySelectorAll('[data-delete-test]'))b.onclick=()=>deleteTestAccount(b.dataset.deleteTest,b);
  for(const b of list().querySelectorAll('[data-adjust-points]'))b.onclick=()=>adjustPoints(b.dataset.adjustPoints,b);
+}
+async function deleteTestAccount(userId,button){
+ const a=accounts.find(x=>x.userId===userId);if(!a||!isOwner)return;
+ if(prompt('Permanently delete '+(a.name||'this customer')+'? Only unused accounts can be deleted. Type DELETE to confirm.')!=='DELETE')return;
+ button.disabled=true;
+ try{await call({action:'delete_test_account',userId,confirmation:'DELETE'});accounts=accounts.filter(x=>x.userId!==userId);selectedCustomerId=null;render();status().textContent='Unused customer account deleted.';}catch(e){alert(e.message);}finally{button.disabled=false;}
 }
 async function editProfile(userId){
  const account=accounts.find(a=>a.userId===userId);if(!account)return;
