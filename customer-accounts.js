@@ -37,8 +37,8 @@ function render(){
      '<div><strong>Last order</strong><span>'+(last?'#'+esc(last.order_number)+' · '+esc(last.status)+' · '+money(last.total)+' · '+esc(date(last.created_at)):'—')+'</span></div>'+
     '</div>'+
     '<div class="customer-account-points"><span>⭐ '+Number(a.points||0).toLocaleString()+' points</span><span>Lifetime '+Number(a.lifetimePoints||0).toLocaleString()+'</span></div>'+
-    '<div class="customer-account-actions"><button type="button" data-edit-profile="'+esc(a.userId)+'">Edit Customer Information</button>'+ (a.phoneConnected?reset:'')+pointAdjust+deleteButton+'</div>'+
-    (!a.phoneConnected?reset:'')+
+    '<div class="customer-account-actions"><button type="button" data-edit-profile="'+esc(a.userId)+'">Edit Customer Information</button>'+ (isOwner&&a.phoneConnected?reset:'')+pointAdjust+deleteButton+'</div>'+
+    (isOwner&&!a.phoneConnected?reset:'')+
     '<p class="customer-reset-note">Phone Connected means a phone number is saved for customer lookup. It does not mean a KBR phone/password login has been set up. Contact edits do not change sign-in methods. Existing passwords cannot be viewed.</p>'+
    '</div></article>';
  }).join('');
@@ -86,7 +86,7 @@ async function editProfile(userId){
   finally{save.disabled=false;}
  };
 }
-async function resetPassword(userId,button){const account=accounts.find(a=>a.userId===userId);if(!account)return;if(!confirm(`Reset the KBR phone password for ${account.name||'this customer'}?\n\nTheir old password cannot be recovered. A new temporary password will replace it.`))return;button.disabled=true;const old=button.textContent;button.textContent='Resetting…';try{const r=await call({action:'reset_password',userId});showTemporary(account,r.temporaryPassword,r.phone);}catch(e){alert(e.message);}finally{button.disabled=false;button.textContent=old;}}
+async function resetPassword(userId,button){if(!isOwner)return;const account=accounts.find(a=>a.userId===userId);if(!account)return;if(!confirm(`Reset the KBR phone password for ${account.name||'this customer'}?\n\nTheir old password cannot be recovered. A new temporary password will replace it.`))return;button.disabled=true;const old=button.textContent;button.textContent='Resetting…';try{const r=await call({action:'reset_password',userId});showTemporary(account,r.temporaryPassword,r.phone);}catch(e){alert(e.message);}finally{button.disabled=false;button.textContent=old;}}
 async function adjustPoints(userId,button){
  const account=accounts.find(a=>a.userId===userId);
  if(!account||!isOwner)return;
