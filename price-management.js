@@ -97,7 +97,7 @@ function render(){
    const text=document.createElement('span');text.textContent=hidden?'Not Available':'Available';
    checked.addEventListener('change',()=>toggleSize(item,variant,checked,text));
    availability.append(checked,text);
-   row.append(detail,form,availability);card.append(row);
+   row.append(detail);if(window.KBRUIPermissions?.editPrice===true)row.append(form);row.append(availability);card.append(row);
   }
   fragment.append(card);
  }
@@ -115,7 +115,7 @@ async function load(){
   const previous=category.value;
   category.innerHTML=categories.map(c=>'<option value="'+esc(c)+'">'+esc(c||'All categories')+'</option>').join('');
   category.value=categories.includes(previous)?previous:'';
-  render();label('Edit a price and press Save. New orders and point tiers use the updated shared menu.');
+  render();label(window.KBRUIPermissions?.editPrice?'Edit a price and press Save.':'Manage product and size availability.');
  }catch(e){label(e?.message||'Could not load prices.',true);if(!loaded)list.textContent='Unable to load the shared menu.';}
  finally{busy=false;refresh.disabled=false;}
 }
@@ -166,7 +166,7 @@ async function toggleSize(item,variant,checkbox,text){
  }finally{busy=false;checkbox.disabled=false;}
 }
 async function savePrice(event,item,variant,field,button){
- event.preventDefault();if(busy)return;
+ event.preventDefault();if(busy||window.KBRUIPermissions?.editPrice!==true)return;
  const price=Number(field.value);
  if(!Number.isSafeInteger(price)||price<1||price>99999){label('Price must be a whole-peso amount from ₱1 to ₱99,999.',true);return;}
  if(price===variant.price){label('No price change to save.');return;}
