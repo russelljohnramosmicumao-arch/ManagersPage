@@ -7,5 +7,6 @@ self.addEventListener('activate',event=>event.waitUntil((async()=>{
 })()));
 self.addEventListener('fetch',event=>{
   const url=new URL(event.request.url);
-  if(event.request.mode==='navigate'&&url.origin===self.location.origin&&/\\/online(?:\\.html)?\\/?$/.test(url.pathname))event.respondWith(Response.redirect(TARGET,302));
+  const path=url.pathname.replace(/\/$/,'');
+  if(event.request.mode==='navigate'&&url.origin===self.location.origin&&(path.endsWith('/online')||path.endsWith('/online.html')))event.respondWith(Response.redirect(TARGET,302));
 });
