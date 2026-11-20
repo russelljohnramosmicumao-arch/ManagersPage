@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-attendance-auto-v10-customer-security-v1-inventory-tiles-v1-update-guard-v3-clean-inventory-v1-role-ui-v1-manager-session-v1";
+const CACHE="kbr-manager-cash-advance-v1";
 const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-tab","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
@@ -18,7 +18,7 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-t
   "./settings-layout.js?v=1",
   "./price-management.js?v=4-product-tiles",
   "./workforce-model.js",
-  "./workforce.js?v=attendance-auto-v4",
+  "./workforce.js?v=attendance-ca-v5","./cash-advance.js?v=1",
   "./schedule-view.js?v=combined-location-v2",
   "./manager.html",
   "./manager.js",
