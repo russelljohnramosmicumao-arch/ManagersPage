@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-cash-advance-v12-store-only-v7";
+const CACHE="kbr-manager-assistant-roles-employee-lock-v13";
 const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-tab","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
@@ -12,7 +12,7 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-t
   "./manager-tabs.css",
   "./payment-settings.js?v=remove-coin-summary-v2",
   "./shop-hours-settings.js?v=settings-tiles-v1",
-  "./manager-tabs.js",
+  "./manager-tabs.js?v=employees-lock-v13",
   "./customer-accounts.js?v=compact-names-v4",
   "./customer-accounts.css?v=compact-names-v4",
   "./settings-layout.js?v=1",
@@ -21,7 +21,7 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-t
   "./workforce.js?v=store-only-v7","./cash-advance.js?v=remove-audit-v12",
   "./schedule-view.js?v=combined-location-v2",
   "./manager.html",
-  "./manager.js",
+  "./manager.js?v=employees-lock-v13",
   "./manifest.json",
   "./menu-defaults.js",
   "./menu-store.js",
