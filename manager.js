@@ -19,5 +19,50 @@ function mountManagerPinKeypad(form){
 document.getElementById('backup').onclick=()=>{if(!localStorage.getItem('kbr_before_cloud_v1')){document.getElementById('backupStatus').textContent='No pre-sync backup was saved on this device.';return;}KBRSyncUI.backup();};
 let managementUnlocked=false;try{const gate=JSON.parse(sessionStorage.getItem('kbr_management_pin_handoff_v1')||'null');managementUnlocked=!!gate&&gate.userId===KBRCloud.session()?.user?.id&&gate.expires>Date.now();}catch{}
 function requestAccess(){KBRSyncUI.screen('Manager access','Owner, Manager or Assistant Manager: use your own Drink PIN.',[['Back',()=>KBRSyncUI.close()]]);const form=document.createElement('form');form.innerHTML='<label>PIN<input name="pin" type="password" inputmode="numeric" pattern="[0-9]{4,6}" minlength="4" maxlength="6" autocomplete="off" required></label><p data-error role="alert"></p><button type="submit">Open manager page</button>';document.querySelector('#cloudScreen .cloud-box').append(form);mountManagerPinKeypad(form);form.onsubmit=async e=>{e.preventDefault();form.querySelector('button[type="submit"]').disabled=true;try{const result=await KBRCloud.rpc('kbr_open_management',{p_pin:form.elements.pin.value});form.elements.pin.value='';if(result.error||!result.ok)throw Error(result.error||'Access was not approved.');managementUnlocked=true;try{sessionStorage.setItem('kbr_management_pin_handoff_v1',JSON.stringify({userId:KBRCloud.session()?.user?.id,expires:Date.now()+30*60*1000}));}catch{}KBRSyncUI.close();await start();}catch(error){form.querySelector('[data-error]').textContent=error.message;form.querySelector('button[type="submit"]').disabled=false;}};}
-async function start(){if(!KBRCloud.requireLogin())return;try{if(!await KBRCloud.rpc('kbr_management_access',{})){throw Error('Only Owner, Manager and Assistant Manager accounts can access this page.');}if(!managementUnlocked){requestAccess();return;}const permissions=await KBRCloud.rpc('kbr_current_ui_permissions',{});if(!permissions?.management)throw Error('Management access required');window.KBRUIPermissions=permissions;status.textContent=permissions.owner?'Employees, inventory, sales, and backups.':'Inventory, customer accounts and menu availability.';document.getElementById('denied').hidden=true;window.KBRManagerTabs?.applyPermissions(permissions);document.getElementById('managerContent').hidden=false;if(permissions.owner)await KBRStaffManager.load();}catch(error){status.textContent=error.message;document.getElementById('denied').hidden=false;}}start();
+
+// Employee records require a separate owner password in addition to Manager Page login.
+// This is a second on-screen gate; employee data RPCs remain restricted to owner by Supabase.
+let employeeUnlocked=false;
+let employeeGatePending=null;
+async function employeeGate(forceChange=false){
+ if(!forceChange&&employeeUnlocked)return true;
+ if(employeeGatePending)return employeeGatePending;
+ employeeGatePending=(async()=>{
+  const state=await KBRCloud.rpc('kbr_employee_lock_status',{});
+  return new Promise(resolve=>{
+   let settled=false;
+   function finish(ok){if(settled)return;settled=true;employeeGatePending=null;resolve(ok);}
+   const setup=forceChange||!state?.configured;
+   KBRSyncUI.screen(setup?'Set Employee Information Password':'Employee Information Locked',
+    setup?'Owner only. Verify your own Drink PIN and create a separate password (at least 8 characters).':'Enter the separate Employee Information password. Your Drink PIN does not unlock employee records.',
+    [['Back',()=>{KBRSyncUI.close();finish(false);}]]);
+   const form=document.createElement('form');
+   form.autocomplete='off';
+   form.innerHTML=setup?
+     '<label>Owner Drink PIN<input name="ownerPin" type="password" inputmode="numeric" minlength="4" maxlength="6" required autocomplete="off"></label><label>New Employee Password<input name="password" type="password" minlength="8" maxlength="128" required autocomplete="new-password"></label><label>Confirm Employee Password<input name="confirm" type="password" minlength="8" maxlength="128" required autocomplete="new-password"></label><p role="alert" data-lock-error></p><button type="submit">Set Password & Unlock</button>':
+     '<label>Employee Information Password<input name="password" type="password" minlength="8" required autocomplete="off"></label><p role="alert" data-lock-error></p><button type="submit">Unlock Employees</button>';
+   document.querySelector('#cloudScreen .cloud-box').append(form);
+   form.querySelector('input')?.focus();
+   form.onsubmit=async e=>{
+    e.preventDefault();
+    const button=form.querySelector('[type="submit"]');button.disabled=true;
+    try{
+     if(setup&&form.elements.password.value!==form.elements.confirm.value)throw Error('Passwords do not match.');
+     const reply=await KBRCloud.rpc(setup?'kbr_set_employee_lock':'kbr_verify_employee_lock',setup?{
+      p_owner_pin:form.elements.ownerPin.value,p_password:form.elements.password.value
+     }:{p_password:form.elements.password.value});
+     if(!reply?.ok)throw Error(reply?.error||'Employee password was not accepted.');
+     employeeUnlocked=true;
+     form.reset();KBRSyncUI.close();
+     await KBRStaffManager.load();
+     finish(true);
+    }catch(err){form.querySelector('[data-lock-error]').textContent=err.message||String(err);button.disabled=false;}
+   };
+  });
+ })().catch(e=>{employeeGatePending=null;KBRSyncUI.screen('Employee lock unavailable',e.message||String(e),[['Back',()=>KBRSyncUI.close()]]);return false;});
+ return employeeGatePending;
+}
+window.KBREmployeeGate={require:()=>employeeGate(false),change:()=>employeeGate(true),get unlocked(){return employeeUnlocked;}};
+
+async function start(){if(!KBRCloud.requireLogin())return;try{if(!await KBRCloud.rpc('kbr_management_access',{})){throw Error('Only Owner, Manager and Assistant Manager accounts can access this page.');}if(!managementUnlocked){requestAccess();return;}const permissions=await KBRCloud.rpc('kbr_current_ui_permissions',{});if(!permissions?.management)throw Error('Management access required');window.KBRUIPermissions=permissions;status.textContent=permissions.owner?'Employees, inventory, sales, and backups.':'Inventory, customer accounts and menu availability.';document.getElementById('denied').hidden=true;window.KBRManagerTabs?.applyPermissions(permissions);document.getElementById('managerContent').hidden=false;}catch(error){status.textContent=error.message;document.getElementById('denied').hidden=false;}}start();
 })();
