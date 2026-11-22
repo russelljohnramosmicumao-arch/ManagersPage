@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-7digit-pins-v15";
+const CACHE="kbr-manager-employee-numeric-pin-v16";
 const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-tab","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
@@ -21,7 +21,7 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-t
   "./workforce.js?v=store-only-v7","./cash-advance.js?v=remove-audit-v12",
   "./schedule-view.js?v=combined-location-v2",
   "./manager.html",
-  "./manager.js?v=pin-7digit-v15",
+  "./manager.js?v=employee-numeric-pin-v16",
   "./manifest.json",
   "./menu-defaults.js",
   "./menu-store.js",
@@ -36,7 +36,7 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-t
   "./sales-dashboard.js?v=1",
   "./profit-summary.js?v=six-tiles-v1",
   "./sales.js?v=six-tiles-v1",
-  "./staff-manager.js?v=pin-7digit-v15",
+  "./staff-manager.js?v=employee-numeric-pin-v16",
   "./sync-config.js",
   "./sync-core.js",
   "./sync-login.html",
