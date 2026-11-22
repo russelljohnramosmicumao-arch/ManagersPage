@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-employee-numeric-pin-v16";
+const CACHE="kbr-manager-head-barista-cancellations-v17";
 const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-tab","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
@@ -12,7 +12,7 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-t
   "./manager-tabs.css",
   "./payment-settings.js?v=remove-coin-summary-v2",
   "./shop-hours-settings.js?v=settings-tiles-v1",
-  "./manager-tabs.js?v=employees-lock-v13",
+  "./manager-tabs.js?v=head-barista-cancellations-v17","./cancellation-history.js?v=head-barista-cancellations-v17",
   "./customer-accounts.js?v=compact-names-v4",
   "./customer-accounts.css?v=compact-names-v4",
   "./settings-layout.js?v=1",
