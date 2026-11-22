@@ -17,6 +17,15 @@ function selectPriceTab(name){
 }
 subtabs.forEach(b=>b.addEventListener('click',()=>selectPriceTab(b.dataset.priceSubtab)));
 selectPriceTab('products');
+const historyHost=document.getElementById('managerPriceHistory');
+async function loadPriceHistory(){
+ if(!historyHost)return;
+ try{
+  const entries=await KBRCloud.rpc('kbr_manager_price_history',{});
+  const rows=Array.isArray(entries)?entries:[];
+  historyHost.innerHTML=rows.length?rows.map(x=>'<div class="history-total-card" style="margin:8px 0;padding:10px"><b>'+esc(x.actor_name)+'</b> changed <b>'+esc(x.product_id)+'</b> ('+esc(x.size)+(x.variant==='premium'?' Premium':'')+') from <b>'+money(x.old_price)+'</b> to <b>'+money(x.new_price)+'</b><br><small>'+esc(new Date(x.changed_at).toLocaleString('en-PH',{timeZone:'Asia/Manila'}))+'</small></div>').join(''):'<p class="muted">No recorded price changes yet.</p>';
+ }catch(e){historyHost.textContent='Price history unavailable: '+(e.message||String(e));}
+}
 let expandedProductId=null;
 let items=[],revision=null,busy=false,loaded=false;
 const esc=(v='')=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -116,6 +125,7 @@ async function load(){
   category.innerHTML=categories.map(c=>'<option value="'+esc(c)+'">'+esc(c||'All categories')+'</option>').join('');
   category.value=categories.includes(previous)?previous:'';
   render();label(window.KBRUIPermissions?.editPrice?'Edit a price and press Save.':'Manage product and size availability.');
+  await loadPriceHistory();
  }catch(e){label(e?.message||'Could not load prices.',true);if(!loaded)list.textContent='Unable to load the shared menu.';}
  finally{busy=false;refresh.disabled=false;}
 }
@@ -187,6 +197,7 @@ async function savePrice(event,item,variant,field,button){
   const updated=items.find(x=>x.productId===item.productId);
   if(updated&&result.item)Object.assign(updated,result.item);
   render();label('Saved '+item.name+' · '+variant.size+' at '+money(price)+'. All new orders and rewards use the shared price.');
+  await loadPriceHistory();
  }catch(e){label(e?.message||'Price update failed. Please retry.',true);field.value=String(variant.price);}
  finally{busy=false;button.disabled=false;refresh.disabled=false;}
 }
