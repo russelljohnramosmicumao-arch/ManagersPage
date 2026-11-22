@@ -1,4 +1,4 @@
-const CACHE="kbr-manager-assistant-roles-employee-lock-v13";
+const CACHE="kbr-manager-assistant-audit-v14";
 const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-tab","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
@@ -16,7 +16,7 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-t
   "./customer-accounts.js?v=compact-names-v4",
   "./customer-accounts.css?v=compact-names-v4",
   "./settings-layout.js?v=1",
-  "./price-management.js?v=4-product-tiles",
+  "./price-management.js?v=assistant-audit-v14",
   "./workforce-model.js",
   "./workforce.js?v=store-only-v7","./cash-advance.js?v=remove-audit-v12",
   "./schedule-view.js?v=combined-location-v2",
