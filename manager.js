@@ -33,30 +33,72 @@ async function employeeGate(forceChange=false){
    let settled=false;
    function finish(ok){if(settled)return;settled=true;employeeGatePending=null;resolve(ok);}
    const setup=forceChange||!state?.configured;
-   KBRSyncUI.screen(setup?'Set Employee Information Password':'Employee Information Locked',
-    setup?'Owner only. Verify your own Drink PIN and create a separate password (at least 8 characters).':'Enter the separate Employee Information password. Your Drink PIN does not unlock employee records.',
+   KBRSyncUI.screen(setup?'Set Employee Information PIN':'Employee Information Locked',
+    setup?'Owner only. Verify your own Drink PIN, then set a separate 7–10 digit Employee Information PIN.':'Enter your separate 7–10 digit Employee Information PIN.',
     [['Back',()=>{KBRSyncUI.close();finish(false);}]]);
    const form=document.createElement('form');
+   form.className='employee-pin-form';
    form.autocomplete='off';
    form.innerHTML=setup?
-     '<label>Owner Drink PIN<input name="ownerPin" type="password" inputmode="numeric" minlength="4" maxlength="10" required autocomplete="off"></label><label>New Employee Password<input name="password" type="password" minlength="8" maxlength="128" required autocomplete="new-password"></label><label>Confirm Employee Password<input name="confirm" type="password" minlength="8" maxlength="128" required autocomplete="new-password"></label><p role="alert" data-lock-error></p><button type="submit">Set Password & Unlock</button>':
-     '<label>Employee Information Password<input name="password" type="password" minlength="8" required autocomplete="off"></label><p role="alert" data-lock-error></p><button type="submit">Unlock Employees</button>';
+     '<label>Owner Drink PIN<input name="ownerPin" type="password" inputmode="none" readonly maxlength="10" autocomplete="off" required aria-label="Owner Drink PIN"></label><label>New Employee PIN<input name="password" type="password" inputmode="none" readonly minlength="7" maxlength="10" autocomplete="off" required aria-label="New Employee PIN"></label><label>Confirm Employee PIN<input name="confirm" type="password" inputmode="none" readonly minlength="7" maxlength="10" autocomplete="off" required aria-label="Confirm Employee PIN"></label><p role="alert" data-lock-error></p><button type="submit" class="employee-pin-save">Set PIN & Unlock</button>':
+     '<label>Employee Information PIN<input name="password" type="password" inputmode="none" readonly minlength="7" maxlength="10" autocomplete="off" required aria-label="Employee Information PIN"></label><p role="alert" data-lock-error></p><button type="submit" class="employee-pin-save">Unlock Employees</button><button type="button" class="employee-pin-reset">Reset PIN using Owner Drink PIN</button>';
+   const fields=setup?['ownerPin','password','confirm']:['password'];
+   let focused=fields[0];
+   const pad=document.createElement('div');
+   pad.className='employee-pin-pad';
+   pad.setAttribute('aria-label','Employee PIN numeric keypad');
+   function choose(field){
+    focused=field;
+    for(const name of fields)form.elements[name].classList.toggle('pin-focused',name===field);
+   }
+   for(const name of fields){
+    const input=form.elements[name];
+    input.addEventListener('click',()=>choose(name));
+    input.addEventListener('focus',()=>choose(name));
+   }
+   for(const key of ['1','2','3','4','5','6','7','8','9','Clear','0','⌫']){
+    const button=document.createElement('button');
+    button.type='button';button.textContent=key;
+    button.setAttribute('aria-label',key==='⌫'?'Delete last digit':key==='Clear'?'Clear selected PIN':key);
+    button.onclick=()=>{
+     if(form.querySelector('[type="submit"]').disabled)return;
+     const input=form.elements[focused];
+     input.value=key==='Clear'?'':key==='⌫'?input.value.slice(0,-1):input.value.length<10?input.value+key:input.value;
+     form.querySelector('[data-lock-error]').textContent='';
+     input.focus({preventScroll:true});
+    };
+    pad.append(button);
+   }
+   form.querySelector('[data-lock-error]').before(pad);
    document.querySelector('#cloudScreen .cloud-box').append(form);
-   form.querySelector('input')?.focus();
+   choose(fields[0]);
+   if(!setup)form.querySelector('.employee-pin-reset').onclick=()=>{KBRSyncUI.close();finish(false);employeeGate(true);};
    form.onsubmit=async e=>{
     e.preventDefault();
-    const button=form.querySelector('[type="submit"]');button.disabled=true;
+    const button=form.querySelector('[type="submit"]');
+    const error=form.querySelector('[data-lock-error]');
+    if(setup&&!/^\d{4,10}$/.test(form.elements.ownerPin.value)){
+     error.textContent='Enter your current Owner Drink PIN.';choose('ownerPin');return;
+    }
+    if(!/^\d{7,10}$/.test(form.elements.password.value)){
+     error.textContent='Employee Information PIN must contain 7–10 digits.';choose('password');return;
+    }
+    if(setup&&form.elements.password.value!==form.elements.confirm.value){
+     error.textContent='Employee PINs do not match.';choose('confirm');return;
+    }
+    button.disabled=true;pad.querySelectorAll('button').forEach(b=>b.disabled=true);
     try{
-     if(setup&&form.elements.password.value!==form.elements.confirm.value)throw Error('Passwords do not match.');
      const reply=await KBRCloud.rpc(setup?'kbr_set_employee_lock':'kbr_verify_employee_lock',setup?{
       p_owner_pin:form.elements.ownerPin.value,p_password:form.elements.password.value
      }:{p_password:form.elements.password.value});
-     if(!reply?.ok)throw Error(reply?.error||'Employee password was not accepted.');
-     employeeUnlocked=true;
-     form.reset();KBRSyncUI.close();
+     if(!reply?.ok)throw Error(reply?.error||'Employee PIN was not accepted.');
+     employeeUnlocked=true;form.reset();KBRSyncUI.close();
      await KBRStaffManager.load();
      finish(true);
-    }catch(err){form.querySelector('[data-lock-error]').textContent=err.message||String(err);button.disabled=false;}
+    }catch(err){
+     error.textContent=err.message||String(err);button.disabled=false;
+     pad.querySelectorAll('button').forEach(b=>b.disabled=false);
+    }
    };
   });
  })().catch(e=>{employeeGatePending=null;KBRSyncUI.screen('Employee lock unavailable',e.message||String(e),[['Back',()=>KBRSyncUI.close()]]);return false;});
