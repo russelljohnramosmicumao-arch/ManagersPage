@@ -1,6 +1,6 @@
 'use strict';
 const isCloudflare=location.hostname.endsWith('.pages.dev');
-function validatedCloudflareHome(value){try{const u=new URL(value);return u.protocol==='https:'&&u.hostname.endsWith('.pages.dev')&&!u.username&&!u.password?u.origin+'/':null;}catch{return null}}
+function validatedCloudflareHome(value){try{const u=new URL(value);return u.protocol==='https:'&&u.hostname==='kapebarriohomescreen.pages.dev'&&!u.username&&!u.password?u.origin+'/':null;}catch{return null}}
 function cloudflareHome(){
  const p=validatedCloudflareHome(new URL(location.href).searchParams.get('kbrHome'));
  if(p){try{sessionStorage.setItem('kbr_cloudflare_home_url',p);}catch{}return p;}
@@ -8,7 +8,7 @@ function cloudflareHome(){
  if(saved)return saved;
  const referring=validatedCloudflareHome(document.referrer);
  if(referring&&referring!==location.origin+'/')return referring;
- return location.origin+'/';
+ return 'https://kapebarriohomescreen.pages.dev/';
 }
 const github='https://russelljohnramosmicumao-arch.github.io/';
 window.KBR_APP_LINKS=Object.freeze(isCloudflare?{
