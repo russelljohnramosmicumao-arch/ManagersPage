@@ -125,7 +125,7 @@ window.KBREmployeePhotos=(()=>{
   const section=document.createElement('section');section.className='employee-photo-editor';
   let url=current||null;
   function render(){
-   section.innerHTML='<div class="employee-photo-preview">'+avatar(url,name)+'</div><div class="employee-photo-editor-actions"><strong>Profile photo</strong><small>Shown when this employee clocks in or out. Use a clear photo with permission.</small><label class="employee-photo-upload">Upload / Change Photo<input type="file" accept="image/jpeg,image/png,image/webp" hidden></label><button type="button" class="employee-photo-remove" '+(!url?'disabled':'')+'>Remove Photo</button><p role="status" class="employee-photo-status"></p></div>';
+   section.innerHTML='<div class="employee-photo-preview">'+avatar(url,name)+'</div><div class="employee-photo-editor-actions"><strong>Profile photo</strong><small>Shown when this employee clocks in or out. Use a clear photo with permission.</small><label class="employee-photo-upload">Upload / Change Photo<input type="file" accept="image/jpeg,image/png,image/webp" hidden></label><button type="button" class="employee-photo-adjust" '+(!url?'disabled':'')+'>Adjust Current Photo</button><button type="button" class="employee-photo-remove" '+(!url?'disabled':'')+'>Remove Photo</button><p role="status" class="employee-photo-status"></p></div>';
    const input=section.querySelector('input'),remove=section.querySelector('.employee-photo-remove'),msg=section.querySelector('.employee-photo-status'),label=section.querySelector('.employee-photo-upload');
    input.onchange=async()=>{
     const file=input.files?.[0];if(!file)return;
@@ -139,6 +139,22 @@ window.KBREmployeePhotos=(()=>{
      section.querySelector('.employee-photo-status').textContent='Centered photo saved and synced to Clock In/Out.';
     }catch(e){msg.textContent=e.message||String(e);}
     finally{if(input.isConnected){input.value='';input.disabled=false;remove.disabled=!url;label.classList.remove('busy');}}
+   };
+   section.querySelector('.employee-photo-adjust').onclick=async()=>{
+    if(!url||!trusted(url))return;
+    const adjust=section.querySelector('.employee-photo-adjust');
+    input.disabled=true;remove.disabled=true;adjust.disabled=true;label.classList.add('busy');msg.textContent='Loading current photo…';
+    try{
+     const response=await fetch(url,{mode:'cors',cache:'no-store'});
+     if(!response.ok)throw Error('Could not load the current photo. Choose Upload / Change Photo instead.');
+     const file=await response.blob();checkFile(file);
+     const blob=await cropDialog(file,name);
+     if(!blob){msg.textContent='Photo adjustment cancelled.';return;}
+     msg.textContent='Saving adjusted photo…';
+     url=await upload(id,blob);onSaved?.(url);render();
+     section.querySelector('.employee-photo-status').textContent='Photo adjusted and saved.';
+    }catch(e){msg.textContent=e.message||String(e);}
+    finally{if(input.isConnected){input.disabled=false;remove.disabled=!url;adjust.disabled=!url;label.classList.remove('busy');}}
    };
    remove.onclick=async()=>{
     if(!confirm('Remove the profile picture of '+name+'?'))return;
