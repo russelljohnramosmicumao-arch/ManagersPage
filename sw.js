@@ -1,10 +1,10 @@
-const CACHE='kbr-manager-owner-profile-v21';
+const CACHE='kbr-manager-login-cache-repair-v24';
 const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-tab","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
   "./app-update.js",
   "./comp-payments.js",
-  "./employee-information.js",
+  "./employee-information.js?v=ojt-position-v1",
   "./employee-photos.js?v=circular-crop-v20",
   "./index.html",
   "./manager-backup.js",
@@ -22,7 +22,7 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-t
   "./workforce.js?v=store-only-v7","./cash-advance.js?v=remove-audit-v12",
   "./schedule-view.js?v=combined-location-v2",
   "./manager.html",
-  "./manager.js?v=employee-numeric-pin-v16",
+  "./manager.js?v=management-pin-login-fix-v23",
   "./manifest.json",
   "./menu-defaults.js",
   "./menu-store.js",
@@ -37,13 +37,24 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-t
   "./sales-dashboard.js?v=1",
   "./profit-summary.js?v=six-tiles-v1",
   "./sales.js?v=six-tiles-v1",
-  "./staff-manager.js?v=owner-name-password-v21",
+  "./staff-manager.js?v=position-label-v22",
   "./sync-config.js",
   "./sync-core.js",
   "./sync-login.html",
   "./sync-ui.js",
   "./sync.css"
-];
+,
+  "./supply-orders.css",
+  "./staff-manager.js?v=position-label-v22",
+  "./employee-information.js?v=ojt-position-v1",
+  "./manager.js?v=management-pin-login-fix-v23",
+  "./inventory-forecast-model.js",
+  "./inventory-forecast.js",
+  "./inventory-order-list.js",
+  "./bag-rules.js",
+  "./stock-baseline-model.js",
+  "./supply-orders.js",
+  "./inventory-add-item.js?v=1"];
 self.addEventListener('install',e=>e.waitUntil(
   caches.open(CACHE).then(async c=>{
     await Promise.allSettled(ASSETS.map(async asset=>{
