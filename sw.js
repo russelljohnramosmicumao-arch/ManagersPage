@@ -1,10 +1,10 @@
-const CACHE='kbr-manager-shop-specialist-positions-v27';
+const CACHE='kbr-manager-operations-coordinator-v28';
 const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-tab","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
   "./app-update.js",
   "./comp-payments.js",
-  "./employee-information.js?v=shop-specialist-positions-v27",
+  "./employee-information.js?v=operations-coordinator-v28",
   "./employee-photos.js?v=circular-crop-v20",
   "./index.html",
   "./owner-pin-reset.html",
@@ -48,7 +48,7 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-t
 ,
   "./supply-orders.css",
   "./staff-manager.js?v=position-label-v22",
-  "./employee-information.js?v=shop-specialist-positions-v27",
+  "./employee-information.js?v=operations-coordinator-v28",
   "./manager.js?v=owner-pin-recovery-v26",
   "./inventory-forecast-model.js",
   "./inventory-forecast.js",
