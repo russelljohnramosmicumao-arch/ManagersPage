@@ -1,4 +1,4 @@
-const CACHE='kbr-manager-pin-lockout-guidance-v25';
+const CACHE='kbr-manager-owner-pin-recovery-v26';
 const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-tab","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
@@ -7,6 +7,8 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-t
   "./employee-information.js?v=ojt-position-v1",
   "./employee-photos.js?v=circular-crop-v20",
   "./index.html",
+  "./owner-pin-reset.html",
+  "./sync-login.html",
   "./manager-backup.js",
   "./manager-icon.svg",
   "./manager-inventory.js?v=add-item-visible-20261104",
@@ -22,7 +24,7 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-t
   "./workforce.js?v=store-only-v7","./cash-advance.js?v=remove-audit-v12",
   "./schedule-view.js?v=combined-location-v2",
   "./manager.html",
-  "./manager.js?v=pin-lockout-guidance-v25",
+  "./manager.js?v=owner-pin-recovery-v26",
   "./manifest.json",
   "./menu-defaults.js",
   "./menu-store.js",
@@ -47,7 +49,7 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-t
   "./supply-orders.css",
   "./staff-manager.js?v=position-label-v22",
   "./employee-information.js?v=ojt-position-v1",
-  "./manager.js?v=pin-lockout-guidance-v25",
+  "./manager.js?v=owner-pin-recovery-v26",
   "./inventory-forecast-model.js",
   "./inventory-forecast.js",
   "./inventory-order-list.js",
