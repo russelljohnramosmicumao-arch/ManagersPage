@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#503827">
+<title>Reset Owner Drink PIN · Kape’ Bar-Rio</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f7f2eb;color:#503827;font:16px system-ui}
+main{width:min(520px,100%);margin:35px auto;padding:18px}
+section{background:#fffaf4;border:2px solid #cbb59d;border-radius:23px;padding:28px;box-shadow:0 5px 19px #50382718}
+h1{font-size:26px;margin:0 0 9px}p{line-height:1.5;color:#715a48}
+label{display:block;font-weight:700;margin:16px 0 6px}
+input{display:block;width:100%;min-height:51px;padding:10px 14px;font:inherit;border-radius:11px;border:1px solid #bca58e;background:white;color:#503827}
+input:focus-visible{outline:3px solid #31744e;outline-offset:2px}
+button{display:block;width:100%;min-height:54px;margin-top:22px;border:0;border-radius:11px;background:#386944;color:white;font:700 17px system-ui;cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}
+a{color:#185b36;font-weight:700}
+.message{min-height:22px;font-size:14px;overflow-wrap:anywhere}
+.message.error{color:#a22b2b}.message.success{color:#19633c}
+.notice{background:#f2e6d8;padding:11px 14px;border-radius:10px;font-size:13px}
+</style>
+</head>
+<body>
+<main><section>
+<h1>Reset Owner Drink PIN</h1>
+<p>Verify your owner account login password, then choose a new <strong>7–10-digit Drink PIN</strong>. The separate Employee Information PIN is not changed.</p>
+<form id="pinRecovery" autocomplete="off">
+<label for="ownerEmail">Owner account email or login username</label>
+<input id="ownerEmail" name="ownerEmail" required autocomplete="username" spellcheck="false">
+<label for="ownerPassword">Owner account login password</label>
+<input id="ownerPassword" name="ownerPassword" type="password" required autocomplete="current-password">
+<label for="newPin">New Drink PIN (7–10 digits)</label>
+<input id="newPin" name="newPin" type="password" inputmode="numeric" pattern="[0-9]{7,10}" minlength="7" maxlength="10" required autocomplete="off">
+<label for="confirmPin">Confirm new Drink PIN</label>
+<input id="confirmPin" name="confirmPin" type="password" inputmode="numeric" pattern="[0-9]{7,10}" minlength="7" maxlength="10" required autocomplete="off">
+<p class="notice">Your password and new PIN are sent directly to your shop’s Supabase authentication service—not to this chat. Please don't share them here.</p>
+<p id="recoveryStatus" class="message" role="status" aria-live="polite"></p>
+<button id="resetSubmit" type="submit">Verify & Reset Drink PIN</button>
+</form>
+<p><a href="index.html">← Back to Manager's Page</a></p>
+</section></main>
+<script src="sync-config.js"></script>
+<script>
+(()=>{
+'use strict';
+const cfg=window.KBR_SYNC_CONFIG;
+const form=document.getElementById('pinRecovery');
+const status=document.getElementById('recoveryStatus');
+const submit=document.getElementById('resetSubmit');
+async function readResponse(response){
+ const body=await response.json().catch(()=>({}));
+ if(!response.ok)throw Error(body.error_description||body.message||body.msg||body.error||'Request failed ('+response.status+').');
+ return body;
+}
+form.onsubmit=async event=>{
+ event.preventDefault();if(submit.disabled)return;
+ const identity=form.elements.ownerEmail.value.trim();
+ const email=identity.includes('@')?identity:identity.toLowerCase()+'@staff.kapebarrio.invalid';
+ const password=form.elements.ownerPassword.value;
+ const pin=form.elements.newPin.value;
+ const confirm=form.elements.confirmPin.value;
+ if(!/^[0-9]{7,10}$/.test(pin)||pin!==confirm){
+  status.className='message error';status.textContent=pin!==confirm?'PINs do not match.':'Enter 7–10 digits for your new Drink PIN.';return;
+ }
+ submit.disabled=true;status.className='message';status.textContent='Verifying your owner account…';
+ let accessToken=null;
+ try{
+  const auth=await readResponse(await fetch(cfg.url+'/auth/v1/token?grant_type=password',{
+   method:'POST',headers:{apikey:cfg.key,'Content-Type':'application/json'},
+   body:JSON.stringify({email,password}),cache:'no-store'
+  }));
+  accessToken=auth.access_token;
+  if(!accessToken||!auth.user?.id)throw Error('Account verification did not return a valid session.');
+  status.textContent='Setting your new Drink PIN…';
+  const result=await readResponse(await fetch(cfg.url+'/rest/v1/rpc/kbr_owner_self_reset_drink_pin',{
+   method:'POST',
+   headers:{apikey:cfg.key,Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},
+   body:JSON.stringify({p_new_pin:pin}),cache:'no-store'
+  }));
+  if(!result?.ok)throw Error('The reset could not be confirmed. Your existing PIN may still be active.');
+  form.reset();
+  form.hidden=true;
+  status.className='message success';
+  status.textContent='Drink PIN reset successfully. Your previous PIN no longer works. Return to Manager’s Page and enter the new PIN.';
+ }catch(e){
+  status.className='message error';
+  status.textContent=e.message||String(e);
+  form.elements.ownerPassword.value='';
+  form.elements.newPin.value='';
+  form.elements.confirmPin.value='';
+  submit.disabled=false;
+ }finally{accessToken=null;}
+};
+})();
+</script>
+</body>
+</html>
