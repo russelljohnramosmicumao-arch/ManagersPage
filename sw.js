@@ -1,11 +1,11 @@
-const CACHE='kbr-manager-tiles-on-demand-v19';
+const CACHE='kbr-manager-photo-crop-v20';
 const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-tab","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
   "./app-update.js",
   "./comp-payments.js",
   "./employee-information.js",
-  "./employee-photos.js?v=employee-photos-v18",
+  "./employee-photos.js?v=circular-crop-v20",
   "./index.html",
   "./manager-backup.js",
   "./manager-icon.svg",
