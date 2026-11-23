@@ -1,10 +1,11 @@
-const CACHE="kbr-manager-head-barista-cancellations-v17";
+const CACHE='kbr-manager-employee-photos-v18';
 const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-tab","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
   "./app-update.js",
   "./comp-payments.js",
   "./employee-information.js",
+  "./employee-photos.js?v=employee-photos-v18",
   "./index.html",
   "./manager-backup.js",
   "./manager-icon.svg",
@@ -36,7 +37,7 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-t
   "./sales-dashboard.js?v=1",
   "./profit-summary.js?v=six-tiles-v1",
   "./sales.js?v=six-tiles-v1",
-  "./staff-manager.js?v=employee-numeric-pin-v16",
+  "./staff-manager.js?v=employee-photos-v18",
   "./sync-config.js",
   "./sync-core.js",
   "./sync-login.html",
