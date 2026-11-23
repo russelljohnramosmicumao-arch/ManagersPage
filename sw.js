@@ -1,4 +1,4 @@
-const CACHE='kbr-manager-photo-crop-v20';
+const CACHE='kbr-manager-owner-profile-v21';
 const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-tab","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
@@ -37,7 +37,7 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-t
   "./sales-dashboard.js?v=1",
   "./profit-summary.js?v=six-tiles-v1",
   "./sales.js?v=six-tiles-v1",
-  "./staff-manager.js?v=employee-photos-v18",
+  "./staff-manager.js?v=owner-name-password-v21",
   "./sync-config.js",
   "./sync-core.js",
   "./sync-login.html",
