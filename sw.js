@@ -1,4 +1,4 @@
-const CACHE='kbr-manager-employee-photos-v18';
+const CACHE='kbr-manager-tiles-on-demand-v19';
 const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-tab","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
@@ -10,10 +10,10 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-t
   "./manager-backup.js",
   "./manager-icon.svg",
   "./manager-inventory.js?v=add-item-visible-20261104",
-  "./manager-tabs.css",
+  "./manager-tabs.css?v=tiles-on-demand-v19",
   "./payment-settings.js?v=remove-coin-summary-v2",
   "./shop-hours-settings.js?v=settings-tiles-v1",
-  "./manager-tabs.js?v=head-barista-cancellations-v17","./cancellation-history.js?v=head-barista-cancellations-v17",
+  "./manager-tabs.js?v=tiles-on-demand-v19","./cancellation-history.js?v=head-barista-cancellations-v17",
   "./customer-accounts.js?v=compact-names-v4",
   "./customer-accounts.css?v=compact-names-v4",
   "./settings-layout.js?v=1",
