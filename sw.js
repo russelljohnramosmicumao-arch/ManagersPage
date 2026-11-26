@@ -1,4 +1,4 @@
-const CACHE='kbr-manager-operations-coordinator-v28';
+const CACHE='kbr-manager-clock-pin-v29';
 const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-tab","./page-tools.js","./page-tools.css",
   "./",
   "./app-links.js",
@@ -21,7 +21,7 @@ const ASSETS=["./inventory-add-item.js","./promo-discount-control.js?v=2-price-t
   "./settings-layout.js?v=1",
   "./price-management.js?v=assistant-audit-v14",
   "./workforce-model.js",
-  "./workforce.js?v=store-only-v7","./cash-advance.js?v=remove-audit-v12",
+  "./workforce.js?v=manager-clock-pin-v29","./cash-advance.js?v=remove-audit-v12",
   "./schedule-view.js?v=combined-location-v2",
   "./manager.html",
   "./manager.js?v=owner-pin-recovery-v26",
